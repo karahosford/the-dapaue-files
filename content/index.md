@@ -8,4 +8,4 @@ My name is [[Dr. Kev Hosford]], and it is my privilege to present these findings
 
 Prepare to encounter bureaucratic oddities that hint at hidden infrastructures, unexplained technologies that challenge our understanding of physics, and an atmosphere thick with the subtle unease of the truly inexplicable. While maintaining a commitment to logical coherence, we will not shy away from the strange, particularly when its tendrils seem to weave themselves into the rich tapestry of Ireland's enigmatic history.
 
-I encourage you to engage with the material presented, to offer your own insights and analyses in a manner befitting a community of researchers. Let us together explore the shadows that dance at the edges of our perception and endeavor to understand the anomalous phenomena that fall under the purview of DAPAUE.
+I encourage you to engage with the material presented, to offer your own insights and analyses in a manner befitting a community of researchers. Let us together explore the shadows that dance at the edges of our perception and endeavour to understand the anomalous phenomena that fall under the purview of DAPAUE.
