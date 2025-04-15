@@ -15,7 +15,7 @@ const config: QuartzConfig = {
     analytics: {
       provider: "plausible",
     },
-    locale: "en-EN",
+    locale: "en-US",
     baseUrl: "https://kevhosford.github.io/the-dapaue-files/",
     ignorePatterns: ["private", "templates", ".obsidian"],
     defaultDateType: "modified",
