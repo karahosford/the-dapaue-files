@@ -5,7 +5,21 @@ import * as Component from "./quartz/components"
 export const sharedPageComponents: SharedLayout = {
   head: Component.Head(),
   header: [],
-  afterBody: [],
+  afterBody: [
+    Component.Comments({
+      provider: 'giscus',
+      options: {
+        // from data-repo
+        repo: 'kevhosford/the-dapaue-files',
+        // from data-repo-id
+        repoId: 'R_kgDOOaGR5w',
+        // from data-category
+        category: 'Announcements',
+        // from data-category-id
+        categoryId: 'DIC_kwDOOaGR584CpIis',
+      }
+    }),
+  ],
   footer: Component.Footer({
     links: {
       GitHub: "https://kevhosford.github.io/the-dapaue-files/",
