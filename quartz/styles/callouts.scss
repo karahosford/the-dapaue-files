@@ -160,3 +160,12 @@
     font-weight: $semiBoldWeight;
   }
 }
+
+.callout {
+  &[data-callout="notice"] {
+    --color: #F26419;
+    --border: #db894244;
+    --bg: #db424210;
+    --callout-icon: var(--callout-icon-info);
+  }
+}
