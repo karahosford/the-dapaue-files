@@ -1,5 +1,6 @@
 ---
 title: Unraveling the Anomalous
+comments: false
 ---
 
 Welcome, fellow researchers and inquisitive minds, to _The Dapaue Files_. Herein lies a collection of documented cases investigated by The Department of Anomalous Phenomenon And Unexplained Events ([[DAPAUE]]), an organisation dedicated to understanding the fringes of reality that intersect with our seemingly ordinary world.
