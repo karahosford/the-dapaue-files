@@ -4,6 +4,27 @@ comments: false
 ---
 ## Who is the Archivist?
 
+<style>
+  .test-style-block {
+    background-color: yellow !important;
+    padding: 10px;
+    border: 2px solid red;
+  }
+</style>
+
+<div class="test-style-block">
+  If this div has a yellow background and red border, style blocks might be supported.
+</div>
+
+<div class="dynamic-columns-container-inline">
+    <div class="column-inline column-text-inline">
+        <p>That's a question I prefer to leave unanswered, for now. What matters is the work, the cases that DAPAUE would prefer to keep buried. My background... let's just say it's multifaceted. A bit of academia, a fascination with criminology, and an unhealthy obsession with technology and the paranormal have all played their part in shaping my current path. I've always had a knack for puzzles, for piecing together fragments of information to reveal the bigger picture. This skill has served me well, both in unravelling the complexities of criminal investigations and in navigating the labyrinthine world of anomalous phenomena.</p>
+    </div>
+    <div class="column-inline column-image-inline">
+        <img src="polaroid.png" alt="Are we really who we say we are?">
+    </div>
+</div>
+
 <div style="-webkit-column-count: 2; -moz-column-count: 2; column-count: 2; -webkit-column-rule: 1px dotted #e0e0e0; -moz-column-rule: 1px dotted #e0e0e0; column-rule: 1px dotted #e0e0e0;">
     <div style="display: inline-block;">
         <p>That's a question I prefer to leave unanswered, for now. What matters is the work, the cases that DAPAUE would prefer to keep buried. My background... let's just say it's multifaceted. A bit of academia, a fascination with criminology, and an unhealthy obsession with technology and the paranormal have all played their part in shaping my current path. I've always had a knack for puzzles, for piecing together fragments of information to reveal the bigger picture. This skill has served me well, both in unravelling the complexities of criminal investigations and in navigating the labyrinthine world of anomalous phenomena.</p>
@@ -14,6 +35,8 @@ comments: false
 </code></pre>
     </div>
 </div>
+
+
 
 How I gained access to these [[DAPAUE]] files is a story shrouded in its own mystery. There are whispers, of course. Some believe it's a matter of familial ties, a relative who once walked the halls of DAPAUE and left behind a legacy of secrets. Others subscribe to a more dramatic narrative: an unsolved case, a personal quest for answers that led me down a winding path, ultimately revealing a hidden archive, a treasure trove of the unexplained.
 
