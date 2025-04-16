@@ -6,8 +6,7 @@ comments: false
 
 <div style="-webkit-column-count: 2; -moz-column-count: 2; column-count: 2; -webkit-column-rule: 1px dotted #e0e0e0; -moz-column-rule: 1px dotted #e0e0e0; column-rule: 1px dotted #e0e0e0;">
     <div style="display: inline-block;">
-        <h2>Good</h2>
-        <pre><code class="language-c">int foo (void) 
+        <p>Who am I? That's a question I prefer to leave unanswered, for now. What matters is the work, the cases that DAPAUE would prefer to keep buried. My background... let's just say it's multifaceted. A bit of academia, a fascination with criminology, and an unhealthy obsession with technology and the paranormal have all played their part in shaping my current path. I've always had a knack for puzzles, for piecing together fragments of information to reveal the bigger picture. This skill has served me well, both in unravelling the complexities of criminal investigations and in navigating the labyrinthine world of anomalous phenomena.</p>
 {
     int i;
 }
@@ -15,7 +14,6 @@ comments: false
     </div>
     <div style="display: inline-block;">
         <h2>Bad</h2>
-        <pre><code class="language-c">int foo (void) {
     int i;
 }
 </code></pre>
