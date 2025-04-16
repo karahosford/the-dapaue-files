@@ -11,7 +11,6 @@ const config: QuartzConfig = {
     pageTitle: "The DAPAUE Files",
     pageTitleSuffix: "",
     enableSPA: true,
-    enablePopovers: false,
     analytics: {
       provider: "plausible",
     },
