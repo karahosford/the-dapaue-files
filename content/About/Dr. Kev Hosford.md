@@ -1,6 +1,7 @@
 ---
 
 title: Dr. Kev Hosford
+comments: false
 
 ---
 # About
