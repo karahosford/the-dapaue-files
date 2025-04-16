@@ -28,18 +28,6 @@ comments: false
     </div>
 </div>
 
----
-
-<style>
-  #simple-test-target { display: none; padding: 10px; border: 1px solid red; }
-  #simple-test-target:target { display: block; }
-</style>
-<a href="#simple-test-target">Show Simple Target</a>
-<div id="simple-test-target">
-  This should appear IMMEDIATELY when you click the link above.
-  <a href="#">Close Simple Target</a>
-</div>
-
 How I gained access to these [[DAPAUE]] files is a story shrouded in its own mystery. There are whispers, of course. Some believe it's a matter of familial ties, a relative who once walked the halls of DAPAUE and left behind a legacy of secrets. Others subscribe to a more dramatic narrative: an unsolved case, a personal quest for answers that led me down a winding path, ultimately revealing a hidden archive, a treasure trove of the unexplained.
 
 The truth is likely more complicated, and perhaps less glamorous. But what's important is that I have these files, and I feel a responsibility to share them. To shed light on the shadows, to foster understanding, even when that understanding challenges our perception of reality. I operate discreetly, deliberately, allowing the focus to remain on the cases themselves, on the strange and compelling evidence that DAPAUE has collected. The world deserves to know what lurks beneath the surface of the ordinary.
