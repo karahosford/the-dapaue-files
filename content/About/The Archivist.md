@@ -5,16 +5,19 @@ comments: false
 ## Who is the Archivist?
 
 <style>
-  .test-style-block {
-    background-color: yellow !important;
-    padding: 10px;
-    border: 2px solid red;
+  /* Flexbox styles for responsive columns */
+  .dynamic-columns-container-inline { display: flex; gap: 20px; }
+  .column-inline { flex: 1; min-width: 0; }
+  .column-image-inline img { display: block; max-width: 100%; height: auto; }
+
+  /* Media query for stacking on smaller screens */
+  @media (max-width: 768px) {
+    .dynamic-columns-container-inline { flex-direction: column; gap: 15px; }
+    .column-inline { width: 100%; flex-basis: auto; }
+    /* Optional rule between items when stacked */
+    .column-text-inline { border-bottom: 1px dotted #e0e0e0; padding-bottom: 15px; margin-bottom: -15px; /* Adjust if needed */ }
   }
 </style>
-
-<div class="test-style-block">
-  If this div has a yellow background and red border, style blocks might be supported.
-</div>
 
 <div class="dynamic-columns-container-inline">
     <div class="column-inline column-text-inline">
