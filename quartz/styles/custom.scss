@@ -1,3 +1,23 @@
 @use "./base.scss";
 
 // put your custom CSS here!
+/* Add this to your custom CSS file (e.g., quartz/styles/custom.scss) */
+
+/* This sets up the flex layout for the row */
+.section-li .section {
+    display: flex;
+    align-items: flex-start;
+    gap: 1em;
+    width: 100%;
+  }
+  
+  /* THIS IS THE KEY PART FOR DYNAMIC WIDTH */
+  .section-li .section .desc {
+    flex-grow: 1; /* Allows this container to expand and take available space */
+    min-width: 0;  /* Important fix for potential text overflow issues in flex items */
+  }
+  
+  /* Optional rules for the tags */
+  .section-li .section .tags {
+    flex-shrink: 0;
+  }
