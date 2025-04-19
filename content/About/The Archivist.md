@@ -1,6 +1,8 @@
 ---
 title: The Archivist
 comments: false
+alias:
+	- 'A'
 ---
 ## Who is the Archivist?
 
