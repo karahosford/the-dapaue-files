@@ -1,36 +1,3 @@
 @use "./base.scss";
 
 // put your custom CSS here!
-
-/* Add this to your custom CSS file (e.g., quartz/styles/custom.scss) */
-
-/* Make the .section div a flex container */
-.section-li .section {
-    display: flex;          /* Arrange .desc and .tags side-by-side */
-    align-items: flex-start; /* Align items to the top (or use 'center') */
-    gap: 1em;               /* Add some space between title area and tags */
-    width: 100%;            /* Ensure the section tries to use full available width */
-  }
-  
-  /* Allow the description/title area (.desc) to grow and take available space */
-  .section-li .section .desc {
-    flex-grow: 1;     /* This is key: allows this div to expand */
-    min-width: 0;     /* Important for flex items containing text that might overflow */
-  }
-  
-  /* Optional: Prevent tags from taking too much space or shrinking weirdly */
-  .section-li .section .tags {
-    flex-shrink: 0;   /* Prevent tags from shrinking if space is tight */
-    /* You could also add a max-width here if needed: */
-    /* max-width: 200px; */
-  }
-  
-  /* Ensure the link inside the h3 behaves correctly (usually not needed but good practice) */
-  .section-li .section .desc h3 {
-    margin: 0; /* Already in your code, but good to keep */
-  }
-  
-  .section-li .section .desc h3 a {
-    display: inline-block; /* Ensures it respects width potentially better */
-    /* Avoid setting a fixed width here unless absolutely necessary */
-  }
