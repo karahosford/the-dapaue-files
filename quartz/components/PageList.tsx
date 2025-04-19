@@ -57,12 +57,21 @@ type Props = {
   sort?: SortFn
 } & QuartzComponentProps
 
+
 export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort }: Props) => {
   const sorter = sort ?? byDateAndAlphabeticalFolderFirst(cfg)
   let list = allFiles.sort(sorter)
   if (limit) {
     list = list.slice(0, limit)
   }
+
+// Added by the Archivist
+const descStyle = {
+  width: '400px', // <--- CHANGE THIS VALUE AS NEEDED (e.g., '300px', '50%')
+  flexGrow: 0,
+  flexShrink: 0,
+}
+
 
   return (
     <ul class="section-ul">
@@ -73,7 +82,7 @@ export const PageList: QuartzComponent = ({ cfg, fileData, allFiles, limit, sort
         return (
           <li class="section-li">
             <div class="section">
-              <div class="desc">
+              <div class="desc" style={descStyle}>
                 <h3>
                   <a href={resolveRelative(fileData.slug!, page.slug!)} class="internal">
                     {title}
