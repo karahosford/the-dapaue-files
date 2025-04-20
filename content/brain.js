@@ -1,5 +1,5 @@
 console.log("brain.js loaded successfully!");
-<script>
+
         // --- Sketch Configuration ---
         let particles = []; // Array to hold particle objects
         const numParticles = 600; // Number of particles
@@ -172,5 +172,3 @@ console.log("brain.js loaded successfully!");
                  // resizeCanvas(windowWidth, windowHeight);
             }
         }
-
-    </script>
