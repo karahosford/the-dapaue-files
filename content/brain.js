@@ -1,4 +1,4 @@
-// brain_2d_animated.js - Animated 2D Network Graph (HUD Right, Tracking Box Info Added)
+// brain_2d_animated.js - Animated 2D Network Graph (Adaptive Colors)
 console.log("brain_2d_animated.js loading (2D Global Mode)");
 
 // --- Sketch Configuration (Global Scope) ---
@@ -9,41 +9,45 @@ const particleSpeed = .8; // User's speed
 const particlePointSize = 2; // User's node size
 let timeOffset = 0;
 const timeIncrement = 0.1; // User's time increment
-const backgroundColor = '#161618';
+// const backgroundColor = '#161618'; // Background is transparent via clear()
 
 // --- Network Connection Configuration ---
 const connectParticles = true;
 const maxConnectionDistance = 85;
 const connectionLineStrokeWeight = 0.5; // Static weight
+// Base HSB values (will be adjusted for light/dark)
 const connectionLineHue = 30;
 const connectionLineSaturation = 100;
-const connectionLineBaseBrightness = 70;
+const connectionLineBaseBrightness = 70; // For dark mode
 const connectionLineAlpha = 35; // Base Alpha (out of 100)
 
 // --- HUD Text ---
 const timedText = "SCANNING_ARCHIVE"; // Static text content
-const codeUpdateInterval = 5; // How often BIN/HEX changes
-let currentBinary = ""; // Store current code strings
-let currentHex = "";
+const codeUpdateInterval = 5; // How often static HUD BIN/HEX changes
+let currentBinary = ""; // Store current code strings for static HUD
+let currentHex = "";    // Store current code strings for static HUD
 const targetSentence = "Are we really who we say we are"; // Sentence for glitch
 const hexCharSubstitutionChance = 0.15; // Chance for glitch
 
 // --- Animated Tracking Box ---
-let trackedParticleIndex = -1; // Index of the current target particle
-let previousTrackedIndex = -1; // Index of the previous target particle
-let boxPos; // p5.Vector for the animated box position
+let trackedParticleIndex = -1;
+let previousTrackedIndex = -1;
+let boxPos;
 let isBoxTransitioning = false;
 let transitionStartTime = 0;
-const transitionDuration = 500; // ms for box movement animation
-let nextTrackTime = 0; // When to switch next target
-const minTrackDuration = 3000; // ms (3 seconds)
-const maxTrackDuration = 6000; // ms (6 seconds)
-const trackingBoxSize = 15; // Keep box size reasonable
-const trackingBoxIdSize = 10; // Text size for ID beside box
-const trackingBoxCodeSize = 8; // Smaller text size for BIN/HEX beside box
-const trackingTextPadding = 5; // Padding between box and text
+const transitionDuration = 500;
+let nextTrackTime = 0;
+const minTrackDuration = 3000;
+const maxTrackDuration = 6000;
+const trackingBoxSize = 15;
+const trackingBoxIdSize = 10;
+const trackingBoxCodeSize = 8;
+const trackingTextPadding = 5;
 
-// --- Pre-calculated Colors ---
+// --- Adaptive Colors ---
+let isLightMode = false; // Default assumption
+let textColor;
+let boxStrokeColor;
 let baseParticlePointColor;
 let baseLinkColor;
 
@@ -74,7 +78,7 @@ function generateRandomHex(pairs) {
 }
 
 function generateCaseID() {
-    let year = floor(random(2001, 20));
+    let year = floor(random(2001, 2026));
     let month = floor(random(1, 13));
     let day = floor(random(1, 29));
     let yearStr = str(year);
@@ -90,7 +94,7 @@ class Particle {
         this.pos = createVector(random(width), random(height));
         this.prevPos = this.pos.copy();
         this.vel = createVector(0, 0);
-        this.id = generateCaseID(); // Assign unique ID on creation
+        this.id = generateCaseID();
     }
 
     update() {
@@ -102,12 +106,12 @@ class Particle {
     }
 
     show() {
+        // Use dynamically set color
         stroke(baseParticlePointColor);
         strokeWeight(particlePointSize);
         point(this.pos.x, this.pos.y);
     }
 
-    // Edges wrap around visible canvas bounds
     edges() {
         let wrapped = false;
         if (this.pos.x > width) { this.pos.x = 0; wrapped = true; }
@@ -124,6 +128,29 @@ class Particle {
 
 } // End Particle Class Definition
 
+// --- Function to set colors based on mode ---
+function setColors() {
+    // Set color mode - essential for color() interpretation
+    colorMode(HSB, 360, 100, 100, 255);
+
+    // Define Base Colors (adjust light mode colors for better contrast if needed)
+    let pointP5Alpha = map(90, 0, 100, 0, 255);
+    let connectionP5Alpha = map(connectionLineAlpha, 0, 100, 0, 255);
+
+    if (isLightMode) {
+        textColor = color(0); // Black text
+        boxStrokeColor = color(50); // Dark grey box
+        // Darker versions for light mode
+        baseParticlePointColor = color(0, 70, 60, pointP5Alpha); // Darker Red/Pink
+        baseLinkColor = color(connectionLineHue, 100, 50, connectionP5Alpha); // Darker Orange
+    } else {
+        textColor = color(255); // White text
+        boxStrokeColor = color(255); // White box
+        // Original colors for dark mode
+        baseParticlePointColor = color(0, 70, 100, pointP5Alpha); // Light Red/Pink point base
+        baseLinkColor = color(connectionLineHue, connectionLineSaturation, connectionLineBaseBrightness, connectionP5Alpha); // Orange base
+    }
+}
 
 // --- p5.js Setup Function ---
 function setup() {
@@ -138,15 +165,19 @@ function setup() {
     let canvas = createCanvas(canvasWidth, canvasHeight);
     canvas.parent('p5-canvas-container');
 
-    colorMode(HSB, 360, 100, 100, 255);
+    // --- Detect Color Scheme ---
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        isLightMode = true;
+        console.log("Light mode detected");
+    } else {
+        isLightMode = false;
+        console.log("Dark mode detected");
+    }
 
-    // Define Colors
-    let pointP5Alpha = map(90, 0, 100, 0, 255);
-    let connectionP5Alpha = map(connectionLineAlpha, 0, 100, 0, 255);
-    baseParticlePointColor = color(0, 70, 100, pointP5Alpha);
-    baseLinkColor = color(connectionLineHue, connectionLineSaturation, connectionLineBaseBrightness, connectionP5Alpha);
+    // Set colors based on detected mode
+    setColors();
 
-    // Initialize particles (constructor assigns ID)
+    // Initialize particles
     particles = [];
     for (let i = 0; i < numParticles; i++) {
         particles.push(new Particle());
@@ -165,15 +196,14 @@ function setup() {
 
 // --- p5.js Draw Function ---
 function draw() {
-    background(backgroundColor);
+    clear(); // Transparent background
 
     // --- Update Data ---
     timeOffset += timeIncrement;
     for (let i = 0; i < particles.length; i++) { particles[i].update(); particles[i].edges(); }
     if (frameCount % codeUpdateInterval === 0) {
-        // Generate codes used by both HUD and tracking box text
-        currentBinary = generateRandomBinary(32);
-        currentHex = generateRandomHex(10);
+        currentBinary = generateRandomBinary(16);
+        currentHex = generateRandomHex(4);
     }
 
     // --- Timed Tracking Box Target Selection ---
@@ -206,18 +236,14 @@ function draw() {
 
     // --- Constrain Box Position ---
     let halfBox = trackingBoxSize / 2;
-    // Estimate max text width (ID is longest) + padding
-    let approxTextWidth = 15 * 8; // Guess based on font size 10
-    let leftBound = halfBox + approxTextWidth + trackingTextPadding;
-    let rightBound = width - halfBox - approxTextWidth - trackingTextPadding;
-    // Ensure box center doesn't push text off edge
-    boxPos.x = constrain(boxPos.x, leftBound, rightBound);
-    boxPos.y = constrain(boxPos.y, halfBox + 15, height - halfBox - 10);
+    let textDrawLeftBound = 10;
+    boxPos.x = constrain(boxPos.x, halfBox, width - halfBox);
+    boxPos.y = constrain(boxPos.y, halfBox + trackingBoxIdSize + 5, height - halfBox);
 
 
     // --- Draw Network Connections ---
     if (connectParticles) {
-        stroke(baseLinkColor);
+        stroke(baseLinkColor); // Uses adaptive color
         strokeWeight(connectionLineStrokeWeight);
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
@@ -233,77 +259,80 @@ function draw() {
     }
 
     // --- Draw Particles ---
-    for (let i = 0; i < particles.length; i++) { if (particles[i]) { particles[i].show(); } }
+    for (let i = 0; i < particles.length; i++) { if (particles[i]) { particles[i].show(); } } // show() uses adaptive color
 
     // --- Draw Tracking Box and Associated Text ---
-    if (trackedParticleIndex !== -1 && trackedParticleIndex < particles.length && particles[trackedParticleIndex]) {
-        let target = particles[trackedParticleIndex];
+    let currentTargetParticle = particles[trackedParticleIndex];
+    if (currentTargetParticle) {
         push(); // Isolate drawing styles
 
         // --- Draw the Box ---
         noFill();
-        stroke(255); // White outline
+        stroke(boxStrokeColor); // Use adaptive color
         strokeWeight(1);
         rectMode(CENTER);
         rect(boxPos.x, boxPos.y, trackingBoxSize, trackingBoxSize);
 
         // --- Draw Text (ID, BIN, HEX) Beside Box ---
-        fill(255); // White text
+        fill(textColor); // Use adaptive color
         noStroke();
+
+        // Generate NEW codes specifically for the tracking box display each frame
+        let boxBinary = generateRandomBinary(16);
+        let boxHex = generateRandomHex(4);
 
         // Decide whether to draw text left or right of the box
         let textX_RightAlign = boxPos.x - trackingBoxSize / 2 - trackingTextPadding;
         let textX_LeftAlign = boxPos.x + trackingBoxSize / 2 + trackingTextPadding;
-        let textY_Start = boxPos.y - trackingBoxSize / 2; // Align top of text block with top of box
+        let textY_Start = boxPos.y - trackingBoxSize / 2;
+        let idWidth = textWidth(currentTargetParticle.id);
+        let drawOnRight = false;
+        if (textX_RightAlign - idWidth < textDrawLeftBound) { drawOnRight = true; }
 
-        // Check if drawing on the left goes off screen (use a simpler check)
-        if (boxPos.x < width * 0.3) { // If box is quite far left
-            // Draw on the right instead
+        let textX, textY;
+        if (drawOnRight) {
             textAlign(LEFT, TOP);
-            textSize(trackingBoxIdSize);
-            text(target.id, textX_LeftAlign, textY_Start);
-            textSize(trackingBoxCodeSize);
-            text(`B:${currentBinary.substring(0,12)}`, textX_LeftAlign, textY_Start + trackingBoxIdSize + 2); // Shorten codes
-            text(`H:${currentHex.substring(0,9)}`, textX_LeftAlign, textY_Start + trackingBoxIdSize + trackingBoxCodeSize + 4);
+            textX = textX_LeftAlign;
+            textY = textY_Start;
         } else {
-            // Draw on the left
-            textAlign(RIGHT, TOP); // Align text's right edge
-            textSize(trackingBoxIdSize);
-            text(target.id, textX_RightAlign, textY_Start);
-            textSize(trackingBoxCodeSize);
-            text(`B:${currentBinary.substring(0,12)}`, textX_RightAlign, textY_Start + trackingBoxIdSize + 2); // Shorten codes
-            text(`H:${currentHex.substring(0,9)}`, textX_RightAlign, textY_Start + trackingBoxIdSize + trackingBoxCodeSize + 4);
+            textAlign(RIGHT, TOP);
+            textX = textX_RightAlign;
+            textY = textY_Start;
         }
+
+        // Draw ID
+        textSize(trackingBoxIdSize);
+        text(currentTargetParticle.id, textX, textY);
+        textY += trackingBoxIdSize + 2;
+
+        // Draw BIN/HEX (using locally generated codes)
+        textSize(trackingBoxCodeSize);
+        text(`B:${boxBinary}`, textX, textY);
+        textY += trackingBoxCodeSize + 2;
+        text(`H:${boxHex}`, textX, textY);
 
         pop(); // Restore styles
     }
 
-    // --- Draw Static 2D HUD (Bottom Right) --- MODIFIED
+    // --- Draw Static 2D HUD (Bottom Right) ---
     push();
-    fill(255); // White text
+    fill(textColor); // Use adaptive text color
     noStroke();
-    // MODIFIED: Align text to the RIGHT edge, starting from bottom
     textAlign(RIGHT, BOTTOM);
-    textFont('monospace', 12); // Reset font size just in case
-
-    // MODIFIED: Position from bottom-right corner
-    let xPos = width - 15; // Padding from right edge
-    let yPos = height - 15; // Start from bottom edge
-
-    // Draw "Decrypting Archive" section (with BIN/HEX added back)
+    textFont('monospace', 12);
+    let xPos = width - 15;
+    let yPos = height - 15;
     textSize(11);
-    text(`HEX: ${currentHex}`, xPos, yPos); // Use full hex string
+    // Display the globally updated codes here
+    text(`HEX: ${currentHex}`, xPos, yPos);
     yPos -= 14;
-    text(`BIN: ${currentBinary}`, xPos, yPos); // Use full binary string
+    text(`BIN: ${currentBinary}`, xPos, yPos);
     yPos -= 16;
     textSize(12);
-    text("Decrypting Archive", xPos, yPos); // Header
-
-    // Draw "SCANNING_ARCHIVE" section (always visible)
-    yPos -= 20; // Space between sections
+    text("Decrypting Archive", xPos, yPos);
+    yPos -= 20;
     textSize(14);
-    text(timedText, xPos, yPos); // SCANNING text
-
+    text(timedText, xPos, yPos);
     pop();
 
 }; // End draw
@@ -317,6 +346,14 @@ function windowResized() {
        let newWidth = canvasContainer.offsetWidth;
        let newHeight = canvasContainer.offsetHeight;
        resizeCanvas(newWidth, newHeight);
+
+       // Re-detect color scheme and set colors on resize
+       if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+           isLightMode = true;
+       } else {
+           isLightMode = false;
+       }
+       setColors(); // Apply adaptive colors
 
        // Re-initialize particles
        console.log("Re-initializing particles for new size");
