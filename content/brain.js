@@ -239,3 +239,4 @@ function windowResized() {
        console.warn("p5.js Warning: Could not find container 'p5-canvas-container' on resize.");
     }
 }; // End windowResized
+
