@@ -22,7 +22,7 @@ export const sharedPageComponents: SharedLayout = {
   ],
   footer: Component.Footer({
     links: {
-      Bluesky: "https://bsky.app/profile/dapue.bsky.social"     
+      Bluesky: "https://bsky.app/profile/thedapauefiles.org"     
     },
   }),
 }
