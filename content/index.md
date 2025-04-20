@@ -8,7 +8,7 @@ comments: false
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 
-<script src="/static/brain.js"></script>
+<script src="brain.js"></script>
 
 <script>
   // Minor tweak to ensure p5 targets the container
