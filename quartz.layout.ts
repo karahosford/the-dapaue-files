@@ -22,7 +22,6 @@ export const sharedPageComponents: SharedLayout = {
   ],
   footer: Component.Footer({
     links: {
-      GitHub: "https://kevhosford.github.io/the-dapaue-files/",
       Bluesky: "https://bsky.app/profile/dapue.bsky.social"     
     },
   }),
