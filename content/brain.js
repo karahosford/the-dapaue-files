@@ -30,10 +30,17 @@
 
         // --- p5.js Setup Function ---
         function setup() {
-            // Create canvas with WEBGL renderer
+            // MODIFIED: Target the container div
             let canvasContainer = document.getElementById('p5-canvas-container');
+            if (!canvasContainer) {
+                console.error("p5.js Error: Container div with ID 'p5-canvas-container' not found.");
+                return; // Stop setup if container doesn't exist
+            }
+            // Create canvas sized to the container, with WEBGL renderer
             let canvas = createCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight, WEBGL);
+            // Attach the canvas to the container div
             canvas.parent('p5-canvas-container');
+
             // Set color mode to HSB
             colorMode(HSB, 360, 100, 100, 100);
 
@@ -73,11 +80,6 @@
                         let p2 = particles[j];
                         let distance = p1.pos.dist(p2.pos);
                         if (distance < maxConnectionDistance) {
-                            // Optionally, make line fainter as distance increases (uncomment block below)
-                            /*
-                            let alpha = map(distance, 0, maxConnectionDistance, connectionLineAlpha, 0);
-                            stroke(connectionLineHue, connectionLineSaturation, connectionLineBrightness, alpha);
-                            */
                             line(p1.pos.x, p1.pos.y, p1.pos.z,
                                  p2.pos.x, p2.pos.y, p2.pos.z);
                         }
@@ -98,12 +100,11 @@
                 );
                 this.prevPos = this.pos.copy();
                 this.vel = createVector(0, 0, 0);
-                // No label setup needed now
             }
 
             // Update particle state in 3D
             update() {
-                // Noise calculation... (same as before)
+                // Noise calculation...
                 let noiseFactorX = this.pos.x * noiseScale;
                 let noiseFactorY = this.pos.y * noiseScale;
                 let noiseFactorZ = this.pos.z * noiseScale;
@@ -122,22 +123,20 @@
                 let isPulsing = random(1) < pulseChance;
                 if (isPulsing) {
                     // Pulse Appearance (Bright White)
-                    stroke(0, 0, 100, pulseAlpha); // H(any), S:0, B:100
+                    stroke(0, 0, 100, pulseAlpha);
                     strokeWeight(particleStrokeWeight * pulseStrokeWeightMultiplier);
                 } else {
                     // Normal Trail Appearance (Light Red/Pink)
-                    stroke(0, 70, 100, 70); // H:0, S:70, B:100
+                    stroke(0, 70, 100, 70);
                     strokeWeight(particleStrokeWeight);
                 }
-                // Draw the 3D line segment for the trail
                 line(this.prevPos.x, this.prevPos.y, this.prevPos.z,
                      this.pos.x, this.pos.y, this.pos.z);
 
                 // --- Draw Particle Point ---
-                // Use the normal trail color but slightly more opaque
-                stroke(0, 70, 100, 90); // Light Red/Pink, Alpha 90
-                strokeWeight(particlePointSize); // Use defined point size
-                point(this.pos.x, this.pos.y, this.pos.z); // Draw point at current position
+                stroke(0, 70, 100, 90); // Light Red/Pink point
+                strokeWeight(particlePointSize);
+                point(this.pos.x, this.pos.y, this.pos.z);
             }
 
             // Handle 3D screen edges
@@ -146,8 +145,7 @@
                     this.pos.set(
                         random(-bounds, bounds), random(-bounds, bounds), random(-bounds, bounds)
                     );
-                    this.updatePrev(); // Avoid drawing line across space after reset
-                    // No label hiding needed now
+                    this.updatePrev();
                 }
             }
 
@@ -155,17 +153,22 @@
             updatePrev() {
                 this.prevPos.set(this.pos.x, this.pos.y, this.pos.z);
             }
-
-            // No updateLabelPosition method needed now
         }
 
         // --- p5.js Window Resized Function ---
         function windowResized() {
+            // MODIFIED: Resize canvas based on container div size
             let canvasContainer = document.getElementById('p5-canvas-container');
-            if (canvasContainer) { // Check if container exists
+             // Check if container exists before trying to resize
+            if (canvasContainer) {
                resizeCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight);
-               // Re-apply HSB color mode settings after resize
+               // Re-apply HSB color mode settings after resize (important for WEBGL)
                colorMode(HSB, 360, 100, 100, 100);
+            } else {
+                 // Fallback or error handling if container not found on resize
+                 console.warn("p5.js Warning: Could not find container 'p5-canvas-container' on resize.");
+                 // Optionally resize to window dimensions as a fallback?
+                 // resizeCanvas(windowWidth, windowHeight);
             }
         }
 
