@@ -1,3 +1,4 @@
+console.log("brain.js loaded successfully!");
 <script>
         // --- Sketch Configuration ---
         let particles = []; // Array to hold particle objects
