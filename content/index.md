@@ -3,7 +3,7 @@ title: Unraveling the Anomalous
 comments: false
 ---
 
-<div id="p5-canvas-container" style="width: 100%; height: 60vh; position: relative; margin-bottom: 1rem; border: 1px solid #333; border-radius: 8px;">
+<div id="p5-canvas-container" style="width: 100%; height: 30vh; position: relative; margin-bottom: 1rem; border: 1px solid #888; /* Changed #333 to #888 */ border-radius: 8px; overflow: hidden;">
     </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>

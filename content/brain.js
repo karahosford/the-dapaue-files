@@ -1,277 +1,336 @@
-// brain.js - Global Mode Version (Autoplay)
-console.log("brain.js loading (Global Mode)");
+// brain_2d_animated.js - Animated 2D Network Graph (HUD Right, Tracking Box Info Added)
+console.log("brain_2d_animated.js loading (2D Global Mode)");
 
 // --- Sketch Configuration (Global Scope) ---
 let particles = [];
-const numParticles = 600;
-const noiseScale = 0.02;
-const particleSpeed = 0.8;
-const particleStrokeWeight = 1.2;
-const particlePointSize = 4;
-const trailAlpha = 10; // Value out of 100 for mapping convenience
+const numParticles = 200; // User's particle count
+const noiseScale = 1; // User's noise scale
+const particleSpeed = .8; // User's speed
+const particlePointSize = 2; // User's node size
 let timeOffset = 0;
-const timeIncrement = 0.002;
-
-// --- 3D Bounds ---
-let bounds = 300;
-
-// --- Pulse Configuration ---
-const pulseChance = 0.01;
-const pulseAlpha = 95; // Alpha out of 100
-const pulseStrokeWeightMultiplier = 1.8;
+const timeIncrement = 0.1; // User's time increment
+const backgroundColor = '#161618';
 
 // --- Network Connection Configuration ---
 const connectParticles = true;
-const maxConnectionDistance = 75;
-const maxConnectionDistanceSq = maxConnectionDistance * maxConnectionDistance; // Optimized
-const connectionLineStrokeWeight = 0.5;
+const maxConnectionDistance = 85;
+const connectionLineStrokeWeight = 0.5; // Static weight
 const connectionLineHue = 30;
 const connectionLineSaturation = 100;
-const connectionLineBrightness = 70;
-const connectionLineAlpha = 35; // Alpha out of 100
+const connectionLineBaseBrightness = 70;
+const connectionLineAlpha = 35; // Base Alpha (out of 100)
 
-// Optimization: Frame skipping for connections
-let frameCounter = 0;
-const connectionFrameInterval = 2;
+// --- HUD Text ---
+const timedText = "SCANNING_ARCHIVE"; // Static text content
+const codeUpdateInterval = 5; // How often BIN/HEX changes
+let currentBinary = ""; // Store current code strings
+let currentHex = "";
+const targetSentence = "Are we really who we say we are"; // Sentence for glitch
+const hexCharSubstitutionChance = 0.15; // Chance for glitch
 
-// --- Timed Text Configuration ---
-const timedText = "SCANNING_ARCHIVE";
-const textDisplayMinDuration = 6000; // ms (6 seconds)
-const textDisplayMaxDuration = 10000; // ms (10 seconds)
-const minDelayBetweenText = 5000; // ms (5 seconds)
-const maxDelayBetweenText = 15000; // ms (15 seconds)
-let isTextVisible = false;
-let targetParticleIndex = -1;
-let textEndTime = 0;
-let nextTextStartTime = 2000; // ms
-const textOffset = 15;
+// --- Animated Tracking Box ---
+let trackedParticleIndex = -1; // Index of the current target particle
+let previousTrackedIndex = -1; // Index of the previous target particle
+let boxPos; // p5.Vector for the animated box position
+let isBoxTransitioning = false;
+let transitionStartTime = 0;
+const transitionDuration = 500; // ms for box movement animation
+let nextTrackTime = 0; // When to switch next target
+const minTrackDuration = 3000; // ms (3 seconds)
+const maxTrackDuration = 6000; // ms (6 seconds)
+const trackingBoxSize = 15; // Keep box size reasonable
+const trackingBoxIdSize = 10; // Text size for ID beside box
+const trackingBoxCodeSize = 8; // Smaller text size for BIN/HEX beside box
+const trackingTextPadding = 5; // Padding between box and text
 
-// --- Particle Class (Global Scope) ---
-// Needs access to p5 global functions implicitly
+// --- Pre-calculated Colors ---
+let baseParticlePointColor;
+let baseLinkColor;
+
+// --- Helper Functions ---
+function generateRandomBinary(len) {
+    let bin = '';
+    for (let i = 0; i < len; i++) {
+        bin += random() > 0.5 ? '1' : '0';
+    }
+    return bin;
+}
+
+function generateRandomHex(pairs) {
+    let hex = '';
+    const hexChars = '0123456789ABCDEF';
+    for (let i = 0; i < pairs; i++) {
+        let h1 = hexChars[floor(random(16))];
+        if (random() < hexCharSubstitutionChance) {
+            h1 = targetSentence.charAt(floor(random(targetSentence.length)));
+        }
+        let h2 = hexChars[floor(random(16))];
+         if (random() < hexCharSubstitutionChance) {
+            h2 = targetSentence.charAt(floor(random(targetSentence.length)));
+        }
+        hex += h1 + h2 + ' ';
+    }
+    return hex.trim();
+}
+
+function generateCaseID() {
+    let year = floor(random(2001, 20));
+    let month = floor(random(1, 13));
+    let day = floor(random(1, 29));
+    let yearStr = str(year);
+    let monthStr = nf(month, 2);
+    let dayStr = nf(day, 2);
+    return `Case_${yearStr}_${monthStr}_${dayStr}`;
+}
+
+
+// --- Particle Class (Adds ID) ---
 class Particle {
-    constructor() {
-        // Use p5 global functions directly
-        this.pos = createVector(
-            random(-bounds, bounds),
-            random(-bounds, bounds),
-            random(-bounds, bounds)
-        );
+     constructor() {
+        this.pos = createVector(random(width), random(height));
         this.prevPos = this.pos.copy();
-        this.vel = createVector(0, 0, 0);
+        this.vel = createVector(0, 0);
+        this.id = generateCaseID(); // Assign unique ID on creation
     }
 
     update() {
-        let noiseFactorX = this.pos.x * noiseScale;
-        let noiseFactorY = this.pos.y * noiseScale;
-        let noiseFactorZ = this.pos.z * noiseScale;
-        // Use p5 global functions/variables directly
-        let phi = noise(noiseFactorX, noiseFactorY, noiseFactorZ, timeOffset + 10) * TWO_PI * 2;
-        let theta = noise(noiseFactorX, noiseFactorY, noiseFactorZ, timeOffset + 20) * PI;
-        this.vel.x = particleSpeed * sin(theta) * cos(phi);
-        this.vel.y = particleSpeed * sin(theta) * sin(phi);
-        this.vel.z = particleSpeed * cos(theta);
+        let angle = noise(this.pos.x * noiseScale, this.pos.y * noiseScale, timeOffset) * TWO_PI * 2;
+        this.vel = p5.Vector.fromAngle(angle);
+        this.vel.mult(particleSpeed);
         this.updatePrev();
         this.pos.add(this.vel);
     }
 
     show() {
-        // Use p5 global functions directly
-        let isPulsing = random(1) < pulseChance;
-        // Map config alphas (0-100) to p5 alphas (0-255) where needed
-        let pulseP5Alpha = map(pulseAlpha, 0, 100, 0, 255);
-        let trailP5Alpha = map(70, 0, 100, 0, 255); // Assuming 70 was the intended alpha for normal trails
-        let pointP5Alpha = map(90, 0, 100, 0, 255); // Assuming 90 was the intended alpha for points
-
-
-        if (isPulsing) {
-            // HSB color mode: H, S, B, Alpha(0-255)
-            stroke(0, 0, 100, pulseP5Alpha); // White pulse
-            strokeWeight(particleStrokeWeight * pulseStrokeWeightMultiplier);
-        } else {
-            stroke(0, 70, 100, trailP5Alpha); // Light Red/Pink trail
-            strokeWeight(particleStrokeWeight);
-        }
-        line(this.prevPos.x, this.prevPos.y, this.prevPos.z,
-             this.pos.x, this.pos.y, this.pos.z);
-
-        // Draw Particle Point
-        stroke(0, 70, 100, pointP5Alpha); // Light Red/Pink point
+        stroke(baseParticlePointColor);
         strokeWeight(particlePointSize);
-        point(this.pos.x, this.pos.y, this.pos.z);
+        point(this.pos.x, this.pos.y);
     }
 
+    // Edges wrap around visible canvas bounds
     edges() {
-        // Use p5 global functions directly
-        if (abs(this.pos.x) > bounds || abs(this.pos.y) > bounds || abs(this.pos.z) > bounds) {
-            this.pos.set(
-                random(-bounds, bounds),
-                random(-bounds, bounds),
-                random(-bounds, bounds)
-            );
-            this.updatePrev();
-            // If the target particle resets while text is visible, hide text early
-            if (isTextVisible && particles.indexOf(this) === targetParticleIndex) {
-                 isTextVisible = false;
-                 // Optional: Allow next text to appear sooner maybe?
-                 // nextTextStartTime = millis() + random(minDelayBetweenText / 2, maxDelayBetweenText / 2);
-            }
-        }
+        let wrapped = false;
+        if (this.pos.x > width) { this.pos.x = 0; wrapped = true; }
+        if (this.pos.x < 0) { this.pos.x = width; wrapped = true; }
+        if (this.pos.y > height) { this.pos.y = 0; wrapped = true; }
+        if (this.pos.y < 0) { this.pos.y = height; wrapped = true; }
+        if (wrapped) { this.updatePrev(); }
     }
 
     updatePrev() {
-        this.prevPos.set(this.pos.x, this.pos.y, this.pos.z);
+        this.prevPos.x = this.pos.x;
+        this.prevPos.y = this.pos.y;
     }
+
 } // End Particle Class Definition
 
 
-// --- p5.js Setup Function (Global Scope) ---
+// --- p5.js Setup Function ---
 function setup() {
-    console.log("Global setup started");
+    console.log("Animated 2D graph setup started");
     let canvasContainer = document.getElementById('p5-canvas-container');
     if (!canvasContainer) {
         console.error("p5.js Error: Container div with ID 'p5-canvas-container' not found.");
         return;
     }
-    // Use p5 global functions/variables directly
-    let canvas = createCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight, WEBGL);
-    canvas.parent('p5-canvas-container'); // Attach canvas to the container
+    let canvasWidth = canvasContainer.offsetWidth;
+    let canvasHeight = canvasContainer.offsetHeight;
+    let canvas = createCanvas(canvasWidth, canvasHeight);
+    canvas.parent('p5-canvas-container');
 
-    // Set color mode to HSB, but alpha range to 0-255 for easier mapping later
     colorMode(HSB, 360, 100, 100, 255);
 
-    // Initialize particles
+    // Define Colors
+    let pointP5Alpha = map(90, 0, 100, 0, 255);
+    let connectionP5Alpha = map(connectionLineAlpha, 0, 100, 0, 255);
+    baseParticlePointColor = color(0, 70, 100, pointP5Alpha);
+    baseLinkColor = color(connectionLineHue, connectionLineSaturation, connectionLineBaseBrightness, connectionP5Alpha);
+
+    // Initialize particles (constructor assigns ID)
     particles = [];
     for (let i = 0; i < numParticles; i++) {
         particles.push(new Particle());
     }
+
+    // Initialize tracking box state
+    boxPos = createVector(width / 2, height / 2);
+    trackedParticleIndex = -1;
+    previousTrackedIndex = -1;
+    isBoxTransitioning = false;
+    nextTrackTime = millis() + 1000;
+
     strokeCap(SQUARE);
-     // Optional: Load a font for better text rendering in WebGL
-    // try {
-    //     // Ensure you have a font file accessible, e.g., in /static/fonts/
-    //     // myFont = loadFont('/static/fonts/YourFont.ttf'); // Use global loadFont
-    //     // textFont(myFont); // Use global textFont
-    // } catch (e) {
-    //     console.warn("Could not load custom font, using default.");
-    // }
-    textSize(14); // Set default text size
+    textFont('monospace', 12); // Default font
 };
 
-// --- p5.js Draw Function (Global Scope) ---
+// --- p5.js Draw Function ---
 function draw() {
-    let currentTime = millis(); // Use global millis()
+    background(backgroundColor);
 
-    orbitControl(); // Use global orbitControl()
-
-    // Set background
-    let bgColor = color('#161618'); // Use global color()
-    // Map the trailAlpha config (0-100) to p5's alpha range (0-255)
-    let alphaValue = map(trailAlpha, 0, 100, 0, 255); // Use global map()
-    // Set the alpha component of the color object
-    bgColor.setAlpha(alphaValue);
-    // Use the p5.color object (with alpha) for the background
-    background(bgColor); // Use global background()
-
-
-    // --- Update and Draw Particles ---
-    for (let i = 0; i < particles.length; i++) {
-        particles[i].update();
-        particles[i].show();
-        particles[i].edges();
+    // --- Update Data ---
+    timeOffset += timeIncrement;
+    for (let i = 0; i < particles.length; i++) { particles[i].update(); particles[i].edges(); }
+    if (frameCount % codeUpdateInterval === 0) {
+        // Generate codes used by both HUD and tracking box text
+        currentBinary = generateRandomBinary(32);
+        currentHex = generateRandomHex(10);
     }
 
-    // --- Draw Network Connections ---
-    frameCounter++;
-    if (connectParticles && frameCounter % connectionFrameInterval === 0) {
-        // Map config alpha (0-100) to p5 alpha (0-255)
-        let connectionP5Alpha = map(connectionLineAlpha, 0, 100, 0, 255); // Use global map()
-        strokeWeight(connectionLineStrokeWeight); // Use global strokeWeight()
-        // Use global stroke() - Use HSB values with p5 alpha range
-        stroke(connectionLineHue, connectionLineSaturation, connectionLineBrightness, connectionP5Alpha);
+    // --- Timed Tracking Box Target Selection ---
+    let currentTime = millis();
+    if (currentTime >= nextTrackTime && particles.length > 0) {
+        previousTrackedIndex = trackedParticleIndex;
+        let newIndex = trackedParticleIndex;
+        if (particles.length > 1) { while (newIndex === trackedParticleIndex) { newIndex = floor(random(particles.length)); } }
+        else { newIndex = 0; }
+        trackedParticleIndex = newIndex;
+        isBoxTransitioning = true;
+        transitionStartTime = currentTime;
+        nextTrackTime = currentTime + random(minTrackDuration, maxTrackDuration);
+        console.log(`Switching tracked particle to index: ${trackedParticleIndex}`);
+    }
 
+    // --- Update Animated Box Position ---
+    if (isBoxTransitioning) {
+        let elapsed = currentTime - transitionStartTime;
+        let t = constrain(elapsed / transitionDuration, 0, 1);
+        let startPos = (previousTrackedIndex !== -1 && previousTrackedIndex < particles.length && particles[previousTrackedIndex]) ? particles[previousTrackedIndex].pos : boxPos;
+        let endPos = (trackedParticleIndex !== -1 && trackedParticleIndex < particles.length && particles[trackedParticleIndex]) ? particles[trackedParticleIndex].pos : boxPos;
+        boxPos = p5.Vector.lerp(startPos, endPos, t);
+        if (t >= 1.0) { isBoxTransitioning = false; }
+    } else {
+        if (trackedParticleIndex !== -1 && trackedParticleIndex < particles.length && particles[trackedParticleIndex]) {
+            boxPos.set(particles[trackedParticleIndex].pos);
+        }
+    }
+
+    // --- Constrain Box Position ---
+    let halfBox = trackingBoxSize / 2;
+    // Estimate max text width (ID is longest) + padding
+    let approxTextWidth = 15 * 8; // Guess based on font size 10
+    let leftBound = halfBox + approxTextWidth + trackingTextPadding;
+    let rightBound = width - halfBox - approxTextWidth - trackingTextPadding;
+    // Ensure box center doesn't push text off edge
+    boxPos.x = constrain(boxPos.x, leftBound, rightBound);
+    boxPos.y = constrain(boxPos.y, halfBox + 15, height - halfBox - 10);
+
+
+    // --- Draw Network Connections ---
+    if (connectParticles) {
+        stroke(baseLinkColor);
+        strokeWeight(connectionLineStrokeWeight);
         for (let i = 0; i < particles.length; i++) {
             for (let j = i + 1; j < particles.length; j++) {
-                let p1 = particles[i];
-                let p2 = particles[j];
-                let dx = p1.pos.x - p2.pos.x;
-                let dy = p1.pos.y - p2.pos.y;
-                let dz = p1.pos.z - p2.pos.z;
-                let distanceSq = dx * dx + dy * dy + dz * dz;
-
-                if (distanceSq < maxConnectionDistanceSq) {
-                    // Use global line()
-                    line(p1.pos.x, p1.pos.y, p1.pos.z,
-                         p2.pos.x, p2.pos.y, p2.pos.z);
+                let p1 = particles[i]; let p2 = particles[j];
+                if(p1 && p2) {
+                    let distance = dist(p1.pos.x, p1.pos.y, p2.pos.x, p2.pos.y);
+                    if (distance < maxConnectionDistance) {
+                        line(p1.pos.x, p1.pos.y, p2.pos.x, p2.pos.y);
+                    }
                 }
             }
         }
     }
 
-    // --- Timed Text Logic ---
-    // Check if it's time to potentially show the text
-    if (!isTextVisible && currentTime >= nextTextStartTime && particles.length > 0) {
-        isTextVisible = true;
-        targetParticleIndex = floor(random(particles.length)); // Use global floor(), random()
-        textEndTime = currentTime + random(textDisplayMinDuration, textDisplayMaxDuration); // Use global random()
-        // Set time when the *next* text can start (after this one finishes + delay)
-        nextTextStartTime = textEndTime + random(minDelayBetweenText, maxDelayBetweenText); // Use global random()
-        console.log(`Showing text on particle ${targetParticleIndex} until ${textEndTime}`);
-    }
+    // --- Draw Particles ---
+    for (let i = 0; i < particles.length; i++) { if (particles[i]) { particles[i].show(); } }
 
-    // If text should be visible, draw it
-    if (isTextVisible) {
-        // Check if time is up
-        if (currentTime >= textEndTime) {
-            isTextVisible = false;
-            targetParticleIndex = -1; // Reset target
-            console.log("Hiding text");
+    // --- Draw Tracking Box and Associated Text ---
+    if (trackedParticleIndex !== -1 && trackedParticleIndex < particles.length && particles[trackedParticleIndex]) {
+        let target = particles[trackedParticleIndex];
+        push(); // Isolate drawing styles
+
+        // --- Draw the Box ---
+        noFill();
+        stroke(255); // White outline
+        strokeWeight(1);
+        rectMode(CENTER);
+        rect(boxPos.x, boxPos.y, trackingBoxSize, trackingBoxSize);
+
+        // --- Draw Text (ID, BIN, HEX) Beside Box ---
+        fill(255); // White text
+        noStroke();
+
+        // Decide whether to draw text left or right of the box
+        let textX_RightAlign = boxPos.x - trackingBoxSize / 2 - trackingTextPadding;
+        let textX_LeftAlign = boxPos.x + trackingBoxSize / 2 + trackingTextPadding;
+        let textY_Start = boxPos.y - trackingBoxSize / 2; // Align top of text block with top of box
+
+        // Check if drawing on the left goes off screen (use a simpler check)
+        if (boxPos.x < width * 0.3) { // If box is quite far left
+            // Draw on the right instead
+            textAlign(LEFT, TOP);
+            textSize(trackingBoxIdSize);
+            text(target.id, textX_LeftAlign, textY_Start);
+            textSize(trackingBoxCodeSize);
+            text(`B:${currentBinary.substring(0,12)}`, textX_LeftAlign, textY_Start + trackingBoxIdSize + 2); // Shorten codes
+            text(`H:${currentHex.substring(0,9)}`, textX_LeftAlign, textY_Start + trackingBoxIdSize + trackingBoxCodeSize + 4);
         } else {
-            // Check if target particle still exists (safety check)
-            if (targetParticleIndex >= 0 && targetParticleIndex < particles.length) {
-                let targetParticle = particles[targetParticleIndex];
-
-                // --- Draw Connecting Line ---
-                // Style for the line connecting particle to text
-                stroke(0, 0, 80, 150); // Use global stroke() - Light grey, semi-transparent
-                strokeWeight(0.7); // Use global strokeWeight()
-
-                // Position for the text (slightly offset from particle)
-                let textX = targetParticle.pos.x + textOffset;
-                let textY = targetParticle.pos.y - textOffset; // Offset Y slightly up
-                let textZ = targetParticle.pos.z;
-
-                line(targetParticle.pos.x, targetParticle.pos.y, targetParticle.pos.z,
-                            textX, textY, textZ); // Use global line()
-
-                // --- Draw Text ---
-                // Style for the text
-                fill(0, 0, 90, 220); // Use global fill() - Bright grey/white, mostly opaque
-                noStroke(); // Use global noStroke()
-
-                // Draw text directly at calculated 3D coordinates
-                // Note: Default text rendering in WebGL might appear flat
-                text(timedText, textX, textY, textZ); // Use global text()
-
-            } else {
-                // Target particle index became invalid
-                isTextVisible = false;
-                targetParticleIndex = -1;
-            }
+            // Draw on the left
+            textAlign(RIGHT, TOP); // Align text's right edge
+            textSize(trackingBoxIdSize);
+            text(target.id, textX_RightAlign, textY_Start);
+            textSize(trackingBoxCodeSize);
+            text(`B:${currentBinary.substring(0,12)}`, textX_RightAlign, textY_Start + trackingBoxIdSize + 2); // Shorten codes
+            text(`H:${currentHex.substring(0,9)}`, textX_RightAlign, textY_Start + trackingBoxIdSize + trackingBoxCodeSize + 4);
         }
+
+        pop(); // Restore styles
     }
 
+    // --- Draw Static 2D HUD (Bottom Right) --- MODIFIED
+    push();
+    fill(255); // White text
+    noStroke();
+    // MODIFIED: Align text to the RIGHT edge, starting from bottom
+    textAlign(RIGHT, BOTTOM);
+    textFont('monospace', 12); // Reset font size just in case
 
-    timeOffset += timeIncrement;
+    // MODIFIED: Position from bottom-right corner
+    let xPos = width - 15; // Padding from right edge
+    let yPos = height - 15; // Start from bottom edge
+
+    // Draw "Decrypting Archive" section (with BIN/HEX added back)
+    textSize(11);
+    text(`HEX: ${currentHex}`, xPos, yPos); // Use full hex string
+    yPos -= 14;
+    text(`BIN: ${currentBinary}`, xPos, yPos); // Use full binary string
+    yPos -= 16;
+    textSize(12);
+    text("Decrypting Archive", xPos, yPos); // Header
+
+    // Draw "SCANNING_ARCHIVE" section (always visible)
+    yPos -= 20; // Space between sections
+    textSize(14);
+    text(timedText, xPos, yPos); // SCANNING text
+
+    pop();
+
 }; // End draw
 
 
-// --- p5.js Window Resized Function (Global Scope) ---
+// --- p5.js Window Resized Function (2D Version) ---
 function windowResized() {
-    console.log("Global windowResized triggered");
+    console.log("2D Global windowResized triggered");
     let canvasContainer = document.getElementById('p5-canvas-container');
     if (canvasContainer) {
-       resizeCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight); // Use global resizeCanvas()
-       // Re-apply HSB color mode settings (alpha now 0-255)
-       colorMode(HSB, 360, 100, 100, 255); // Use global colorMode()
+       let newWidth = canvasContainer.offsetWidth;
+       let newHeight = canvasContainer.offsetHeight;
+       resizeCanvas(newWidth, newHeight);
+
+       // Re-initialize particles
+       console.log("Re-initializing particles for new size");
+       particles = [];
+       for (let i = 0; i < numParticles; i++) {
+            particles.push(new Particle()); // Constructor assigns ID
+       }
+       // Reset tracking box state
+       boxPos = createVector(newWidth / 2, newHeight / 2);
+       trackedParticleIndex = -1;
+       previousTrackedIndex = -1;
+       isBoxTransitioning = false;
+       nextTrackTime = millis() + 1000;
+
     } else {
        console.warn("p5.js Warning: Could not find container 'p5-canvas-container' on resize.");
     }
