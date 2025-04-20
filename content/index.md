@@ -8,10 +8,7 @@ comments: false
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
 
-<script src="/static/js/brain.js"></script> ```
-
-After replacing the content of `brain.js` with the code above and simplifying the HTML in your Markdown file, rebuild your Quartz site. The animation should now load and start playing automatically within the container div when the page loads.
-Welcome, fellow researchers and inquisitive minds, to _The Dapaue Files_. Herein lies a collection of documented cases investigated by The Department of Anomalous Phenomenon And Unexplained Events ([[DAPAUE]]), an organisation dedicated to understanding the fringes of reality that intersect with our seemingly ordinary world.
+<script src="brain.js"></script>
 
 I am [[The Archivist]], and it is my privilege to present these findings, meticulously gathered and analysed through the lens of criminal science and rigorous research methodologies. Within these digital pages, we will delve into events that defy conventional explanation, often bearing the distinct and enigmatic hallmarks that cast an unease of familiarity.
 

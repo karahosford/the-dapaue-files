@@ -77,11 +77,14 @@ class Particle {
     show() {
         // Use p5 global functions directly
         let isPulsing = random(1) < pulseChance;
+        // Map config alphas (0-100) to p5 alphas (0-255) where needed
         let pulseP5Alpha = map(pulseAlpha, 0, 100, 0, 255);
-        let trailP5Alpha = map(70, 0, 100, 0, 255);
-        let pointP5Alpha = map(90, 0, 100, 0, 255);
+        let trailP5Alpha = map(70, 0, 100, 0, 255); // Assuming 70 was the intended alpha for normal trails
+        let pointP5Alpha = map(90, 0, 100, 0, 255); // Assuming 90 was the intended alpha for points
+
 
         if (isPulsing) {
+            // HSB color mode: H, S, B, Alpha(0-255)
             stroke(0, 0, 100, pulseP5Alpha); // White pulse
             strokeWeight(particleStrokeWeight * pulseStrokeWeightMultiplier);
         } else {
@@ -109,6 +112,8 @@ class Particle {
             // If the target particle resets while text is visible, hide text early
             if (isTextVisible && particles.indexOf(this) === targetParticleIndex) {
                  isTextVisible = false;
+                 // Optional: Allow next text to appear sooner maybe?
+                 // nextTextStartTime = millis() + random(minDelayBetweenText / 2, maxDelayBetweenText / 2);
             }
         }
     }
@@ -131,7 +136,8 @@ function setup() {
     let canvas = createCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight, WEBGL);
     canvas.parent('p5-canvas-container'); // Attach canvas to the container
 
-    colorMode(HSB, 360, 100, 100, 255); // Alpha range 0-255
+    // Set color mode to HSB, but alpha range to 0-255 for easier mapping later
+    colorMode(HSB, 360, 100, 100, 255);
 
     // Initialize particles
     particles = [];
@@ -139,6 +145,14 @@ function setup() {
         particles.push(new Particle());
     }
     strokeCap(SQUARE);
+     // Optional: Load a font for better text rendering in WebGL
+    // try {
+    //     // Ensure you have a font file accessible, e.g., in /static/fonts/
+    //     // myFont = loadFont('/static/fonts/YourFont.ttf'); // Use global loadFont
+    //     // textFont(myFont); // Use global textFont
+    // } catch (e) {
+    //     console.warn("Could not load custom font, using default.");
+    // }
     textSize(14); // Set default text size
 };
 
@@ -150,9 +164,13 @@ function draw() {
 
     // Set background
     let bgColor = color('#161618'); // Use global color()
+    // Map the trailAlpha config (0-100) to p5's alpha range (0-255)
     let alphaValue = map(trailAlpha, 0, 100, 0, 255); // Use global map()
+    // Set the alpha component of the color object
     bgColor.setAlpha(alphaValue);
+    // Use the p5.color object (with alpha) for the background
     background(bgColor); // Use global background()
+
 
     // --- Update and Draw Particles ---
     for (let i = 0; i < particles.length; i++) {
@@ -164,9 +182,10 @@ function draw() {
     // --- Draw Network Connections ---
     frameCounter++;
     if (connectParticles && frameCounter % connectionFrameInterval === 0) {
+        // Map config alpha (0-100) to p5 alpha (0-255)
         let connectionP5Alpha = map(connectionLineAlpha, 0, 100, 0, 255); // Use global map()
         strokeWeight(connectionLineStrokeWeight); // Use global strokeWeight()
-        // Use global stroke()
+        // Use global stroke() - Use HSB values with p5 alpha range
         stroke(connectionLineHue, connectionLineSaturation, connectionLineBrightness, connectionP5Alpha);
 
         for (let i = 0; i < particles.length; i++) {
@@ -188,41 +207,58 @@ function draw() {
     }
 
     // --- Timed Text Logic ---
+    // Check if it's time to potentially show the text
     if (!isTextVisible && currentTime >= nextTextStartTime && particles.length > 0) {
         isTextVisible = true;
         targetParticleIndex = floor(random(particles.length)); // Use global floor(), random()
         textEndTime = currentTime + random(textDisplayMinDuration, textDisplayMaxDuration); // Use global random()
+        // Set time when the *next* text can start (after this one finishes + delay)
         nextTextStartTime = textEndTime + random(minDelayBetweenText, maxDelayBetweenText); // Use global random()
         console.log(`Showing text on particle ${targetParticleIndex} until ${textEndTime}`);
     }
 
+    // If text should be visible, draw it
     if (isTextVisible) {
+        // Check if time is up
         if (currentTime >= textEndTime) {
             isTextVisible = false;
-            targetParticleIndex = -1;
+            targetParticleIndex = -1; // Reset target
             console.log("Hiding text");
         } else {
+            // Check if target particle still exists (safety check)
             if (targetParticleIndex >= 0 && targetParticleIndex < particles.length) {
                 let targetParticle = particles[targetParticleIndex];
 
-                // Draw Connecting Line
-                stroke(0, 0, 80, 150); // Use global stroke()
+                // --- Draw Connecting Line ---
+                // Style for the line connecting particle to text
+                stroke(0, 0, 80, 150); // Use global stroke() - Light grey, semi-transparent
                 strokeWeight(0.7); // Use global strokeWeight()
-                let textX = targetParticle.pos.x + textOffset;
-                let textY = targetParticle.pos.y - textOffset;
-                let textZ = targetParticle.pos.z;
-                line(targetParticle.pos.x, targetParticle.pos.y, targetParticle.pos.z, textX, textY, textZ); // Use global line()
 
-                // Draw Text
-                fill(0, 0, 90, 220); // Use global fill()
+                // Position for the text (slightly offset from particle)
+                let textX = targetParticle.pos.x + textOffset;
+                let textY = targetParticle.pos.y - textOffset; // Offset Y slightly up
+                let textZ = targetParticle.pos.z;
+
+                line(targetParticle.pos.x, targetParticle.pos.y, targetParticle.pos.z,
+                            textX, textY, textZ); // Use global line()
+
+                // --- Draw Text ---
+                // Style for the text
+                fill(0, 0, 90, 220); // Use global fill() - Bright grey/white, mostly opaque
                 noStroke(); // Use global noStroke()
+
+                // Draw text directly at calculated 3D coordinates
+                // Note: Default text rendering in WebGL might appear flat
                 text(timedText, textX, textY, textZ); // Use global text()
+
             } else {
+                // Target particle index became invalid
                 isTextVisible = false;
                 targetParticleIndex = -1;
             }
         }
     }
+
 
     timeOffset += timeIncrement;
 }; // End draw
@@ -234,9 +270,9 @@ function windowResized() {
     let canvasContainer = document.getElementById('p5-canvas-container');
     if (canvasContainer) {
        resizeCanvas(canvasContainer.offsetWidth, canvasContainer.offsetHeight); // Use global resizeCanvas()
+       // Re-apply HSB color mode settings (alpha now 0-255)
        colorMode(HSB, 360, 100, 100, 255); // Use global colorMode()
     } else {
        console.warn("p5.js Warning: Could not find container 'p5-canvas-container' on resize.");
     }
 }; // End windowResized
-
