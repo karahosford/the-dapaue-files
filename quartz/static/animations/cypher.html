@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Text Grid (35x65 QR HUD)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #111; /* Dark background for page */
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // --- Configuration ---
+        const GRID_ROWS = 15;
+        const GRID_COLS = 30;
+        const BLOCK_SIZE = 20;
+        const GRID_AREA_WIDTH = GRID_COLS * BLOCK_SIZE; // 600
+        const GRID_AREA_HEIGHT = GRID_ROWS * BLOCK_SIZE; // 300
+        const HUD_MARGIN_RIGHT = 180;
+        const HUD_MARGIN_TOP = 0;
+        const CANVAS_WIDTH = GRID_AREA_WIDTH + HUD_MARGIN_RIGHT; // 780
+        const CANVAS_HEIGHT = GRID_AREA_HEIGHT + HUD_MARGIN_TOP; // 300
+
+        const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;':\",./<>?`~§±ΣΩΠΔΛΨφθ✓✕ ";
+        const UPDATE_CHANCE = 0.05;
+
+        // Colors (declare variables here, define in setup)
+        let backgroundColor;
+        let boxColor; // For the grid boxes
+        let textColor; // For the grid text
+        let trackingBoxColor;
+        let connectorLineColor;
+        let hudTextColor; // Color for the static HUD text
+        let qrOffColor; // Color for 'off' QR blocks
+
+        let gridChars; // 2D array for main grid characters
+
+        // --- Tracking Boxes ---
+        const numTrackers = 3;
+        let trackedCells = [];
+        let previousTrackedCells = [];
+        let boxPositions = [];
+        let isBoxTransitioning = [];
+        let transitionStartTimes = [];
+        let nextTrackTimes = [];
+
+        const transitionDuration = 400;
+        const minTrackDuration = 4000;
+        const maxTrackDuration = 6000;
+        const trackingBoxPadding = 2;
+        const trackingBoxSize = BLOCK_SIZE - 2 * trackingBoxPadding;
+        const connectorLineWeight = 1.25;
+
+        // Flashing state
+        let isBoxFlashing = [];
+        let flashStartTimes = [];
+        const flashCycleTime = 200;
+        const flashCycles = 3;
+        const flashTotalDuration = flashCycleTime * flashCycles;
+
+        // --- Top-Right HUD ---
+        const hudCodeUpdateInterval = 5;
+        let hudHex = "";
+        let hudDecimal = "";
+        const targetSentence = "Are we really who we say we are";
+        const hexCharSubstitutionChance = 0.15;
+
+        // --- QR Code Simulation ---
+        // MODIFIED: Changed grid dimensions
+        const qrGridRows = 45; // Was qrGridSize = 20
+        const qrGridCols = 45; // Was qrGridSize = 20
+        // MODIFIED: Reduced block size to fit larger grid
+        const qrBlockSize = 3; // Was 4
+        const qrUpdateInterval = 4;
+        let qrGrid = [];
+
+        // --- p5.js Setup Function ---
+        function setup() {
+            console.log("Setup started...");
+            createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT);
+            frameRate(30);
+
+            // --- Define Colors ---
+            backgroundColor = color(0);
+            boxColor = color(28, 13, 7); // HSB: Dark Orange
+            textColor = color(245, 123, 71);
+            trackingBoxColor = color(207, 184, 161);
+            connectorLineColor = color(207, 184, 161);
+            hudTextColor = color(207, 184, 161); // White HUD text
+            qrOffColor = color(25); // Very dark grey for 'off' QR blocks
+
+            // Initialize the main character grid
+            console.log("Initializing gridChars...");
+            gridChars = [];
+            for (let r = 0; r < GRID_ROWS; r++) {
+                gridChars[r] = [];
+                for (let c = 0; c < GRID_COLS; c++) {
+                    gridChars[r][c] = random(CHARS.split(''));
+                }
+            }
+            console.log("gridChars initialized:", gridChars.length > 0);
+
+
+            // Initialize the QR grid (using updated dimensions)
+            console.log("Initializing qrGrid...");
+            qrGrid = [];
+            for (let r = 0; r < qrGridRows; r++) { // Use qrGridRows
+                qrGrid[r] = [];
+                for (let c = 0; c < qrGridCols; c++) { // Use qrGridCols
+                    qrGrid[r][c] = floor(random(2)); // 0 or 1
+                }
+            }
+             console.log("qrGrid initialized:", qrGrid.length > 0);
+
+
+            // Set text properties
+            textAlign(CENTER, CENTER);
+            textSize(BLOCK_SIZE * 0.6);
+            textFont('monospace');
+
+            // Initialize tracking state arrays
+            console.log("Initializing trackers...");
+            let gridCenterX = GRID_AREA_WIDTH / 2;
+            let gridCenterY = GRID_AREA_HEIGHT / 2;
+            let centerPos = createVector(gridCenterX, gridCenterY);
+            trackedCells = []; previousTrackedCells = []; boxPositions = [];
+            isBoxTransitioning = []; transitionStartTimes = []; nextTrackTimes = [];
+            isBoxFlashing = []; flashStartTimes = [];
+            for (let i = 0; i < numTrackers; i++) {
+                trackedCells.push({ row: -1, col: -1 });
+                previousTrackedCells.push({ row: -1, col: -1 });
+                boxPositions.push(centerPos.copy());
+                isBoxTransitioning.push(false); transitionStartTimes.push(0);
+                nextTrackTimes.push(millis() + 1000 + i * 500);
+                isBoxFlashing.push(false); flashStartTimes.push(0);
+            }
+            console.log("Trackers initialized:", boxPositions.length === numTrackers);
+            console.log("Setup complete.");
+        }
+
+         // --- Helper Functions ---
+        function generateRandomBinary(len) { /* ... */ }
+        function generateRandomHex(pairs) { /* ... */ }
+        function generateRandomDecimal(len) { /* ... */ }
+        // --- (Previous Helper Functions remain here) ---
+        function generateRandomBinary(len) {
+            let bin = '';
+            for (let i = 0; i < len; i++) { bin += random() > 0.5 ? '1' : '0'; }
+            return bin;
+        }
+        function generateRandomHex(pairs) {
+            let hex = ''; const hexChars = '0123456789ABCDEF';
+            for (let i = 0; i < pairs; i++) {
+                let h1 = hexChars[floor(random(16))];
+                if (random() < hexCharSubstitutionChance) { h1 = targetSentence.charAt(floor(random(targetSentence.length))); }
+                let h2 = hexChars[floor(random(16))];
+                 if (random() < hexCharSubstitutionChance) { h2 = targetSentence.charAt(floor(random(targetSentence.length))); }
+                hex += h1 + h2 + ' ';
+            } return hex.trim();
+        }
+        function generateRandomDecimal(len) {
+            let dec = '';
+            for (let i = 0; i < len; i++) { dec += floor(random(10)); }
+            return dec;
+        }
+
+
+        // --- p5.js Draw Function ---
+        function draw() {
+            // Initial check for setup completion
+            if (!gridChars || !boxPositions || boxPositions.length !== numTrackers || !qrGrid || qrGrid.length !== qrGridRows) {
+                console.error("Grid or trackers not initialized properly."); noLoop(); return;
+            }
+
+            background(backgroundColor);
+
+            // --- Update Data ---
+            // Update grid characters randomly
+            for (let r = 0; r < GRID_ROWS; r++) {
+                for (let c = 0; c < GRID_COLS; c++) {
+                    if (random() < UPDATE_CHANCE) { gridChars[r][c] = random(CHARS.split('')); }
+                }
+            }
+            // Update static HUD Code periodically
+             if (frameCount % hudCodeUpdateInterval === 0) {
+                hudHex = generateRandomHex(6);
+                hudDecimal = generateRandomDecimal(18);
+            }
+            // Update QR Grid periodically (uses updated dimensions)
+            if (frameCount % qrUpdateInterval === 0) {
+                 for (let r = 0; r < qrGridRows; r++) { // Use qrGridRows
+                    // Ensure row exists before accessing columns
+                    if (!qrGrid[r]) qrGrid[r] = [];
+                    for (let c = 0; c < qrGridCols; c++) { // Use qrGridCols
+                        qrGrid[r][c] = floor(random(2));
+                    }
+                }
+            }
+
+            // --- Update Trackers ---
+            let currentTime = millis();
+            for (let i = 0; i < numTrackers; i++) {
+                // Timed Tracking Box Target Selection & Transition Trigger
+                if (currentTime >= nextTrackTimes[i]) {
+                    previousTrackedCells[i] = { ...trackedCells[i] };
+                    let newRow = trackedCells[i].row, newCol = trackedCells[i].col;
+                    if (GRID_ROWS * GRID_COLS > 1) { while (newRow === trackedCells[i].row && newCol === trackedCells[i].col) { newRow = floor(random(GRID_ROWS)); newCol = floor(random(GRID_COLS)); } }
+                    else { newRow = 0; newCol = 0; }
+                    trackedCells[i] = { row: newRow, col: newCol };
+                    isBoxTransitioning[i] = true; transitionStartTimes[i] = currentTime;
+                    nextTrackTimes[i] = currentTime + random(minTrackDuration, maxTrackDuration);
+                    isBoxFlashing[i] = false; // Stop flashing
+                }
+
+                // Update Animated Box Position
+                if (isBoxTransitioning[i]) {
+                    let elapsed = currentTime - transitionStartTimes[i];
+                    let t = constrain(elapsed / transitionDuration, 0, 1);
+                    let startX = (previousTrackedCells[i].col !== -1) ? (previousTrackedCells[i].col * BLOCK_SIZE + BLOCK_SIZE / 2) : boxPositions[i].x;
+                    let startY = (previousTrackedCells[i].row !== -1) ? (previousTrackedCells[i].row * BLOCK_SIZE + BLOCK_SIZE / 2) : boxPositions[i].y;
+                    let startPos = createVector(startX, startY);
+                    let endX = (trackedCells[i].col !== -1) ? (trackedCells[i].col * BLOCK_SIZE + BLOCK_SIZE / 2) : boxPositions[i].x;
+                    let endY = (trackedCells[i].row !== -1) ? (trackedCells[i].row * BLOCK_SIZE + BLOCK_SIZE / 2) : boxPositions[i].y;
+                    let endPos = createVector(endX, endY);
+                    if(boxPositions[i]) { boxPositions[i] = p5.Vector.lerp(startPos, endPos, t); }
+                    else { console.error(`boxPositions[${i}] undefined during lerp`); isBoxTransitioning[i] = false; }
+
+                    if (t >= 1.0) {
+                        isBoxTransitioning[i] = false;
+                        if(boxPositions[i]) boxPositions[i].set(endPos);
+                        if(flashStartTimes && flashStartTimes[i] !== undefined) { isBoxFlashing[i] = true; flashStartTimes[i] = currentTime; }
+                    }
+                } else {
+                    if (trackedCells[i].row !== -1 && trackedCells[i].col !== -1) {
+                        let targetX = trackedCells[i].col * BLOCK_SIZE + BLOCK_SIZE / 2;
+                        let targetY = trackedCells[i].row * BLOCK_SIZE + BLOCK_SIZE / 2;
+                         if(boxPositions[i]) { boxPositions[i].set(targetX, targetY); }
+                    }
+                }
+                 // Constrain Box Position within GRID AREA bounds
+                 if(boxPositions[i]){
+                     let halfBoxSize = (BLOCK_SIZE - 2 * trackingBoxPadding) / 2;
+                     boxPositions[i].x = constrain(boxPositions[i].x, halfBoxSize, GRID_AREA_WIDTH - halfBoxSize);
+                     boxPositions[i].y = constrain(boxPositions[i].y, halfBoxSize, GRID_AREA_HEIGHT - halfBoxSize);
+                 }
+            }
+
+
+            // --- Draw Main Character Grid ---
+            for (let r = 0; r < GRID_ROWS; r++) {
+                for (let c = 0; c < GRID_COLS; c++) {
+                    let x = c * BLOCK_SIZE;
+                    let y = r * BLOCK_SIZE;
+                    push();
+                    noFill(); stroke(boxColor); strokeWeight(1); rectMode(CORNER);
+                    square(x, y, BLOCK_SIZE);
+                    pop();
+                    push();
+                    noStroke(); fill(textColor); textSize(BLOCK_SIZE * 0.6);
+                    if(gridChars[r] && gridChars[r][c] !== undefined) { text(gridChars[r][c], x + BLOCK_SIZE / 2, y + BLOCK_SIZE / 2); }
+                    pop();
+                }
+            }
+
+             // --- Draw Connecting Lines ---
+             if (boxPositions.length === numTrackers && boxPositions.every(p => p !== undefined)) {
+                push();
+                stroke(connectorLineColor); strokeWeight(connectorLineWeight);
+                line(boxPositions[0].x, boxPositions[0].y, boxPositions[1].x, boxPositions[1].y);
+                line(boxPositions[1].x, boxPositions[1].y, boxPositions[2].x, boxPositions[2].y);
+                line(boxPositions[2].x, boxPositions[2].y, boxPositions[0].x, boxPositions[0].y);
+                pop();
+             }
+
+
+            // --- Draw Tracking Boxes (with Flashing Logic) ---
+            for (let i = 0; i < numTrackers; i++) {
+                 if (trackedCells[i].row !== -1 && trackedCells[i].col !== -1 && isBoxFlashing[i] !== undefined && flashStartTimes[i] !== undefined && boxPositions[i]) {
+                     let drawThisBox = true;
+                     if (isBoxFlashing[i]) {
+                         let flashElapsed = currentTime - flashStartTimes[i];
+                         if (flashElapsed < flashTotalDuration) {
+                             let cycleProgress = (flashElapsed % flashCycleTime);
+                             if (cycleProgress > flashCycleTime / 2) { drawThisBox = false; }
+                         } else { isBoxFlashing[i] = false; }
+                     }
+                     if (drawThisBox) {
+                         push();
+                         noFill(); stroke(trackingBoxColor); strokeWeight(1.5); rectMode(CENTER);
+                         square(boxPositions[i].x, boxPositions[i].y, BLOCK_SIZE - 2 * trackingBoxPadding);
+                         pop();
+                     }
+                 }
+            }
+
+            // --- Draw Top-Right HUD ---
+            push();
+            fill(hudTextColor); // White text
+            noStroke();
+            textAlign(LEFT, TOP);
+            textFont('monospace', 12);
+
+            let hudX = GRID_AREA_WIDTH + 15;
+            let hudY = 15;
+
+            // Header
+            textSize(14);
+            text("DECRYPTING CYPHER", hudX, hudY);
+            hudY += 18;
+
+            // Codes
+            textSize(11);
+            text(`HEX: ${hudHex}`, hudX, hudY);
+            hudY += 14;
+            text(`DEC: ${hudDecimal}`, hudX, hudY);
+            hudY += 16; // Add space before QR code
+
+            // --- Draw QR Code Simulation ---
+            let qrX = hudX; // Align left with text above
+            let qrY = hudY;
+            rectMode(CORNER);
+            noStroke();
+            // Use updated qrGridRows/qrGridCols in loops
+            for (let r = 0; r < qrGridRows; r++) {
+                for (let c = 0; c < qrGridCols; c++) {
+                    // Check bounds before drawing
+                    if (qrGrid[r] && qrGrid[r][c] !== undefined) {
+                        if (qrGrid[r][c] === 1) {
+                            fill(hudTextColor); // White 'on' blocks
+                        } else {
+                            fill(qrOffColor); // Dark grey 'off' blocks
+                        }
+                        // Use updated qrBlockSize
+                        square(qrX + c * qrBlockSize, qrY + r * qrBlockSize, qrBlockSize);
+                    }
+                }
+            }
+            // --- End QR Code ---
+
+            pop(); // Restore draw styles
+
+        } // End draw
+
+
+        // --- p5.js Window Resized Function ---
+        // Removed resize handling for fixed canvas size
+        // function windowResized() { ... }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P5.js 2D Orbit Simulation with Secret Code</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.dom.min.js"></script>
+    <style>
+        /* Basic styling */
+        body { margin: 0; padding: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        canvas { display: block; }
+        /* Styling for code input */
+        .code-input {
+            padding: 5px;
+            font-size: 1em;
+            width: 80px;
+            background-color: #333;
+            color: #eee;
+            border: 1px solid #888;
+            position: absolute;
+        }
+        /* ** NEW: Style for input focus outline ** */
+        .code-input:focus {
+            outline: 2px solid #f57b47; /* Orange outline on focus */
+            /* Optional: Remove default blue outline if the above doesn't override */
+             /* outline: none; */
+             /* border: 2px solid orange; */ /* Alternative styling */
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const numSatellites = 7;
+        let satelliteData = [];
+        const trailLength = 200;
+
+        // Tracking variables
+        let trackedSatelliteIndex = -1;
+        let trackingStartTime = 0;
+        let trackingDuration = 0;
+
+        // Moon variables
+        const moonRadius = 220;
+        const moonSpeed = 0.0001;
+        const moonDiameter = 20;
+        let moonPhase;
+
+        // Grid variables
+        const gridSpacing = 15;
+        const gridLineColor = [100, 100, 100, 100];
+        const highlightFillColor = [180, 180, 180];
+        const maxInfluenceRadius = 40;
+        const maxGridAlpha = 200;
+        let gridState = [];
+        let gridCols, gridRows;
+
+        // Store calculated positions temporarily
+        let tempSatPositions = [];
+        let tempMoonPos = { x: 0, y: 0 };
+        let tempTrackerPos = { x: 0, y: 0, screenX: -1000, screenY: -1000 };
+
+        // Info Box State
+        let infoBoxTargetIndex = -1;
+        let infoBoxCurrentAlpha = 0;
+        const infoBoxMaxAlpha = 220;
+        const infoBoxFadeSpeed = 0.1;
+
+        // Placeholder purposes
+        const purposes = ["Weather Observation", "Communications Relay", "GPS Navigation", "Earth Imaging", "Scientific Research", "Surveillance", "Technology Demo"];
+
+        // DOM Element variables
+        let codeInput;
+        const correctCode = "ECRFYK";
+
+        // State for secret message CANVAS animation
+        let secretAnimationState = 'idle';
+        let secretAnimationStartTime = 0;
+        const secretMessageText = "We meticulously catalogue the deviations within our terrestrial sphere, the ripples in the familiar. Yet, the disquiet I register stems not from the ground beneath our feet, but from the unwavering attention directed downwards from the silent dark. The true concern may not be what walks among us, but what watches from above.";
+        let revealedChars = 0;
+        let currentLineWidth = 0;
+        let currentBoxHeight = 0;
+        const targetLineWidth = 350;
+        const targetBoxHeight = 150;
+        // ** MODIFIED: Increased animation durations **
+        const animationDurationLine = 500; // Was 250
+        const animationDurationBox = 500;  // Was 250
+        const animationDurationTyping = 3500; // Was 2000
+
+        // Secret Satellite variables
+        let secretSat = null;
+        const secretSatRadius = 185;
+        const secretSatBaseSpeed = 0.001;
+        const secretSatStrokeWeight = 6;
+        const secretSatMessage = "OBJECT INCOMING";
+        const morseLookup = { 'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.', '0': '-----', ' ': '/' };
+        const dotDuration = 150;
+        const dashDuration = dotDuration * 3;
+        const intraLetterGap = dotDuration;
+        const interLetterGap = dotDuration * 3;
+        const wordGap = dotDuration * 7;
+
+        // p5.js setup function
+        function setup() {
+          createCanvas(windowWidth, windowHeight);
+          rectMode(CENTER);
+          textAlign(LEFT, TOP);
+
+          initializeGridState();
+
+          // Initialize satellite data
+          const centralCircleRadius = 80;
+          for (let i = 0; i < numSatellites; i++) {
+            let data = {
+              id: `DAPAUE_SAT_${(i + 1).toString().padStart(2, '0')}`,
+              radius: random(centralCircleRadius + 10, centralCircleRadius + 70),
+              speed: random(0.000375, 0.00225),
+              phase: random(TWO_PI),
+              history: [], currentX: 0, currentY: 0,
+              purpose: purposes[i % purposes.length]
+            };
+            satelliteData.push(data);
+            // Preload trail history
+            for (let j = 1; j <= trailLength; j++) {
+                let pastFrameCount = -j; let pastAngle = pastFrameCount * data.speed + data.phase;
+                let pastX = data.radius * cos(pastAngle); let pastY = data.radius * sin(pastAngle);
+                data.history.unshift(createVector(pastX, pastY));
+            }
+          }
+          // Initialize Moon Phase
+          moonPhase = random(TWO_PI);
+          // Initialize tracking
+          selectNewTrackedSatellite();
+
+          // Create Input Box
+          codeInput = createInput('');
+          codeInput.attribute('maxlength', '6');
+          codeInput.addClass('code-input');
+          positionDomElements(); // Initial positioning
+          codeInput.input(checkCode); // Add event listener
+        }
+
+        // Function to position DOM elements
+        function positionDomElements() {
+            let inputPadding = 20;
+            if (codeInput) {
+                 let inputX = inputPadding; let inputY = height - codeInput.height - inputPadding;
+                 codeInput.position(inputX, inputY);
+            }
+        }
+
+        // Function to convert text to Morse string
+        function textToMorse(text) {
+            let morse = ''; text = text.toUpperCase();
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                if (morseLookup[char]) { morse += morseLookup[char] + ' '; }
+                else if (char === ' ') { morse += '/ '; }
+            }
+            return morse.trim();
+        }
+
+        // Function to check code and trigger animation / secret satellite
+        function checkCode() {
+            if (codeInput.value().toUpperCase() === correctCode) {
+                if (secretAnimationState === 'idle') {
+                    secretAnimationState = 'line_expand'; secretAnimationStartTime = millis();
+                    currentLineWidth = 0; currentBoxHeight = 0; revealedChars = 0;
+                    if (!secretSat) {
+                         secretSat = { id: "Orbital_01", radius: secretSatRadius, speed: random(secretSatBaseSpeed * 0.8, secretSatBaseSpeed * 1.2), phase: random(TWO_PI), currentX: 0, currentY: 0, morseString: secretSatMessage, morseCode: textToMorse(secretSatMessage), morseIndex: -1, morseStartTime: millis(), morseCurrentState: 'gap', morseCurrentDuration: interLetterGap };
+                         advanceMorseState(secretSat);
+                    }
+                }
+            } else { secretAnimationState = 'idle'; secretSat = null; }
+        }
+
+        // Function to advance Morse code state
+        function advanceMorseState(sat) {
+             if (!sat || !sat.morseCode) return; let previousState = sat.morseCurrentState;
+             let nextGapDuration = intraLetterGap; let nextCharIndex = sat.morseIndex + 1;
+             while(nextCharIndex < sat.morseCode.length && sat.morseCode[nextCharIndex] === ' ') { nextCharIndex++; }
+             if (nextCharIndex >= sat.morseCode.length) { nextGapDuration = wordGap; }
+             else if (sat.morseCode[nextCharIndex] === '/') { nextGapDuration = wordGap; sat.morseIndex = nextCharIndex; }
+             else if (sat.morseCode[nextCharIndex] === ' ') { nextGapDuration = interLetterGap; sat.morseIndex = nextCharIndex; }
+             sat.morseIndex++;
+             if (sat.morseIndex >= sat.morseCode.length) { sat.morseIndex = -1; sat.morseCurrentState = 'gap'; sat.morseCurrentDuration = wordGap; sat.morseStartTime = millis(); return; }
+             let currentChar = sat.morseCode[sat.morseIndex];
+             let duration = 0; let state = 'gap';
+             if (currentChar === '.') { state = 'dot'; duration = dotDuration; }
+             else if (currentChar === '-') { state = 'dash'; duration = dashDuration; }
+             else { state = 'gap'; duration = nextGapDuration; }
+             sat.morseCurrentState = state; sat.morseCurrentDuration = duration; sat.morseStartTime = millis();
+             if (state === 'gap' && previousState === 'gap' && duration > intraLetterGap) { advanceMorseState(sat); }
+        }
+
+        // Initialize or re-initialize grid state array
+        function initializeGridState() {
+            gridCols = floor(width / gridSpacing) + 1; gridRows = floor(height / gridSpacing) + 1; gridState = [];
+            for (let c = 0; c < gridCols; c++) {
+                gridState[c] = [];
+                for (let r = 0; r < gridRows; r++) { gridState[c][r] = { alpha: 0, startAlpha: 0, targetAlpha: 0, startTime: 0, duration: 500, fadeState: 'idle' }; }
+            }
+        }
+
+        // Function to select a new satellite to track
+        function selectNewTrackedSatellite() {
+          let oldIndex = trackedSatelliteIndex; let newIndex;
+          if (numSatellites > 1) { do { newIndex = floor(random(numSatellites)); } while (newIndex === trackedSatelliteIndex); }
+          else if (numSatellites === 1) { newIndex = 0; } else { newIndex = -1; }
+          if (newIndex !== -1) { trackedSatelliteIndex = newIndex; trackingStartTime = millis(); trackingDuration = random(8000, 10000); }
+          else { trackedSatelliteIndex = -1; }
+        }
+
+        // Function to draw the background grid lines
+        function drawGrid(spacing, gridColor, weight) {
+            push(); stroke(gridColor[0], gridColor[1], gridColor[2], gridColor[3]); strokeWeight(weight);
+            for (let x = 0; x < width; x += spacing) { line(x, 0, x, height); }
+            for (let y = 0; y < height; y += spacing) { line(0, y, width, y); } pop();
+        }
+
+        // Function to update the random fade state
+        function updateGridState(stateArray) {
+            let currentTime = millis();
+            for (let c = 0; c < stateArray.length; c++) {
+                if (!stateArray[c]) continue;
+                for (let r = 0; r < stateArray[c].length; r++) {
+                    let cell = stateArray[c][r]; if (!cell) continue;
+                    if (cell.fadeState === 'in') { let t = constrain((currentTime - cell.startTime) / cell.duration, 0, 1); cell.alpha = lerp(cell.startAlpha, cell.targetAlpha, t); if (t === 1) { cell.fadeState = 'out'; cell.startAlpha = cell.alpha; cell.targetAlpha = 0; cell.startTime = currentTime; } }
+                    else if (cell.fadeState === 'out') { let t = constrain((currentTime - cell.startTime) / cell.duration, 0, 1); cell.alpha = lerp(cell.startAlpha, cell.targetAlpha, t); if (t === 1) { cell.fadeState = 'idle'; cell.alpha = 0; } }
+                }
+            }
+        }
+
+        // Function to draw the secret message animation on canvas
+        function drawSecretMessageAnimation() {
+            if (secretAnimationState === 'idle') { return; }
+            push(); rectMode(CENTER); textAlign(CENTER, CENTER);
+            let currentTime = millis(); let elapsed = currentTime - secretAnimationStartTime;
+            let messageColor = color(255); // White
+            let boxBgColor = color(40, 40, 40, 230); let textPadding = 15;
+            if (secretAnimationState === 'line_expand') {
+                let t = constrain(elapsed / animationDurationLine, 0, 1); currentLineWidth = lerp(0, targetLineWidth, t);
+                stroke(messageColor); strokeWeight(2); line(width / 2 - currentLineWidth / 2, height / 2, width / 2 + currentLineWidth / 2, height / 2);
+                if (t === 1) { secretAnimationState = 'box_expand'; secretAnimationStartTime = currentTime; }
+            } else if (secretAnimationState === 'box_expand') {
+                let t = constrain(elapsed / animationDurationBox, 0, 1); currentBoxHeight = lerp(0, targetBoxHeight, t);
+                fill(boxBgColor); stroke(messageColor); strokeWeight(2); rect(width / 2, height / 2, targetLineWidth, currentBoxHeight);
+                if (t === 1) { secretAnimationState = 'typing'; secretAnimationStartTime = currentTime; }
+            } else if (secretAnimationState === 'typing') {
+                let t = constrain(elapsed / animationDurationTyping, 0, 1); revealedChars = floor(lerp(0, secretMessageText.length, t));
+                fill(boxBgColor); stroke(messageColor); strokeWeight(2); rect(width / 2, height / 2, targetLineWidth, targetBoxHeight);
+                fill(messageColor); noStroke(); textSize(12); let displayText = secretMessageText.substring(0, revealedChars);
+                text(displayText, width / 2, height / 2, targetLineWidth - textPadding * 2, targetBoxHeight - textPadding * 2);
+                if (t === 1) { secretAnimationState = 'shown'; }
+            } else if (secretAnimationState === 'shown') {
+                fill(boxBgColor); stroke(messageColor); strokeWeight(2); rect(width / 2, height / 2, targetLineWidth, targetBoxHeight);
+                fill(messageColor); noStroke(); textSize(12);
+                text(secretMessageText, width / 2, height / 2, targetLineWidth - textPadding * 2, targetBoxHeight - textPadding * 2);
+            }
+            pop(); // Restore styles
+        }
+
+
+        // p5.js draw function
+        function draw() {
+            background(0);
+
+            // --- Calculations (Done Once) ---
+            const referenceSize = 800; const currentMinDimension = min(width, height); const dynamicScaleFactor = currentMinDimension / referenceSize;
+            let moonAngle = frameCount * moonSpeed + moonPhase; tempMoonPos.x = moonRadius * cos(moonAngle); tempMoonPos.y = moonRadius * sin(moonAngle);
+            tempSatPositions = [];
+            for (let i = 0; i < numSatellites; i++) { if (!satelliteData[i]) continue; let data = satelliteData[i]; let orbitalAngle = frameCount * data.speed + data.phase; data.currentX = data.radius * cos(orbitalAngle); data.currentY = data.radius * sin(orbitalAngle); tempSatPositions.push({ x: data.currentX, y: data.currentY }); }
+            if (secretSat) { let orbitalAngle = frameCount * secretSat.speed + secretSat.phase; secretSat.currentX = secretSat.radius * cos(orbitalAngle); secretSat.currentY = secretSat.radius * sin(orbitalAngle); }
+            tempTrackerPos.screenX = -1000; tempTrackerPos.screenY = -1000; tempTrackerPos.x = 0; tempTrackerPos.y = 0;
+            if (numSatellites > 0 && trackedSatelliteIndex !== -1 && satelliteData[trackedSatelliteIndex]) { tempTrackerPos.x = satelliteData[trackedSatelliteIndex].currentX; tempTrackerPos.y = satelliteData[trackedSatelliteIndex].currentY; tempTrackerPos.screenX = tempTrackerPos.x * dynamicScaleFactor + width / 2; tempTrackerPos.screenY = tempTrackerPos.y * dynamicScaleFactor + height / 2; }
+
+            // --- Background Effects (Screen Coordinates) ---
+            drawGrid(gridSpacing, gridLineColor, 0.5);
+            if (random(1) < 0.50 && gridState.length > 0) { let randC = floor(random(gridCols)); let randR = floor(random(gridRows)); if (gridState[randC]?.[randR]?.fadeState === 'idle') { gridState[randC][randR] = { alpha: 0, startAlpha: 0, targetAlpha: 160, startTime: millis(), duration: random(400, 900), fadeState: 'in' }; } }
+            updateGridState(gridState);
+            push(); rectMode(CORNER); noStroke(); let cols = floor(width / gridSpacing) + 1; let rows = floor(height / gridSpacing) + 1; let noiseScalePos = 0.05; let noiseScaleTime = 0.01;
+            for (let c = 0; c < cols; c++) { if (!gridState[c]) continue; for (let r = 0; r < rows; r++) { if (!gridState[c][r]) continue; let cellCenterX = c * gridSpacing + gridSpacing / 2; let cellCenterY = r * gridSpacing + gridSpacing / 2; let d = dist(cellCenterX, cellCenterY, tempTrackerPos.screenX, tempTrackerPos.screenY); let proximityAlpha = (d < maxInfluenceRadius) ? map(d, 0, maxInfluenceRadius, maxGridAlpha, 0) : 0; let noiseVal = noise(cellCenterX * noiseScalePos, cellCenterY * noiseScalePos, frameCount * noiseScaleTime); proximityAlpha = constrain(proximityAlpha * map(noiseVal, 0, 1, 0.5, 1.5), 0, maxGridAlpha); let randomFadeAlpha = gridState[c][r].alpha; let finalAlpha = max(proximityAlpha, randomFadeAlpha); if (finalAlpha > 0) { fill(highlightFillColor[0], highlightFillColor[1], highlightFillColor[2], finalAlpha); rect(c * gridSpacing, r * gridSpacing, gridSpacing, gridSpacing); } } } pop();
+            push(); noFill(); stroke(255); strokeWeight(3); rectMode(CORNER); rect(0, 0, width - 1, height - 1); pop();
+
+            // --- Draw Embedded Stats Panel (Screen Coordinates - Bottom Right) ---
+            push(); let panelW = 280; let panelH = 180; let panelPadding = 15; let panelX = width - panelW - panelPadding; let panelY = height - panelH - panelPadding; let lineHeight = 15; let textX = panelX + 10; let textY = panelY + 10; fill(30, 30, 30, 210); noStroke(); rectMode(CORNER); rect(panelX, panelY, panelW, panelH); fill(255); textSize(10); textAlign(LEFT, TOP); text("--- Satellites ---", textX, textY); textY += lineHeight * 1.5;
+            for(let i=0; i<numSatellites; i++) { if (!satelliteData[i]) continue; let data = satelliteData[i]; let satInfo = `${data.id}: X:${data.currentX.toFixed(1)}, Y:${data.currentY.toFixed(1)}, Spd:${data.speed.toFixed(5)}`; if (i === trackedSatelliteIndex) { fill(200, 100, 50); text(">> " + satInfo, textX, textY); fill(255); } else { text(satInfo, textX, textY); } textY += lineHeight; if (textY > panelY + panelH - lineHeight) break; }
+             textY = panelY + panelH - lineHeight * 2; if (textY > panelY + (numSatellites * lineHeight) + 30) { text("--- Moon ---", textX, textY); textY += lineHeight; text(`Coords: X:${tempMoonPos.x.toFixed(1)}, Y:${tempMoonPos.y.toFixed(1)}`, textX, textY); } pop();
+
+            // --- Update Info Box Alpha ---
+            let infoTargetAlpha = (infoBoxTargetIndex !== -1) ? infoBoxMaxAlpha : 0; infoBoxCurrentAlpha = lerp(infoBoxCurrentAlpha, infoTargetAlpha, infoBoxFadeSpeed);
+
+            // --- Main Animation (Centered and Scaled) ---
+            translate(width / 2, height / 2); scale(dynamicScaleFactor);
+            if (numSatellites > 0 && millis() - trackingStartTime > trackingDuration) { selectNewTrackedSatellite(); }
+
+            // --- Central Circle (Earth) ---
+            push(); stroke(245, 123, 71); strokeWeight(1); fill(200, 100, 50, 10); circle(0, 0, 160); pop();
+
+            // --- Draw Moon, Orbit, and Label ---
+            push(); stroke(180, 180, 180, 80); strokeWeight(0.5); noFill(); circle(0, 0, moonRadius * 2); pop();
+            push(); translate(tempMoonPos.x, tempMoonPos.y);
+            push(); fill(200, 150); stroke(255); strokeWeight(0.5); circle(0, 0, moonDiameter); pop();
+            push(); fill(255); noStroke(); textSize(10); textAlign(LEFT, TOP); let textOffsetX_moon = (moonDiameter / 2) + 2; let textOffsetY_moon = -(moonDiameter / 2); let labelString = `MOON\nX: ${tempMoonPos.x.toFixed(1)}\nY: ${tempMoonPos.y.toFixed(1)}`; text(labelString, textOffsetX_moon, textOffsetY_moon); pop();
+            pop(); // End moon system push
+
+            // --- Orbiting Points (Satellites), Paths, and History ---
+            for (let i = 0; i < numSatellites; i++) {
+              if (!satelliteData[i]) continue; let data = satelliteData[i]; let currentX = data.currentX; let currentY = data.currentY;
+              push(); stroke(255, 255, 255, 30); strokeWeight(0.5); noFill(); circle(0, 0, data.radius * 2); pop();
+              let currentPosVec = createVector(currentX, currentY); data.history.push(currentPosVec); if (data.history.length > trailLength) { data.history.shift(); }
+              push(); translate(currentX, currentY); stroke(245, 123, 71); strokeWeight(4); point(0, 0);
+              if (i === infoBoxTargetIndex && infoBoxCurrentAlpha > 5) { push(); let infoBoxWidth = 120; let infoBoxHeight = 30; let infoYOffset = 10; rectMode(CORNER); textAlign(CENTER, TOP); textSize(8); fill(0, 0, 0, infoBoxCurrentAlpha * 0.7); stroke(255, infoBoxCurrentAlpha); strokeWeight(0.5); rect(-infoBoxWidth / 2, infoYOffset, infoBoxWidth, infoBoxHeight); fill(255, infoBoxCurrentAlpha); noStroke(); text(data.purpose, 0, infoYOffset + 5); pop(); }
+              pop(); // End satellite translate
+            }
+
+            // --- Draw Trails ---
+            push(); noFill();
+            for (let i = 0; i < numSatellites; i++) { if (!satelliteData[i] || !satelliteData[i].history) continue; let history = satelliteData[i].history; for (let j = 0; j < history.length; j++) { if (j % 4 === 3) { let pos = history[j]; let alpha = map(j, 0, history.length, 0, 50); if (pos && !isNaN(pos.x) && !isNaN(alpha)) { stroke(245, 123, 71, alpha); strokeWeight(2); point(pos.x, pos.y); } } } }
+            pop();
+
+             // --- Draw Secret Satellite (if active) ---
+             if (secretSat) {
+                 let morseElapsed = millis() - secretSat.morseStartTime; if (morseElapsed > secretSat.morseCurrentDuration) { advanceMorseState(secretSat); }
+                 let secretSatColor = (secretSat.morseCurrentState === 'dot' || secretSat.morseCurrentState === 'dash') ? color(245, 123, 71) : color(255);
+                 push(); stroke(secretSatColor, 100); strokeWeight(0.5); noFill(); circle(0, 0, secretSat.radius * 2); pop();
+                 push(); translate(secretSat.currentX, secretSat.currentY);
+                 stroke(secretSatColor); strokeWeight(secretSatStrokeWeight); point(0, 0);
+                 push(); let titleText = secretSat.id; let coordText = `X: ${secretSat.currentX.toFixed(1)}\nY: ${secretSat.currentY.toFixed(1)}`; fill(255); noStroke(); textSize(10); textAlign(LEFT, TOP); let textOffsetX = (secretSatStrokeWeight / 2) + 2; let textOffsetY = -(secretSatStrokeWeight / 2); translate(textOffsetX, textOffsetY); text(titleText, 0, 0); text(coordText, 0, 12); pop();
+                 pop();
+             }
+
+            // --- Draw Tracker Square and Label ---
+            if (numSatellites > 0 && trackedSatelliteIndex !== -1 && satelliteData[trackedSatelliteIndex]) {
+                push(); translate(tempTrackerPos.x, tempTrackerPos.y);
+                push(); stroke(255); strokeWeight(1); noFill(); rectMode(CENTER); rect(0, 0, 12, 12); pop();
+                push(); let satIndexFormatted = (trackedSatelliteIndex + 1).toString().padStart(2, '0'); let titleText = `DAPAUE_SAT_${satIndexFormatted}`; let coordText = `X: ${tempTrackerPos.x.toFixed(1)}\nY: ${tempTrackerPos.y.toFixed(1)}`; fill(255); noStroke(); textSize(10); textAlign(LEFT, TOP); let textOffsetX = 6 + 2; let textOffsetY = -6; translate(textOffsetX, textOffsetY); text(titleText, 0, 0); text(coordText, 0, 12); pop();
+                pop();
+            }
+
+             // --- Draw Secret Message Animation (On Top, Screen Coords) ---
+             resetMatrix(); // Reset transformations to screen coordinates
+             drawSecretMessageAnimation(); // Call the animation function
+
+        } // End draw()
+
+        // NEW: mousePressed Function for Interaction
+        function mousePressed() {
+            const dynamicScaleFactor = min(width, height) / 800;
+            let worldX = (mouseX - width / 2) / dynamicScaleFactor; let worldY = (mouseY - height / 2) / dynamicScaleFactor;
+            if (codeInput && codeInput.elt === document.elementFromPoint(mouseX, mouseY)) { return; }
+            let clickedOnSatellite = -1; const clickRadius = 10;
+            for (let i = 0; i < numSatellites; i++) { if (!satelliteData[i]) continue; let data = satelliteData[i]; let d = dist(worldX, worldY, data.currentX, data.currentY); if (d < clickRadius) { clickedOnSatellite = i; break; } }
+            infoBoxTargetIndex = (infoBoxTargetIndex === clickedOnSatellite) ? -1 : clickedOnSatellite;
+        }
+
+        // p5.js function that runs when the browser window is resized
+        function windowResized() {
+          resizeCanvas(windowWidth, windowHeight);
+          initializeGridState();
+          positionDomElements(); // Reposition input box
+        }
+    </script>
+</body>
+</html>
