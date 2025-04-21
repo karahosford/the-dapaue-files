@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waveform with Lighter Wave Color</title>
+    <title>Waveform with Matching Grid Color</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
     <style>
         body {
@@ -23,9 +23,9 @@
 <body>
     <script>
         // --- Configuration ---
-        const GRID_ROWS = 20;
+        const GRID_ROWS = 11;
         const GRID_COLS = 30;
-        const BLOCK_SIZE = 20; // Base size for layout calculations
+        const BLOCK_SIZE = 20; // Base size for layout calculations & grid lines
         const GRID_AREA_WIDTH = GRID_COLS * BLOCK_SIZE; // 600
         const GRID_AREA_HEIGHT = GRID_ROWS * BLOCK_SIZE; // 220
         const HUD_MARGIN_RIGHT = 180;
@@ -35,28 +35,27 @@
 
         // --- Waveform Configuration ---
         const noiseScaleX = 0.02;
-        const waveformAmplitudeFactor = 0.8;
+        const waveformAmplitudeFactor = 0.8; // Max amplitude relative to available height inside border
         let timeOffset = 0;
         const timeIncrement = 0.15;
         const waveformBlockSize = 5;
         const waveformStepX = 10;
-        const waveformBorderWeight = 10;
+        const waveformBorderWeight = 10; // User's border thickness
 
         // --- Residuals Configuration ---
-        let residualSquares = [];
-        const residualSize = 5;
-        const residualDuration = 600;
+        let residualSquares = []; // Array to store {x, y, spawnTime}
+        const residualSize = 5; // Size of residual squares
+        const residualDuration = 600; // ms for residuals to fade
 
         // Colors (declare variables here, define in setup)
         let backgroundColor;
-        let waveformBlockColor; // NEW: Color for the main wave blocks
-        let residualColor;     // NEW: Color for the fading residuals (was waveColor)
+        let waveColor;
         let trackingBoxColor;
         let connectorLineColor;
         let hudTextColor;
         let qrOffColor;
         let waveformBorderColor;
-        let gridLineColor; // Keep background grid color
+        let gridLineColor; // Color for background grid
 
         // --- Tracking Boxes ---
         const numTrackers = 3;
@@ -101,16 +100,20 @@
             frameRate(30);
 
             // --- Define Colors ---
-            backgroundColor = color(0);
-            // MODIFIED: Define separate colors
-            waveformBlockColor = color(227, 204, 181); // Slightly Lighter Beige/Cream for main wave
-            residualColor = color(207, 184, 161);      // Original Beige/Cream for residuals/trails
-            trackingBoxColor = color(245, 123, 71);      // Orange tracker box
+            backgroundColor = color(0); // Black background
+            waveColor = color(207, 184, 161); // Beige/Cream waveform blocks/residuals
+            trackingBoxColor = color(245, 123, 71); // Orange tracker box
             connectorLineColor = color(245, 123, 71, 50); // Transparent Orange lines
-            hudTextColor = residualColor;              // Match HUD text to residuals
-            qrOffColor = color(0);                     // Black QR 'off' blocks
-            waveformBorderColor = residualColor;       // Match border to residuals/HUD
-            gridLineColor = color(245, 123, 71, 70);             // Dark grey, semi-transparent lines
+            hudTextColor = color(207, 184, 161); // Beige/Cream HUD text
+            qrOffColor = color(0); // Black QR 'off' blocks
+            waveformBorderColor = color(207, 184, 161); // Match border to wave/HUD text color
+
+            // MODIFIED: Set grid line color based on waveColor but with low alpha
+            // Get RGB components of waveColor first
+            let wc_r = red(waveColor);
+            let wc_g = green(waveColor);
+            let wc_b = blue(waveColor);
+            gridLineColor = color(wc_r, wc_g, wc_b, 50); // Use wave color's RGB + low alpha (50)
 
             // Initialize the QR grid
             qrGrid = [];
@@ -194,8 +197,7 @@
                 let isLowPeak = currY < prevY && currY < nextY && currY < centerY - effectiveAmplitude * minPeakThreshold;
                 if (isHighPeak || isLowPeak) { peaks.push(createVector(currentX, currY)); }
             }
-             if(yValues.length >= 2) { /* ... edge case handling ... */ }
-             else if (yValues.length === 1) { peaks.push(createVector(yValues[0].x, yValues[0].y)); }
+             // Edge case handling (commented out in user code, keep it that way)
             return peaks;
         }
 
@@ -207,19 +209,30 @@
                 console.error("Trackers or QR Grid not initialized properly."); noLoop(); return;
             }
 
-            background(backgroundColor);
+            background(backgroundColor); // Opaque background
 
             // --- Draw Background Scale Grid ---
             push();
-            stroke(gridLineColor); strokeWeight(0.5);
-            for (let x = 0; x <= GRID_AREA_WIDTH; x += BLOCK_SIZE) { line(x, 0, x, GRID_AREA_HEIGHT); }
-            for (let y = 0; y <= GRID_AREA_HEIGHT; y += BLOCK_SIZE) { line(0, y, GRID_AREA_WIDTH, y); }
+            stroke(gridLineColor); // Use updated faint beige/cream color
+            strokeWeight(0.5); // Thin lines
+
+            // Vertical lines (within grid area)
+            for (let x = 0; x <= GRID_AREA_WIDTH; x += BLOCK_SIZE) {
+                line(x, 0, x, GRID_AREA_HEIGHT);
+            }
+            // Horizontal lines (within grid area)
+            for (let y = 0; y <= GRID_AREA_HEIGHT; y += BLOCK_SIZE) {
+                line(0, y, GRID_AREA_WIDTH, y);
+            }
             pop();
             // --- End Grid ---
 
-            // --- Draw Waveform Area Border ---
+            // --- Draw Waveform Area Border --- (Draw AFTER grid)
             push();
-            noFill(); stroke(waveformBorderColor); strokeWeight(waveformBorderWeight); rectMode(CORNER);
+            noFill();
+            stroke(waveformBorderColor); // Use border color (Beige/Cream from user code)
+            strokeWeight(waveformBorderWeight); // Use constant (10)
+            rectMode(CORNER);
             rect(waveformBorderWeight / 2, waveformBorderWeight / 2,
                  GRID_AREA_WIDTH - waveformBorderWeight, GRID_AREA_HEIGHT - waveformBorderWeight);
             pop();
@@ -294,7 +307,7 @@
 
 
             // --- Draw Waveform Blocks ---
-            // Calculate available drawing bounds inside border
+            let centerY = GRID_AREA_HEIGHT / 2;
             let halfBorder = waveformBorderWeight / 2;
             let halfWaveBlock = waveformBlockSize / 2;
             let minX = halfBorder + halfWaveBlock;
@@ -303,25 +316,12 @@
             let maxY = GRID_AREA_HEIGHT - halfBorder - halfWaveBlock;
 
             push();
-            // MODIFIED: Use waveformBlockColor for the main wave
-            fill(waveformBlockColor);
-            noStroke();
-            rectMode(CENTER);
-            // Iterate within the calculated horizontal bounds
+            fill(waveColor); noStroke(); rectMode(CENTER);
             for (let x = minX; x <= maxX; x += waveformStepX) {
                 let noiseValue = noise(x * noiseScaleX, timeOffset);
-                // Map noise to the available vertical range inside the border
                 let blockCenterY = map(noiseValue, 0, 1, minY, maxY);
-
-                // Draw the smaller block centered at the calculated position
                 square(x, blockCenterY, waveformBlockSize);
-
-                // Spawn residual square at this waveform position
-                residualSquares.push({
-                    x: x,
-                    y: blockCenterY,
-                    spawnTime: currentTime
-                });
+                residualSquares.push({ x: x, y: blockCenterY, spawnTime: currentTime });
             }
             pop();
             // --- End Waveform Blocks ---
@@ -346,8 +346,7 @@
                 if (elapsed > residualDuration) { residualSquares.splice(i, 1); }
                 else {
                     let alpha = map(elapsed, 0, residualDuration, 200, 0);
-                    // MODIFIED: Use residualColor for fading squares
-                    fill(red(residualColor), green(residualColor), blue(residualColor), alpha);
+                    fill(red(waveColor), green(waveColor), blue(waveColor), alpha);
                     square(sq.x, sq.y, residualSize);
                 }
             }
@@ -376,19 +375,11 @@
 
             // --- Draw Top-Right HUD ---
             push();
-            fill(hudTextColor);
-            noStroke();
-            textAlign(LEFT, TOP);
-            textFont('monospace', 12);
-            let hudX = GRID_AREA_WIDTH + 15;
-            let hudY = 15;
-            textSize(14);
-            text("DECRYPTING CYPHER", hudX, hudY);
-            hudY += 18;
-            textSize(11);
-            text(`HEX: ${hudHex}`, hudX, hudY);
-            hudY += 14;
-            text(`DEC: ${hudDecimal}`, hudX, hudY);
+            fill(hudTextColor); noStroke(); textAlign(LEFT, TOP); textFont('monospace', 12);
+            let hudX = GRID_AREA_WIDTH + 15; let hudY = 15;
+            textSize(14); text("DECRYPTING CYPHER", hudX, hudY);
+            hudY += 18; textSize(11); text(`HEX: ${hudHex}`, hudX, hudY);
+            hudY += 14; text(`DEC: ${hudDecimal}`, hudX, hudY);
             hudY += 16;
             // Draw QR Code Simulation
             let qrX = hudX; let qrY = hudY;
