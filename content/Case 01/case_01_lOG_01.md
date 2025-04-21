@@ -30,7 +30,7 @@ Therefore, while Thorne's log provides a crucial chronological framework and ini
 ## EXHIBIT B: NG98_SOL_SIGRAW_122198.dat
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
-<div id="p5-waveform-container" class="p5-sketch-container">
+<div id="p5-waveform-container" class="p5-sketch-container" style="width: 100%; height: 100%; position: relative; margin-bottom: 1rem; border: 1px solid #888; /* Changed #333 to #888 */ border-radius: 8px; overflow: hidden;">
   </div>
 <script src="NG98_SOL_SIGRAW_122198.js"></script>
 
