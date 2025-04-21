@@ -78,7 +78,7 @@ function generateRandomHex(pairs) {
 }
 
 function generateCaseID() {
-    let year = floor(random(2001, 2024));
+    let year = floor(random(1998, 2024));
     let month = floor(random(1, 13));
     let day = floor(random(1, 29));
     let yearStr = str(year);
