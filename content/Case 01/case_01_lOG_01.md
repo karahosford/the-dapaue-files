@@ -1,6 +1,6 @@
 ---
 
-title: "Log 01 - DAPAUE-1998-003" 
+title: "Log 01 - THORNE_A_1998-12-21" 
 alias:
     - "Case 01 THORNE_A_1998-12-21"
     - "The Newgrange Solstice Signal"
