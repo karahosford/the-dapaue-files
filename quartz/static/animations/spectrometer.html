@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P5.js Spectrogram (Predefined Audio Source)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/addons/p5.sound.min.js"></script>
+    <style>
+        /* Basic styling for the page */
+        body {
+            display: flex;
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            min-height: 100vh;
+            margin: 0;
+            background-color: #222; /* Dark background */
+            font-family: 'Courier New', Courier, monospace; /* Monospace font for computer feel */
+            color: #eee;
+            flex-direction: column; /* Stack elements vertically */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        canvas {
+            display: block; /* Prevents extra space below canvas */
+            /* Border drawn in p5 sketch now */
+            max-width: 100%; /* Ensure canvas is responsive */
+            height: auto; /* Maintain aspect ratio */
+        }
+         /* Controls section styling */
+         #controls {
+            margin-top: 20px; /* Add space above controls (below canvas) */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /* Space between control groups */
+            width: 100%;
+            /* Set max-width to match the canvas width */
+            max-width: 768px;
+        }
+        #playback-controls {
+            display: flex; /* Arrange buttons side-by-side */
+            gap: 10px; /* Space between buttons */
+        }
+        #status {
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: #aaa;
+            min-height: 1.2em; /* Reserve space for status */
+            text-align: center;
+        }
+         /* Style for Play/Stop buttons */
+        button {
+            padding: 8px 20px;
+            font-size: 1em;
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, opacity 0.2s;
+            font-family: 'Courier New', Courier, monospace; /* Match body font */
+        }
+        button#stopButton {
+             background-color: #f44336; /* Red */
+        }
+        button:disabled {
+            background-color: #555; /* Grey out disabled buttons */
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        button:hover:not(:disabled) {
+            opacity: 0.8;
+        }
+        h1 {
+             font-weight: normal; /* Less bold heading */
+        }
+    </style>
+</head>
+<body>
+    <h1>AUDIO ANALYSIS INTERFACE</h1>
+
+    <div id="controls">
+        <div id="playback-controls">
+             <button id="playButton" disabled>Play</button>
+             <button id="stopButton" disabled>Stop</button>
+        </div>
+        <div id="status">LOADING AUDIO SOURCE...</div> </div>
+
+    <script>
+        let fft;
+        let amplitude; // Amplitude analyzer
+        let soundFile = null;
+        let spectrumHistory = [];
+        // --- Resolution Settings ---
+        const historyLength = 215;
+        const fftBins = 128;
+        // --- End Resolution Settings ---
+        // --- Layout Settings ---
+        let canvasWidth = 768;
+        let canvasHeight = 512;
+        let volumeBarHeight = 16; // Height of the new volume bar
+        let padding = 4; // Small padding around volume bar
+        let spectrogramHeight = 384 - volumeBarHeight - padding * 2; // Adjust height
+        let histogramStartY = spectrogramHeight + volumeBarHeight + padding * 2; // Y where histogram starts
+        let histogramHeight = canvasHeight - histogramStartY; // Remaining height for histogram
+        // --- End Layout Settings ---
+        let audioPlaying = false;
+
+        // --- UI Elements ---
+        let playButton, stopButton;
+        // Removed fileInput
+
+        // --- Color Definitions ---
+        let borderColor;
+        let gridColor;
+        let textColor;
+        let hexTextColor;
+        let volumeBarColor;
+
+        // p5.js setup function
+        function setup() {
+            let cnv = createCanvas(canvasWidth, canvasHeight);
+            colorMode(HSB, 360, 100, 100, 100); // Keep HSB for brightness control + alpha
+
+            // Create FFT analyser
+            fft = new p5.FFT(0.8, fftBins);
+            // Create Amplitude analyser
+            amplitude = new p5.Amplitude(0.9); // Smoothing factor 0.0 (noisy) to 0.999 (smooth)
+
+            // Define colors using HSB (Greyscale focus)
+            borderColor = color(0, 0, 50);
+            gridColor = color(0, 0, 30, 70);
+            textColor = color(0, 0, 80);
+            hexTextColor = color(0, 0, 65);
+            volumeBarColor = color(0, 0, 70); // Color for the volume bar
+
+            // Initialize history array
+            initializeHistory();
+
+            // --- Select UI Elements ---
+            // Removed fileInput selection
+            playButton = select('#playButton');
+            stopButton = select('#stopButton');
+
+            // --- Attach Event Listeners ---
+            // Removed fileInput listener
+            playButton.mousePressed(playAudio);
+            stopButton.mousePressed(stopAudio);
+
+            textFont('Courier New', 12);
+            textAlign(CENTER, CENTER);
+            updateStatus("LOADING AUDIO SOURCE..."); // Initial status
+            updateButtonStates(); // Buttons start disabled
+
+            // --- Load Predefined Audio File ---
+            // IMPORTANT: Replace 'YOUR_AUDIO_FILE.wav' with the actual path or URL to your audio file.
+            // If the file is in the same directory, just use the filename.
+            // If it's online, use the full URL (ensure CORS allows access if needed).
+            soundFile = loadSound('YOUR_AUDIO_FILE.wav', soundReady, soundLoadError);
+            // ----------------------------------
+        }
+
+        // p5.js draw function
+        function draw() {
+            background(0, 0, 10); // Dark background
+
+            // --- Handle Audio Analysis ---
+            let currentSpectrum;
+            let currentLevel = 0; // Default volume level
+            if (audioPlaying && soundFile && soundFile.isLoaded() && soundFile.isPlaying()) {
+                currentSpectrum = fft.analyze();
+                currentLevel = amplitude.getLevel(); // Get current volume level (0-1)
+                spectrumHistory.unshift(currentSpectrum);
+                while (spectrumHistory.length > historyLength) {
+                    spectrumHistory.pop();
+                }
+            } else {
+                 currentSpectrum = spectrumHistory.length > 0 ? spectrumHistory[0] : new Array(fftBins).fill(0);
+                 currentLevel = amplitude ? amplitude.getLevel() : 0;
+                 // Display message only if loading failed or not started yet
+                 if (!soundFile || !soundFile.isLoaded()) {
+                    fill(textColor);
+                    noStroke();
+                    text('LOADING...', width / 2, spectrogramHeight / 2);
+                 }
+            }
+
+            // --- Draw Borders with Flicker ---
+            let flickerAmount = random(0.9, 1.1);
+            let currentBorderBrightness = brightness(borderColor) * flickerAmount;
+            stroke(0, 0, currentBorderBrightness);
+            strokeWeight(1.5);
+            noFill();
+            rect(0, 0, width - 1, spectrogramHeight - 1); // Spectrogram border
+            rect(0, histogramStartY, width - 1, histogramHeight - 1); // Histogram border
+
+             // --- Draw Fine Grid with Flicker ---
+            let currentGridAlpha = alpha(gridColor) * flickerAmount * 0.8;
+            stroke(0, 0, brightness(gridColor), currentGridAlpha);
+            strokeWeight(0.5);
+            // Spectrogram Grid
+            for (let gx = 0; gx < width; gx += 16) { line(gx, 0, gx, spectrogramHeight); }
+            for (let gy = 0; gy < spectrogramHeight; gy += 16) { line(0, gy, width, gy); }
+            // Histogram Grid
+             for (let gx = 0; gx < width; gx += 32) { line(gx, histogramStartY, gx, canvasHeight); }
+             for (let gy = histogramStartY; gy < canvasHeight; gy += 32) { line(0, gy, width, gy); }
+
+
+            noStroke(); // Turn off stroke for drawing content
+
+            // --- Draw the Spectrogram (Top Part) ---
+            let histLen = historyLength;
+            let drawLen = spectrumHistory.length;
+            let w = width / histLen;
+
+            for (let i = 0; i < drawLen; i++) {
+                let spectrum = spectrumHistory[i];
+                if (!spectrum) continue;
+                let x = map(i, 0, histLen, width - w, 0);
+                let numBins = fft.bins;
+                let h = spectrogramHeight / numBins; // Use adjusted spectrogramHeight
+
+                for (let j = 0; j < numBins; j++) {
+                    let amp = spectrum[j];
+                    let y = map(j, 0, numBins, spectrogramHeight, 0); // Map to spectrogramHeight
+                    let normalizedAmp = amp / 255.0;
+                    let contrastAmp = pow(normalizedAmp, 2);
+                    let bright = map(contrastAmp, 0, 1, 0, 100);
+                    fill(0, 0, bright); // Greyscale fill
+                    rect(x, y - h, ceil(w), h);
+                }
+            }
+
+            // --- Draw Volume Bar ---
+            let volBarY = spectrogramHeight + padding;
+            let volBarWidth = map(currentLevel, 0, 1, 0, width); // Map level (0-1) to width
+            fill(volumeBarColor);
+            rect(0, volBarY, volBarWidth, volumeBarHeight);
+
+            // --- Draw the Histogram (Bottom Part) ---
+            if (currentSpectrum) {
+                let numBins = fft.bins;
+                let barWidth = width / numBins;
+                let histTopY = histogramStartY; // Use calculated start Y
+
+                for (let j = 0; j < numBins; j++) {
+                    let amp = currentSpectrum[j];
+                    let barX = map(j, 0, numBins, 0, width);
+                    let normalizedAmp = amp / 255.0;
+                    let contrastAmp = pow(normalizedAmp, 2);
+                    let barHeight = map(contrastAmp, 0, 1, 0, histogramHeight); // Map to histogramHeight
+                    let bright = map(contrastAmp, 0, 1, 0, 100);
+                    fill(0, 0, bright); // Greyscale fill
+                    rect(barX, histTopY, ceil(barWidth), barHeight); // Draw from histTopY
+                }
+            }
+
+            // --- Draw Text Labels ---
+            noStroke();
+            fill(textColor);
+            textSize(10);
+            textAlign(LEFT, TOP);
+            text("[SPECTROGRAM - TIME/FREQUENCY]", 5, 5);
+            textAlign(LEFT, BOTTOM);
+            text("[REAL-TIME FREQUENCY ANALYSIS]", 5, canvasHeight - 5);
+
+            // --- Draw Dynamic Hex Code ---
+            let hexString = '0x';
+            for (let k = 0; k < 6; k++) { hexString += floor(random(16)).toString(16).toUpperCase(); }
+            fill(hexTextColor);
+            textAlign(RIGHT, TOP);
+            text(`[MEM:${hexString}]`, width - 5, 5);
+            // Add Volume level text near bar
+            textAlign(RIGHT, BOTTOM);
+            text(`[LEVEL: ${nf(currentLevel, 1, 2)}]`, width - 5, volBarY + volumeBarHeight);
+
+
+             // Check if the sound has finished playing naturally
+            if (audioPlaying && soundFile && !soundFile.isPlaying()) {
+                audioPlaying = false;
+                updateStatus("Playback Complete.");
+                updateButtonStates();
+            }
+        }
+
+        // --- Audio Control Functions ---
+        function playAudio() {
+             // Ensure audio context is started (required after auto-load)
+             userStartAudio(); // Safe to call multiple times
+
+            if (soundFile && soundFile.isLoaded() && !soundFile.isPlaying()) {
+                soundFile.play();
+                audioPlaying = true;
+                updateStatus("ANALYZING...");
+                updateButtonStates();
+            }
+        }
+
+        function stopAudio() {
+             if (soundFile && soundFile.isLoaded() && soundFile.isPlaying()) {
+                soundFile.stop();
+                audioPlaying = false;
+                updateStatus("ANALYSIS HALTED.");
+                updateButtonStates();
+            }
+        }
+
+        // --- Helper Functions ---
+        // Removed handleFile function
+
+        function soundReady() {
+             let duration = soundFile.duration();
+             if (!duration || duration === Infinity) {
+                 soundLoadError("Could not determine audio duration."); return;
+             }
+            updateStatus(`SOURCE LOADED (${duration.toFixed(1)}s). READY.`);
+            fft.setInput(soundFile);
+            amplitude.setInput(soundFile); // Connect amplitude analyzer
+            audioPlaying = false;
+            updateButtonStates(); // Enable Play button now that file is loaded
+        }
+
+        function soundLoadError(err) {
+            updateStatus("FILE LOAD ERROR: " + err, true);
+            console.error("Sound loading error:", err);
+            soundFile = null;
+            audioPlaying = false;
+            initializeHistory();
+            updateButtonStates(); // Keep buttons disabled
+        }
+
+        function updateStatus(message, isError = false) {
+            const statusDiv = select('#status');
+            if (statusDiv) {
+                 statusDiv.html(message);
+                 statusDiv.style('color', isError ? '#ff8888' : '#aaa');
+            }
+        }
+
+        function updateButtonStates() {
+            // Enable Play/Stop only if soundFile is loaded successfully
+            if (soundFile && soundFile.isLoaded()) {
+                 if (audioPlaying) {
+                     playButton.attribute('disabled', '');
+                     stopButton.removeAttribute('disabled');
+                 } else {
+                     playButton.removeAttribute('disabled');
+                     stopButton.attribute('disabled', '');
+                 }
+            } else { // Not loaded or error
+                 playButton.attribute('disabled', '');
+                 stopButton.attribute('disabled', '');
+            }
+        }
+
+        function initializeHistory() {
+            let len = max(1, floor(historyLength));
+            console.log("Initializing history with length:", len, "and bins:", fftBins);
+            spectrumHistory = [];
+            for (let i = 0; i < len; i++) {
+                spectrumHistory.push(new Array(fftBins).fill(0));
+            }
+        }
+
+        function windowResized() {
+             // Resize logic could be added here if needed
+        }
+
+    </script>
+</body>
+</html>
