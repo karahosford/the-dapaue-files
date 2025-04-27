@@ -1,1 +1,8 @@
-Dr. Aris Thorne served as a Lead Investigator within [[DAPAUE]] Field Operations. He is prominently associated with the investigation into anomalous phenomena at the [[Newgrange]] passage tomb during the winter solstice of 1998 associated with [[The Newgrange Solstice Signal]]). Field logs indicate Thorne operated with meticulous attention to DAPAUE protocols, including equipment deployment (Sensor Array Mk.III, etc.) and baseline data establishment. His reports detail precise observation of environmental conditions and event timelines, submitted for further analysis to Site Alpha. Notably, Thorne's log from the Newgrange event includes a rare subjective observation regarding a "resonant" feeling within the chamber during the anomaly, adding a layer of complexity to his otherwise objective field reporting. He assessed the captured data as high-fidelity and exceeding initial DAPAUE projections for the site
+---
+
+title: "Dr. Aris Thorne"
+alias:
+    - "Dr. Thorne"
+---
+
+Dr. Aris Thorne served as a Lead Investigator within [[DAPAUE]] Field Operations. He is prominently associated with the investigation into anomalous phenomena at the [[Newgrange]] passage tomb during the winter solstice of 1998 associated with [[The Newgrange Solstice Signal]]. Field logs indicate Thorne operated with meticulous attention to DAPAUE protocols, including equipment deployment (Sensor Array Mk.III, etc.) and baseline data establishment. His reports detail precise observation of environmental conditions and event timelines, submitted for further analysis to Site Alpha. Notably, Thorne's log from the Newgrange event includes a rare subjective observation regarding a "resonant" feeling within the chamber during the anomaly, adding a layer of complexity to his otherwise objective field reporting. He assessed the captured data as high-fidelity and exceeding initial DAPAUE projections for the site
