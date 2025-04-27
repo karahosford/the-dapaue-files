@@ -124,3 +124,9 @@
    max-width: 100%; /* Prevent overflow on small screens */
    height: auto; /* Maintain aspect ratio */
 }
+
+.responsive-iframe {
+  aspect-ratio: 850 / 220; /* Maintain the original aspect ratio (width / height) */
+  border: none; /* Replicate the border:none style */
+  display: flex; /* Optional, but often good practice for iframes */
+}
