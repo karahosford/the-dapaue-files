@@ -1,4 +1,4 @@
-![[newgrange.png]]
+![[content/locations/newgrange.png]]
 
 ---
 Located in the Boyne Valley, County Meath, Ireland, Newgrange is a prehistoric monument designated as a UNESCO World Heritage site, part of the larger Brú na Bóinne complex. Constructed around 5,200 years ago (c. 3200 BC) during the Neolithic period by Stone Age farmers, it predates both Stonehenge and the Great Pyramids of Giza.
