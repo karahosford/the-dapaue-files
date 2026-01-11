@@ -612,6 +612,7 @@
     <div id="initial-trigger-screen">
         <button id="system-trigger-btn" class="btn-initiate blink" onclick="startSystemSequence()">[INITIATE_SYSTEM]</button>
         <p class="text-[8px] mt-6 opacity-30 tracking-[1em]">DAPAUE_SYNAPTIC_BOOT_V4.5</p>
+        <button onclick="toggleFullscreen()" class="absolute bottom-4 left-4 text-[8px] px-3 py-1 border border-green-500 text-green-500 hover:border-green-400 hover:text-green-400 hover:bg-green-900/20 font-mono transition-colors opacity-60 hover:opacity-100">[FULLSCREEN]</button>
         <button onclick="openLoadGameMenu()" class="absolute bottom-4 right-24 text-[8px] px-3 py-1 border border-cyan-500 text-cyan-500 hover:border-cyan-400 hover:text-cyan-400 hover:bg-cyan-900/20 font-mono transition-colors opacity-60 hover:opacity-100">[RECOVER RAM]</button>
         <button onclick="adminBypass()" class="absolute bottom-4 right-4 text-[8px] px-3 py-1 border border-red-500 text-red-500 hover:border-red-400 hover:text-red-400 hover:bg-red-900/20 font-mono transition-colors opacity-60 hover:opacity-100">[ADMIN]</button>
     </div>
@@ -1344,6 +1345,16 @@
             
             console.log('Admin bypass complete. All accounts unlocked:', Array.from(unlockedAccounts));
             console.log('Forensics populated with', entityDatabase.discoveredEmails.length, 'emails');
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
         }
 
         function showSystemNotification() {
