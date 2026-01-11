@@ -1274,6 +1274,53 @@
             mix-blend-mode: multiply;
         }
 
+        /* Toggle Switch */
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--panel-light);
+            transition: .3s;
+            border: 1px solid var(--accent);
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 2px;
+            bottom: 2px;
+            background-color: var(--text-dim);
+            transition: .3s;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--accent);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+            background-color: var(--bg-dark);
+        }
+
+        /* Retro Monitor Bezel */
+        #retro-monitor-bezel {
+            display: none;
+        }
+
+        .monitor-frame {
+            display: none;
+        }
+
+        /* Retro mode disabled */
+        body.retro-mode {
+            /* Retro mode disabled - causing display issues */
+        }
+
         /* Cooling lock overlay */
         #cooling-lock {
             position: fixed;
@@ -1509,6 +1556,9 @@
     </style>
 </head>
 <body class="crt p-4 md:p-8 flex items-center justify-center">
+    <div id="retro-monitor-bezel" aria-hidden="true">
+        <div class="monitor-frame"></div>
+    </div>
     <div class="noise"></div>
     <div id="global-glitch-overlay"></div>
     <div id="glitch-artifacts"></div>
@@ -1651,12 +1701,117 @@
                 <div class="icon-image">🕸</div>
                 <div class="icon-label">TAG WRANGLE</div>
             </div>
+            <div class="desktop-icon" onclick="openWindow('settings-window')">
+                <div class="icon-image">⚙️</div>
+                <div class="icon-label">SETTINGS</div>
+            </div>
             <div class="desktop-icon" onclick="simulateInstabilityWarning()">
                 <div class="icon-image">⚠️</div>
                 <div class="icon-label">INSTABILITY_SIM</div>
             </div>
         </div>
         
+        <!-- SETTINGS Window -->
+        <div id="settings-window" class="window" style="width: 500px; height: 450px; left: 30%; top: 20%;">
+            <div class="window-titlebar" onmousedown="startDrag(event, 'settings-window')">
+                <span class="window-title">SYSTEM_SETTINGS // CONFIGURATION</span>
+                <div class="window-controls">
+                    <div class="window-btn" onclick="minimizeWindow('settings-window')">_</div>
+                    <div class="window-btn" onclick="closeWindow('settings-window')">X</div>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="w-full h-full bg-[var(--bg-dark)] p-6 overflow-y-auto">
+                    <div class="space-y-6">
+                        <!-- Display Settings -->
+                        <div class="border-b border-[var(--panel-light)] pb-4">
+                            <div class="text-xs font-bold text-[var(--accent)] mb-3">DISPLAY</div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px]">FULLSCREEN MODE</span>
+                                    <button onclick="toggleFullscreenSetting()" id="fullscreen-toggle" class="btn-retro px-3 py-1 text-[9px]">[TOGGLE]</button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-[10px]">THEME MODE</div>
+                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Switch between dark and light</div>
+                                    </div>
+                                    <label class="relative inline-block w-12 h-6">
+                                        <input type="checkbox" id="theme-toggle-setting" onchange="toggleLightModeSetting()" class="opacity-0 w-0 h-0">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-[10px]">INTERFACE ZOOM</span>
+                                    <div class="flex gap-2">
+                                        <button onclick="adjustZoom(-10)" class="btn-retro px-3 py-1 text-[9px]">[-]</button>
+                                        <span id="zoom-display" class="text-[10px] px-2">100%</span>
+                                        <button onclick="adjustZoom(10)" class="btn-retro px-3 py-1 text-[9px]">[+]</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- System Settings -->
+                        <div class="border-b border-[var(--panel-light)] pb-4">
+                            <div class="text-xs font-bold text-[var(--accent)] mb-3">SYSTEM</div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-[10px]">INSTABILITY EFFECTS</div>
+                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Disable visual glitch effects</div>
+                                    </div>
+                                    <label class="relative inline-block w-12 h-6">
+                                        <input type="checkbox" id="instability-toggle" onchange="toggleInstabilityEffects()" class="opacity-0 w-0 h-0">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Audio Settings -->
+                        <div class="border-b border-[var(--panel-light)] pb-4">
+                            <div class="text-xs font-bold text-[var(--accent)] mb-3">AUDIO</div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-[10px]">SOUND EFFECTS</div>
+                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">UI click and interaction sounds</div>
+                                    </div>
+                                    <label class="relative inline-block w-12 h-6">
+                                        <input type="checkbox" id="sound-toggle" onchange="toggleSound()" checked class="opacity-0 w-0 h-0">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Retro Settings -->
+                        <div class="border-b border-[var(--panel-light)] pb-4">
+                            <div class="text-xs font-bold text-[var(--accent)] mb-3">RETRO MODE</div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-[10px]">RETRO MONITOR</div>
+                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">4:3 display with monitor bezel</div>
+                                    </div>
+                                    <label class="relative inline-block w-12 h-6">
+                                        <input type="checkbox" id="retro-mode-toggle" onchange="toggleRetroMode()" class="opacity-0 w-0 h-0">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Info -->
+                        <div class="text-[8px] text-[var(--text-dim)] italic">
+                            Settings are saved to browser local storage
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- SERVER MONITOR Window -->
         <div id="server-monitor-window" class="window" style="width: 800px; height: 520px; left: 20%; top: 12%;">
             <div class="window-titlebar" onmousedown="startDrag(event, 'server-monitor-window')">
@@ -2222,6 +2377,9 @@
             <div class="taskbar-item active" id="taskbar-tag-wrangle" onclick="focusWindow('tag-wrangle-window')" style="display: none;">
                 🕸 TAG WRANGLE
             </div>
+            <div class="taskbar-item active" id="taskbar-settings" onclick="focusWindow('settings-window')" style="display: none;">
+                ⚙️ SETTINGS
+            </div>
             <div class="taskbar-item active" id="taskbar-archive" onclick="focusWindow('archive-window')" style="display: none;">
                 📧 <span id="taskbar-archive-label">ARCHIVE_99</span>
             </div>
@@ -2233,6 +2391,9 @@
                 <button onclick="openSaveGameMenu()" class="text-[9px] px-2 py-1 border border-green-500 text-green-500 hover:border-green-400 hover:text-green-400 hover:bg-green-900/20 font-mono transition-colors ml-2" title="Save Game">[SAVE]</button>
                 <button onclick="toggleLightMode()" id="theme-toggle" class="flex items-center justify-center w-6 h-6 transition-all cursor-pointer ml-2" title="Toggle theme">
                     <div class="w-3 h-3 rounded-full bg-[var(--text-dim)] transition-colors"></div>
+                </button>
+                <button onclick="toggleFullscreenSetting()" id="fullscreen-taskbar-toggle" class="flex items-center justify-center w-6 h-6 transition-all cursor-pointer ml-2" title="Toggle fullscreen">
+                    <div class="text-sm">⛶</div>
                 </button>
                 <span class="flex items-center">DAPAUE_OS_V4.5</span>
             </div>
@@ -2444,6 +2605,9 @@
             // Start SYSMON updates
             updateSysmon();
             setInterval(updateSysmon, 800);
+
+            // Load settings
+            loadSettings();
 
             // After data load, ensure default user and seed catalogs
             if (window.dataReady) {
@@ -6995,6 +7159,7 @@ Good luck, Investigator.
         }
         
         function playClickSound() {
+            if (!soundEnabled) return; // Respect settings
             try {
                 initAudioContext();
                 if (!audioContext) return;
@@ -7019,6 +7184,7 @@ Good luck, Investigator.
         }
         
         function playTypeSound() {
+            if (!soundEnabled) return; // Respect settings
             try {
                 initAudioContext();
                 if (!audioContext) return;
@@ -7761,6 +7927,8 @@ Good luck, Investigator.
         let globalGlitchTimer = null;
 
         function triggerInstabilityEffects() {
+            if (instabilityDisabled) return; // Respect settings
+            
             const overlay = document.getElementById('instability-overlay');
             if (overlay) {
                 overlay.classList.add('active');
@@ -7939,6 +8107,99 @@ Good luck, Investigator.
         function clearGlitchArtifacts() {
             const container = document.getElementById('glitch-artifacts');
             if (container) container.innerHTML = '';
+        }
+
+        // Settings Management
+        let soundEnabled = true;
+        let instabilityDisabled = false;
+        let currentZoom = 100;
+        let retroModeEnabled = false;
+
+        function loadSettings() {
+            // Settings no longer auto-saved - only saved on explicit game save
+            // Initialize UI with defaults
+            const soundToggle = document.getElementById('sound-toggle');
+            if (soundToggle) soundToggle.checked = soundEnabled;
+
+            const instabilityToggle = document.getElementById('instability-toggle');
+            if (instabilityToggle) instabilityToggle.checked = !instabilityDisabled;
+
+            const themeToggle = document.getElementById('theme-toggle-setting');
+            if (themeToggle) themeToggle.checked = document.body.classList.contains('light-mode');
+
+            const retroToggle = document.getElementById('retro-mode-toggle');
+            if (retroToggle) retroToggle.checked = retroModeEnabled;
+
+            updateZoomDisplay();
+        }
+
+        function toggleFullscreenSetting() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error enabling fullscreen: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function adjustZoom(delta) {
+            currentZoom = Math.max(50, Math.min(200, currentZoom + delta));
+            applyZoom(currentZoom);
+            updateZoomDisplay();
+        }
+
+        function applyZoom(zoom) {
+            document.body.style.zoom = zoom + '%';
+        }
+
+        function updateZoomDisplay() {
+            const display = document.getElementById('zoom-display');
+            if (display) display.textContent = currentZoom + '%';
+        }
+
+        function toggleInstabilityEffects() {
+            const toggle = document.getElementById('instability-toggle');
+            instabilityDisabled = !toggle.checked;
+            
+            if (instabilityDisabled) {
+                stopGlobalGlitchLoop();
+                showSystemNotification('Instability effects disabled');
+            } else {
+                showSystemNotification('Instability effects enabled');
+            }
+        }
+
+        function toggleSound() {
+            const toggle = document.getElementById('sound-toggle');
+            soundEnabled = toggle.checked;
+            showSystemNotification(soundEnabled ? 'Sound enabled' : 'Sound muted');
+        }
+
+        function toggleLightModeSetting() {
+            const toggle = document.getElementById('theme-toggle-setting');
+            if (toggle.checked) {
+                document.body.classList.add('light-mode');
+                showSystemNotification('Light mode enabled');
+            } else {
+                document.body.classList.remove('light-mode');
+                showSystemNotification('Dark mode enabled');
+            }
+        }
+
+        function toggleRetroMode() {
+            // Retro mode disabled - causing display issues
+            return;
+        }
+
+        function applyRetroMode() {
+            // Retro mode disabled
+            return;
+        }
+
+        function removeRetroMode() {
+            // Retro mode disabled
+            return;
         }
 
         function getTerminalPrompt() {
