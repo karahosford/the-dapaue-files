@@ -1,0 +1,17 @@
+[
+  { "name": "tutorial", "color": "#3b82f6" },
+  { "name": "demo", "color": "#10b981" },
+  { "name": "system", "color": "#8b5cf6" },
+  { "name": "locked", "color": "#ef4444" },
+  { "name": "fragmented", "color": "#f59e0b" },
+  { "name": "evidence", "color": "#06b6d4" },
+  { "name": "audio", "color": "#ec4899" },
+  { "name": "deleted", "color": "#6b7280" },
+  { "name": "research", "color": "#14b8a6" },
+  { "name": "operations", "color": "#f97316" },
+  { "name": "security", "color": "#dc2626" },
+  { "name": "report", "color": "#6366f1" },
+  { "name": "assignment", "color": "#0d9488" },
+  { "name": "status", "color": "#7c3aed" },
+  { "name": "work", "color": "#059669" }
+]

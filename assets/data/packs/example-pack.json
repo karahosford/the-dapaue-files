@@ -1,0 +1,44 @@
+{
+  "emails": [
+    {
+      "id": "X-0001",
+      "sender": "System",
+      "receiver": "User",
+      "subject": "Pack Email",
+      "date": "2099-01-20",
+      "encryption": "STANDARD",
+      "signal": "84.0%",
+      "tags": ["pack"],
+      "body": "Demo email from a content pack.",
+      "category": "inbox"
+    }
+  ],
+  "staffUsers": [
+    {
+      "username": "demo_user_01",
+      "emails": [
+        {
+          "id": "D-0010",
+          "sender": "System",
+          "receiver": "demo_user_01",
+          "subject": "Pack Message",
+          "date": "2099-01-21",
+          "encryption": "STANDARD",
+          "signal": "80.0%",
+          "category": "inbox",
+          "tags": ["pack"],
+          "body": "Additional message merged from content pack."
+        }
+      ]
+    }
+  ],
+  "entities": {
+    "characters": [],
+    "locations": [],
+    "events": [],
+    "servers": []
+  },
+  "tags": [
+    { "name": "pack", "color": "#a855f7" }
+  ]
+}

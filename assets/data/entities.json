@@ -1,0 +1,22 @@
+{
+  "characters": [
+    { "id": "DEMO_USER_01", "name": "Demo User (Analyst)", "tags": ["research", "demo"], "bio": "Research Lab analyst. Standard access level." },
+    { "id": "DEMO_USER_02", "name": "Demo User (Command)", "tags": ["operations", "demo"], "bio": "Operations command. Mid-level clearance." },
+    { "id": "DEMO_USER_03", "name": "Demo User (Security)", "tags": ["security", "demo"], "bio": "Security division. High clearance." }
+  ],
+  "locations": [
+    { "id": "ARCHIVE_99", "name": "Archive_99", "type": "facility", "desc": "Central archive facility. Demo environment." },
+    { "id": "LAB_NORTH", "name": "Lab North", "type": "laboratory", "desc": "Research laboratory - North wing." },
+    { "id": "COMMAND_CENTER", "name": "Command Center", "type": "control", "desc": "Operations command center." }
+  ],
+  "events": [
+    { "id": "EV-INIT", "name": "System Initialization", "date": "2099-01-01", "summary": "Demo environment initialized.", "tags": ["system"] }
+  ],
+  "servers": [
+    { "id": "NODE-01", "name": "NODE-01", "status": "ONLINE", "notes": "Main archive node" },
+    { "id": "NODE-02", "name": "NODE-02", "status": "ONLINE", "notes": "Backup archive node" },
+    { "id": "NODE-03", "name": "NODE-03", "status": "WARNING", "notes": "Lab data node - elevated usage" },
+    { "id": "NODE-04", "name": "NODE-04", "status": "OFFLINE", "notes": "Legacy system - decommissioned" },
+    { "id": "NODE-05", "name": "NODE-05", "status": "ONLINE", "notes": "Security monitoring node" }
+  ]
+}

@@ -1,0 +1,104 @@
+[
+  {
+    "username": "demo_user_01",
+    "name": "Demo User (Analyst)",
+    "department": "Department A",
+    "securityLevel": 2,
+    "accessCode": "DEMO-CODE-0001",
+    "status": "ACTIVE",
+    "emails": [
+      {
+        "id": "D-0001",
+        "sender": "System",
+        "receiver": "demo_user_01",
+        "subject": "Welcome message",
+        "date": "2099-01-10",
+        "encryption": "STANDARD",
+        "signal": "95.0%",
+        "category": "inbox",
+        "tags": ["tutorial"],
+        "body": "This is a demo inbox message for demo_user_01. Use the archive tools to browse and organize messages."
+      },
+      {
+        "id": "D-0002",
+        "sender": "System",
+        "receiver": "demo_user_01",
+        "subject": "Another message",
+        "date": "2099-01-11",
+        "encryption": "STANDARD",
+        "signal": "92.0%",
+        "category": "inbox",
+        "tags": ["demo"],
+        "body": "This is another demo message. Explore the FORENSICS tool to tag and analyze content."
+      }
+    ]
+  },
+  {
+    "username": "demo_user_02",
+    "name": "Demo User (Command)",
+    "department": "Department B",
+    "securityLevel": 3,
+    "accessCode": "DEMO-CODE-0002",
+    "status": "ACTIVE",
+    "emails": [
+      {
+        "id": "E-0001",
+        "sender": "System",
+        "receiver": "demo_user_02",
+        "subject": "Status message",
+        "date": "2099-01-12",
+        "encryption": "RSA-4096",
+        "signal": "96.0%",
+        "category": "inbox",
+        "tags": ["demo"],
+        "body": "This is a demo message for demo_user_02. Mid-level security access."
+      },
+      {
+        "id": "E-0002",
+        "sender": "demo_user_02",
+        "receiver": "System",
+        "subject": "Response message",
+        "date": "2099-01-13",
+        "encryption": "RSA-4096",
+        "signal": "94.0%",
+        "category": "sent",
+        "tags": ["demo"],
+        "body": "This is a sent message from demo_user_02."
+      }
+    ]
+  },
+  {
+    "username": "demo_user_03",
+    "name": "Demo User (Security)",
+    "department": "Department C",
+    "securityLevel": 4,
+    "accessCode": "DEMO-CODE-0003",
+    "status": "ACTIVE",
+    "emails": [
+      {
+        "id": "F-0001",
+        "sender": "System",
+        "receiver": "demo_user_03",
+        "subject": "High-level message",
+        "date": "2099-01-08",
+        "encryption": "RSA-4096",
+        "signal": "99.0%",
+        "category": "inbox",
+        "tags": ["demo"],
+        "body": "This is a demo message for demo_user_03. High security level access."
+      },
+      {
+        "id": "F-0002",
+        "sender": "demo_user_03",
+        "receiver": "System",
+        "subject": "Confirmation message",
+        "date": "2099-01-09",
+        "encryption": "RSA-4096",
+        "signal": "97.0%",
+        "category": "sent",
+        "tags": ["demo"],
+        "body": "This is a sent confirmation from demo_user_03."
+      }
+    ]
+  }
+]
