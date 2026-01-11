@@ -715,7 +715,7 @@
         #initial-trigger-screen {
             position: absolute;
             inset: 0;
-            background: #000;
+            background: var(--bg-dark);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -870,7 +870,7 @@
     </div>
 
     <!-- Intro / Login Overlay -->
-    <div id="intro-overlay" class="absolute inset-0 z-[2000] bg-[#0a0a0a] flex flex-col items-center justify-center p-8" style="display: none;">
+    <div id="intro-overlay" class="absolute inset-0 z-[2000] bg-[var(--bg-dark)] flex flex-col items-center justify-center p-8" style="display: none;">
         <div class="max-w-2xl w-full h-full flex flex-col">
             <!-- Legacy Boot Log Window -->
             <div id="boot-log" class="w-full flex-1 text-[11px] text-[#808080] font-mono leading-tight mb-6 overflow-y-auto scrollbar-hidden"></div>
@@ -881,11 +881,11 @@
                 <div id="login-fields" class="space-y-6">
                     <div class="flex flex-col">
                         <span class="text-[8px] text-[var(--text-dim)] mb-1 tracking-widest">OPERATOR_ID</span>
-                        <input id="input-opid" type="text" class="bg-[#0a0a0a] border border-[var(--panel-light)] p-2 text-sm text-white outline-none font-mono" readonly>
+                        <input id="input-opid" type="text" class="bg-[var(--panel-dark)] border border-[var(--panel-light)] p-2 text-sm text-white outline-none font-mono" readonly>
                     </div>
                     <div class="flex flex-col">
                         <span class="text-[8px] text-[var(--text-dim)] mb-1 tracking-widest">AUTH_STRING</span>
-                        <input id="input-auth" type="password" class="bg-[#0a0a0a] border border-[var(--panel-light)] p-2 text-sm text-white outline-none font-mono" readonly>
+                        <input id="input-auth" type="password" class="bg-[var(--panel-dark)] border border-[var(--panel-light)] p-2 text-sm text-white outline-none font-mono" readonly>
                     </div>
                     <button id="login-btn" class="w-full btn-retro p-4 text-[10px] font-bold uppercase tracking-[0.4em] opacity-10 transition-all mt-6 cursor-default" onclick="handleLogin()">Initialize Handshake</button>
                 </div>
@@ -906,7 +906,7 @@
                 <span id="modal-title">FRAGMENT_VIEW</span>
                 <button onclick="closeModal()" class="hover:opacity-50">[X]</button>
             </div>
-            <div id="modal-image-container" class="p-10 flex items-center justify-center bg-black/20"></div>
+            <div id="modal-image-container" class="p-10 flex items-center justify-center" style="background: rgba(0, 0, 0, 0.5);"></div>
             <div class="p-6 bg-[var(--panel-dark)] border-t-2 border-[var(--panel-light)]">
                 <p class="text-[10px] text-[var(--text-dim)] mb-1">CAPTION_LOG:</p>
                 <p id="modal-caption" class="text-sm font-bold"></p>
@@ -1010,11 +1010,11 @@
                             <div class="grid grid-cols-3 gap-3 text-[10px]">
                                 <div>
                                     <div class="text-[8px] text-[var(--text-dim)] mb-1 tracking-widest">USERNAME</div>
-                                    <input id="server-auth-username" type="text" class="w-full bg-[#0a0a0a] border border-[var(--panel-light)] p-2 text-xs text-white outline-none font-mono">
+                                    <input id="server-auth-username" type="text" class="w-full bg-[var(--panel-dark)] border border-[var(--panel-light)] p-2 text-xs text-white outline-none font-mono">
                                 </div>
                                 <div>
                                     <div class="text-[8px] text-[var(--text-dim)] mb-1 tracking-widest">ACCESS_KEY</div>
-                                    <input id="server-auth-password" type="password" class="w-full bg-[#0a0a0a] border border-[var(--panel-light)] p-2 text-xs text-white outline-none font-mono">
+                                    <input id="server-auth-password" type="password" class="w-full bg-[var(--panel-dark)] border border-[var(--panel-light)] p-2 text-xs text-white outline-none font-mono">
                                 </div>
                                 <div class="flex items-end">
                                     <button class="btn-retro w-full p-2 text-[10px]" onclick="authenticateServerForNode()">[AUTHENTICATE]</button>
@@ -1249,19 +1249,28 @@
                     <div class="border-b-2 border-[var(--panel-light)] bg-[var(--panel-dark)] p-2 flex items-center gap-3">
                         <div class="flex items-center gap-2 flex-1">
                             <span class="text-[9px] text-[var(--text-dim)]">🔍</span>
-                            <input id="forensics-search" type="text" placeholder="SEARCH EVIDENCE..." class="flex-1 bg-[#0a0a0a] border border-[var(--panel-light)] px-3 py-1 text-[10px] font-mono outline-none" onkeyup="performForensicsSearch(event)">
+                            <input id="forensics-search" type="text" placeholder="SEARCH EVIDENCE..." class="flex-1 bg-[var(--panel-dark)] border border-[var(--panel-light)] px-3 py-1 text-[10px] font-mono outline-none" onkeyup="performForensicsSearch(event)">
                             <button class="btn-retro px-2 py-1 text-[8px]" onclick="clearForensicsSearch()">[CLEAR]</button>
                         </div>
                         <div class="flex items-center gap-2">
                             <button id="board-mode-btn" class="btn-retro px-3 py-1 text-[9px] active" onclick="toggleBoardMode('board')">[BOARD]</button>
                             <button id="timeline-mode-btn" class="btn-retro px-3 py-1 text-[9px]" onclick="toggleBoardMode('timeline')">[TIMELINE]</button>
+                            <button class="btn-retro px-2 py-1 text-[8px]" onclick="addNoteToBoard()">[ADD NOTE]</button>
+                            <div class="flex items-center gap-1 ml-2">
+                                <button class="btn-retro px-2 py-1 text-[8px]" onclick="zoomOutBoard()">[-]</button>
+                                <span id="zoom-level" class="text-[9px] text-[var(--text-dim)] w-12 text-center">100%</span>
+                                <button class="btn-retro px-2 py-1 text-[8px]" onclick="zoomInBoard()">[+]</button>
+                                <button class="btn-retro px-2 py-1 text-[8px]" onclick="resetBoardZoom()">[RESET]</button>
+                            </div>
                             <span class="text-[9px] text-[var(--text-dim)] ml-2">EVIDENCE: <span id="forensics-count">0</span></span>
+                            <span class="text-[7px] text-[var(--accent)] ml-2" title="Hold SHIFT and drag from one card to another to create connections">💡 SHIFT+DRAG to connect</span>
                         </div>
                     </div>
                     
                     <!-- Main Content Area -->
                     <div class="flex-1 overflow-hidden flex">
-                        <!-- Tag Sidebar -->\n                        <div class="w-48 border-r-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col">
+                        <!-- Tag Sidebar -->
+                        <div class="w-48 border-r-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col">
                             <div class="p-2 border-b border-[var(--panel-light)]">
                                 <div class="text-[9px] font-bold text-[var(--accent)] mb-2">TAGS</div>
                                 <button class="btn-retro w-full py-1 text-[8px]" onclick="createNewTag()">[+ NEW TAG]</button>
@@ -1274,7 +1283,7 @@
                         
                         <!-- Evidence Board Canvas -->
                         <div class="flex-1 flex flex-col overflow-hidden">
-                            <div id="board-container" class="flex-1 relative overflow-auto bg-[#050505]" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(255,255,255,0.02) 24px, rgba(255,255,255,0.02) 25px), repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(255,255,255,0.02) 24px, rgba(255,255,255,0.02) 25px);">
+                            <div id="board-container" class="flex-1 relative overflow-auto bg-[var(--panel-dark)]" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(0,0,0,0.05) 24px, rgba(0,0,0,0.05) 25px), repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(0,0,0,0.05) 24px, rgba(0,0,0,0.05) 25px);">
                                 <div id="board-canvas" class="relative" style="width: 3000px; height: 2000px; min-width: 100%; min-height: 100%;">
                                     <!-- Evidence cards will be dynamically placed here -->
                                     <svg id="board-connections" class="absolute inset-0 pointer-events-none" style="width: 100%; height: 100%; z-index: 1;">
@@ -1293,15 +1302,21 @@
                             </div>
                         </div>
                         
-                        <!-- Query History Sidebar -->
-                        <div class="w-40 border-l-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col">
-                            <div class="p-2 border-b border-[var(--panel-light)] text-[9px] font-bold text-[var(--accent)]">
-                                QUERY HISTORY
+                        <!-- Card Details Panel -->
+                        <div id="card-details-panel" class="w-64 border-l-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col">
+                            <div class="p-2 border-b border-[var(--panel-light)] flex items-center justify-between">
+                                <div class="text-[9px] font-bold text-[var(--accent)]">CARD DETAILS</div>
+                                <button class="text-[10px] hover:text-[var(--accent)]" onclick="toggleCardDetailsPanel()" title="Collapse">◀</button>
                             </div>
-                            <div id="query-history" class="flex-1 overflow-y-auto p-2 text-[8px] space-y-1 text-[var(--text-dim)]"></div>
-                            <div class="p-2 border-t border-[var(--panel-light)]">
-                                <button class="btn-retro w-full py-1 text-[8px]" onclick="clearQueryHistory()">[CLEAR]</button>
+                            <div id="card-details-content" class="flex-1 overflow-y-auto p-3 text-[9px]">
+                                <div class="text-center text-[var(--text-dim)] italic py-8">Select a card to view details</div>
                             </div>
+                        </div>
+                        
+                        <!-- Card Details Panel (Collapsed) -->
+                        <div id="card-details-collapsed" class="hidden border-l-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col items-center p-2">
+                            <button class="text-[10px] hover:text-[var(--accent)] rotate-180" onclick="toggleCardDetailsPanel()" title="Expand">◀</button>
+                            <div class="text-[8px] font-bold text-[var(--accent)] mt-2" style="writing-mode: vertical-rl; transform: rotate(180deg);">DETAILS</div>
                         </div>
                     </div>
                 </div>
@@ -1399,8 +1414,9 @@
                         <div class="flex justify-between items-start mb-2"><h2 id="view-subject" class="text-xl font-bold">---</h2></div>
                     </div>
                     <div id="email-tagging" class="flex items-center gap-2 mb-4 text-[9px]">
-                        <input id="email-tag-input" type="text" class="bg-[#0a0a0a] border border-[var(--panel-light)] px-2 py-1 font-mono outline-none" placeholder="ADD_TAG">
+                        <input id="email-tag-input" type="text" class="bg-[var(--panel-dark)] border border-[var(--panel-light)] px-2 py-1 font-mono outline-none" placeholder="ADD_TAG">
                         <button class="btn-retro px-2 py-1" onclick="submitEmailTag()">[TAG]</button>
+                        <button class="btn-retro px-2 py-1 ml-auto" onclick="sendToInvestigationBoard()" title="Add to Investigation Board">📌 [SEND TO BOARD]</button>
                     </div>
                     <div id="view-body" class="whitespace-pre-wrap leading-relaxed text-sm opacity-90 select-text"></div>
                     <div id="cross-ref-panel" class="hidden mt-6 p-4 border-2 border-[var(--panel-light)] bg-[var(--panel-dark)]">
@@ -1426,8 +1442,9 @@
                         </div>
                     </div>
                     <div id="file-tagging" class="p-3 border-b-2 border-[var(--panel-light)] text-[9px] flex items-center gap-2">
-                        <input id="file-tag-input" type="text" class="bg-[#0a0a0a] border border-[var(--panel-light)] px-2 py-1 font-mono outline-none" placeholder="ADD_TAG">
+                        <input id="file-tag-input" type="text" class="bg-[var(--panel-dark)] border border-[var(--panel-light)] px-2 py-1 font-mono outline-none" placeholder="ADD_TAG">
                         <button class="btn-retro px-2 py-1" onclick="submitFileTag()">[TAG]</button>
+                        <button class="btn-retro px-2 py-1 ml-auto" onclick="sendFileToInvestigationBoard()" title="Add to Investigation Board">📌 [SEND TO BOARD]</button>
                     </div>
                     <div id="file-preview-content" class="flex-1 overflow-y-auto p-6 md:p-10 font-mono text-xs whitespace-pre-wrap break-words"></div>
                 </div>
@@ -1789,22 +1806,57 @@
             sidebarNode.classList.toggle('collapsed');
         }
 
-        function showSystemNotification() {
+        let systemNotificationShown = false;
+        
+        function showSystemNotification(message) {
+            // If no message provided, it's the welcome notification - only show once
+            if (!message && systemNotificationShown) {
+                return;
+            }
+            
+            if (!message) {
+                systemNotificationShown = true;
+            }
+            
             const notification = document.createElement('div');
             notification.className = 'system-notification';
-            notification.innerHTML = `
-                <div class="notification-header">
-                    <div class="notification-title">⚡ SYSTEM NOTICE // NEURAL-LINK STATUS</div>
-                    <div class="notification-close" onclick="this.parentElement.parentElement.classList.add('hiding'); setTimeout(() => this.parentElement.parentElement.remove(), 500)">✕</div>
-                </div>
-                <div class="notification-body">
-                    <p style="margin-bottom: 8px; color: var(--accent);">WELCOME, OPERATOR.</p>
-                    <p style="margin-bottom: 6px;">YOUR NEURAL-LINK HAS BEEN ESTABLISHED. SESSION DATA IS NOW SYNCED TO LOCAL CORTEX MEMORY.</p>
-                    <p style="margin-bottom: 6px; font-size: 8px; color: var(--text-dim);">⚠ IMPORTANT: All progress, notes, and unlocked accounts are stored in your LOCAL BROWSER CACHE. Clearing your browser data will result in COMPLETE MEMORY WIPE.</p>
-                    <p style="font-size: 8px; color: var(--text-dim); font-style: italic;">TIP: Regular backups recommended via NOTEPAD export.</p>
-                </div>
-            `;
+            
+            if (message) {
+                // Custom message notification
+                notification.innerHTML = `
+                    <div class="notification-header">
+                        <div class="notification-title">⚡ SYSTEM NOTICE</div>
+                        <div class="notification-close" onclick="this.parentElement.parentElement.classList.add('hiding'); setTimeout(() => this.parentElement.parentElement.remove(), 500)">✕</div>
+                    </div>
+                    <div class="notification-body">
+                        <p style="margin-bottom: 6px; color: var(--accent);">${message}</p>
+                    </div>
+                `;
+            } else {
+                // Welcome notification
+                notification.innerHTML = `
+                    <div class="notification-header">
+                        <div class="notification-title">⚡ SYSTEM NOTICE // NEURAL-LINK STATUS</div>
+                        <div class="notification-close" onclick="this.parentElement.parentElement.classList.add('hiding'); setTimeout(() => this.parentElement.parentElement.remove(), 500)">✕</div>
+                    </div>
+                    <div class="notification-body">
+                        <p style="margin-bottom: 8px; color: var(--accent);">WELCOME, OPERATOR.</p>
+                        <p style="margin-bottom: 6px;">YOUR NEURAL-LINK HAS BEEN ESTABLISHED. SESSION DATA IS NOW SYNCED TO LOCAL CORTEX MEMORY.</p>
+                        <p style="margin-bottom: 6px; font-size: 8px; color: var(--text-dim);">⚠ IMPORTANT: All progress, notes, and unlocked accounts are stored in your LOCAL BROWSER CACHE. Clearing your browser data will result in COMPLETE MEMORY WIPE.</p>
+                        <p style="font-size: 8px; color: var(--text-dim); font-style: italic;">TIP: Regular backups recommended via NOTEPAD export.</p>
+                    </div>
+                `;
+            }
+            
             document.body.appendChild(notification);
+            
+            // Auto-hide after 8 seconds for custom messages
+            if (message) {
+                setTimeout(() => {
+                    notification.classList.add('hiding');
+                    setTimeout(() => notification.remove(), 500);
+                }, 8000);
+            }
         }
 
         // ===== Server Monitor Logic =====
@@ -2007,6 +2059,8 @@
             connections: [], // {from, to, type, label}
             selectedCard: null,
             dragState: null,
+            connectionMode: false, // when true, dragging creates connections
+            tempConnection: null, // {fromId, toX, toY}
             searchResults: [],
             activeFilters: new Set(), // active tag filters
             queryHistory: [],
@@ -2016,9 +2070,27 @@
         function initializeInvestigationBoard() {
             loadBoardState();
             renderInvestigationBoard();
-            updateQueryHistory();
             updateTagCloud();
             updateBoardStats();
+            applyBoardZoom();
+
+            // Allow clicking empty space to clear selection
+            const canvas = document.getElementById('board-canvas');
+            if (canvas) {
+                canvas.onclick = (e) => {
+                    if (e.target === canvas) {
+                        clearSelectedCard();
+                    }
+                };
+            }
+            const container = document.getElementById('board-container');
+            if (container) {
+                container.onclick = (e) => {
+                    if (e.target === container) {
+                        clearSelectedCard();
+                    }
+                };
+            }
         }
 
         function loadBoardState() {
@@ -2027,6 +2099,7 @@
                 try {
                     const parsed = JSON.parse(saved);
                     boardState = { ...boardState, ...parsed };
+                    if (!boardState.zoom) boardState.zoom = 1;
                 } catch(e) {}
             }
             
@@ -2038,8 +2111,36 @@
             localStorage.setItem('forensics-board-state', JSON.stringify({
                 cards: boardState.cards,
                 connections: boardState.connections,
-                queryHistory: boardState.queryHistory
+                zoom: boardState.zoom
             }));
+        }
+
+        function applyBoardZoom() {
+            const canvas = document.getElementById('board-canvas');
+            if (canvas) {
+                canvas.style.transform = `scale(${boardState.zoom})`;
+                canvas.style.transformOrigin = '0 0';
+            }
+            const level = document.getElementById('zoom-level');
+            if (level) level.textContent = `${Math.round(boardState.zoom * 100)}%`;
+        }
+
+        function zoomInBoard() {
+            boardState.zoom = Math.min(2, +(boardState.zoom + 0.1).toFixed(2));
+            applyBoardZoom();
+            saveBoardState();
+        }
+
+        function zoomOutBoard() {
+            boardState.zoom = Math.max(0.5, +(boardState.zoom - 0.1).toFixed(2));
+            applyBoardZoom();
+            saveBoardState();
+        }
+
+        function resetBoardZoom() {
+            boardState.zoom = 1;
+            applyBoardZoom();
+            saveBoardState();
         }
 
         function syncCardsWithEmails() {
@@ -2077,6 +2178,15 @@
                     card.tags.some(tag => boardState.activeFilters.has(tag))
                 );
             }
+
+            if (displayedCards.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'absolute inset-0 flex items-center justify-center text-[10px] text-[var(--text-dim)]';
+                empty.innerHTML = boardState.activeFilters.size > 0
+                    ? 'No cards match current filters. <button class="btn-retro px-2 py-1 ml-2" onclick="clearBoardFilters()">[CLEAR FILTERS]</button>'
+                    : 'No evidence on board yet.';
+                cardsContainer.appendChild(empty);
+            }
             
             // Render each evidence card
             displayedCards.forEach(card => {
@@ -2100,31 +2210,48 @@
             if (boardState.selectedCard === card.id) el.classList.add('selected');
             
             const email = card.data;
-            const date = new Date(email.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
+            const date = email.date ? new Date(email.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) : 'N/A';
+            const cardType = email.type === 'file' ? 'FILE' : email.type === 'note' ? 'NOTE' : 'EMAIL';
+            const metaBlock = email.type === 'note'
+                ? `<div class="text-[8px] text-[var(--text-dim)] mb-2">AUTHOR: ${email.sender || 'OPERATOR'}</div>`
+                : `<div class="text-[8px] text-[var(--text-dim)] mb-2">FROM: ${email.sender}<br>TO: ${email.receiver}</div>`;
             
             el.innerHTML = `
                 <div class="card-header">
-                    <span class="card-type">EMAIL</span>
+                    <span class="card-type">${cardType}</span>
                     <span class="card-date">${date}</span>
                 </div>
                 <div class="card-body">
                     <div class="card-subject">${email.subject}</div>
-                    <div class="text-[8px] text-[var(--text-dim)] mb-2">
-                        FROM: ${email.sender}<br>
-                        TO: ${email.receiver}
-                    </div>
-                    <div class="card-preview">${email.body.substring(0, 100)}...</div>
+                    ${metaBlock}
+                    <div class="card-preview">${email.body.substring(0, 100)}${email.body.length > 100 ? '...' : ''}</div>
                 </div>
                 <div class="card-tags" id="card-tags-${card.id}">
-                    ${card.tags.map(tag => `<span class="evidence-tag ${boardState.activeFilters.has(tag) ? 'filtered' : ''}" onclick="toggleTagFilter('${tag}')">${tag}</span>`).join('')}
-                    <span class="evidence-tag" style="opacity: 0.5;" onclick="addTagToCard('${card.id}')">+</span>
+                    ${card.tags.map(tag => `<span class="evidence-tag ${boardState.activeFilters.has(tag) ? 'filtered' : ''}" onclick="event.stopPropagation(); toggleTagFilter('${tag}')">${tag}</span>`).join('')}
+                    <span class="evidence-tag" style="opacity: 0.5;" onclick="event.stopPropagation(); addTagToCard('${card.id}')">+</span>
                 </div>
             `;
             
             // Drag events
-            el.onmousedown = (e) => startCardDrag(e, card);
+            el.onmousedown = (e) => {
+                if (e.shiftKey) {
+                    // Shift+drag to create connection
+                    startConnectionDrag(e, card);
+                } else if (!e.target.classList.contains('evidence-tag')) {
+                    // Normal drag to move card
+                    startCardDrag(e, card);
+                }
+            };
+            el.onmouseup = (e) => {
+                if (boardState.tempConnection && boardState.tempConnection.fromId !== card.id) {
+                    finishConnectionDrag(card.id);
+                }
+            };
             el.onclick = (e) => {
-                if (!boardState.dragState) selectCard(card.id);
+                // Only select if not dragging and not clicking a tag
+                if (!boardState.dragState && !e.target.classList.contains('evidence-tag')) {
+                    selectCard(card.id);
+                }
             };
             el.oncontextmenu = (e) => {
                 e.preventDefault();
@@ -2135,8 +2262,6 @@
         }
 
         function startCardDrag(e, card) {
-            if (e.target.classList.contains('evidence-tag')) return; // Don't drag when clicking tags
-            
             boardState.dragState = {
                 cardId: card.id,
                 startX: e.clientX,
@@ -2148,13 +2273,106 @@
             e.preventDefault();
             e.stopPropagation();
         }
+        
+        function startConnectionDrag(e, card) {
+            const cardEl = document.getElementById(`card-${card.id}`);
+            const rect = cardEl.getBoundingClientRect();
+            const container = document.getElementById('board-container');
+            const containerRect = container.getBoundingClientRect();
+            
+            // Calculate center of card relative to board canvas
+            const centerX = card.x + 110; // card width / 2
+            const centerY = card.y + 80;  // approximate card center
+            
+            boardState.tempConnection = {
+                fromId: card.id,
+                fromX: centerX,
+                fromY: centerY,
+                toX: (e.clientX - containerRect.left + container.scrollLeft) / boardState.zoom,
+                toY: (e.clientY - containerRect.top + container.scrollTop) / boardState.zoom
+            };
+            
+            drawTempConnection();
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        function finishConnectionDrag(targetCardId) {
+            if (!boardState.tempConnection) return;
+            
+            const fromId = boardState.tempConnection.fromId;
+            
+            // Ask for connection type
+            const connectionType = prompt('Connection type:\n\n1. Related (cyan)\n2. Causal (yellow)\n3. Conflicting (red)\n\nEnter (1-3):');
+            const types = {'1': 'related', '2': 'causal', '3': 'conflicting'};
+            const selectedType = types[connectionType] || 'related';
+            
+            const label = prompt('Connection label (optional):');
+            
+            boardState.connections.push({
+                from: fromId,
+                to: targetCardId,
+                type: selectedType,
+                label: label || ''
+            });
+            
+            boardState.tempConnection = null;
+            saveBoardState();
+            renderConnections();
+            
+            const fromCard = boardState.cards.find(c => c.id === fromId);
+            const toCard = boardState.cards.find(c => c.id === targetCardId);
+            showSystemNotification(`✓ Connected "${fromCard.data.subject}" → "${toCard.data.subject}"`);
+        }
+        
+        function drawTempConnection() {
+            if (!boardState.tempConnection) return;
+            
+            const svg = document.getElementById('board-connections');
+            if (!svg) return;
+            
+            // Remove any existing temp line
+            const existingTemp = svg.querySelector('.temp-connection');
+            if (existingTemp) existingTemp.remove();
+            
+            const { fromX, fromY, toX, toY } = boardState.tempConnection;
+            
+            // Create thread-like curve with droop
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const midX = (fromX + toX) / 2;
+            const midY = (fromY + toY) / 2;
+            const distance = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
+            const droop = Math.min(distance * 0.3, 100); // Natural sag
+            
+            const curve = `M ${fromX} ${fromY} Q ${midX} ${midY + droop} ${toX} ${toY}`;
+            line.setAttribute('d', curve);
+            line.setAttribute('class', 'temp-connection');
+            line.setAttribute('stroke', 'rgba(0, 255, 255, 0.5)');
+            line.setAttribute('stroke-width', '2');
+            line.setAttribute('stroke-dasharray', '5,5');
+            line.setAttribute('fill', 'none');
+            
+            svg.appendChild(line);
+        }
 
         // Global mouse events for dragging
         document.addEventListener('mousemove', (e) => {
+            if (boardState.tempConnection) {
+                // Update temp connection line
+                const container = document.getElementById('board-container');
+                const containerRect = container.getBoundingClientRect();
+                
+                boardState.tempConnection.toX = (e.clientX - containerRect.left + container.scrollLeft) / boardState.zoom;
+                boardState.tempConnection.toY = (e.clientY - containerRect.top + container.scrollTop) / boardState.zoom;
+                
+                drawTempConnection();
+                return;
+            }
+            
             if (!boardState.dragState) return;
             
-            const dx = e.clientX - boardState.dragState.startX;
-            const dy = e.clientY - boardState.dragState.startY;
+            const dx = (e.clientX - boardState.dragState.startX) / boardState.zoom;
+            const dy = (e.clientY - boardState.dragState.startY) / boardState.zoom;
             
             const card = boardState.cards.find(c => c.id === boardState.dragState.cardId);
             if (!card) return;
@@ -2171,7 +2389,17 @@
             renderConnections();
         });
 
-        document.addEventListener('mouseup', () => {
+        document.addEventListener('mouseup', (e) => {
+            if (boardState.tempConnection) {
+                // Cancel temp connection if not dropped on a card
+                boardState.tempConnection = null;
+                const svg = document.getElementById('board-connections');
+                if (svg) {
+                    const existingTemp = svg.querySelector('.temp-connection');
+                    if (existingTemp) existingTemp.remove();
+                }
+            }
+            
             if (boardState.dragState) {
                 boardState.dragState = null;
                 saveBoardState();
@@ -2183,15 +2411,30 @@
             document.querySelectorAll('.evidence-card').forEach(el => el.classList.remove('selected'));
             const el = document.getElementById(`card-${cardId}`);
             if (el) el.classList.add('selected');
+            updateCardDetailsPanel(cardId);
+        }
+
+        function clearSelectedCard() {
+            boardState.selectedCard = null;
+            document.querySelectorAll('.evidence-card').forEach(el => el.classList.remove('selected'));
+            const details = document.getElementById('card-details-content');
+            if (details) {
+                details.innerHTML = '<div class="text-center text-[var(--text-dim)] italic py-8">Select a card to view details</div>';
+            }
         }
 
         function renderConnections() {
             const svg = document.getElementById('board-connections');
             if (!svg) return;
             
+            // Clear only permanent connections, keep temp if exists
+            const tempConn = svg.querySelector('.temp-connection');
             svg.innerHTML = '';
+            if (tempConn && boardState.tempConnection) {
+                svg.appendChild(tempConn);
+            }
             
-            boardState.connections.forEach(conn => {
+            boardState.connections.forEach((conn, idx) => {
                 const fromCard = boardState.cards.find(c => c.id === conn.from);
                 const toCard = boardState.cards.find(c => c.id === conn.to);
                 if (!fromCard || !toCard) return;
@@ -2202,11 +2445,19 @@
                 const x2 = toCard.x + 110;
                 const y2 = toCard.y + 80;
                 
-                // Create curved line
+                // Create thread-like curved line with natural droop
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 const midX = (x1 + x2) / 2;
                 const midY = (y1 + y2) / 2;
-                const curve = `M ${x1} ${y1} Q ${midX} ${midY - 50} ${x2} ${y2}`;
+                
+                // Calculate distance for natural sag amount
+                const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+                const droop = Math.min(distance * 0.25, 80); // Thread sag based on length
+                
+                // Add slight randomness for organic look (consistent per connection using index)
+                const wobble = (idx % 3 - 1) * 10; // -10, 0, or 10
+                
+                const curve = `M ${x1} ${y1} Q ${midX + wobble} ${midY + droop} ${x2} ${y2}`;
                 line.setAttribute('d', curve);
                 line.setAttribute('class', `connection-line type-${conn.type}`);
                 line.setAttribute('fill', 'none');
@@ -2216,11 +2467,12 @@
                 // Add label if exists
                 if (conn.label) {
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                    text.setAttribute('x', midX);
-                    text.setAttribute('y', midY - 55);
+                    text.setAttribute('x', midX + wobble);
+                    text.setAttribute('y', midY + droop - 10);
                     text.setAttribute('fill', 'var(--text-dim)');
                     text.setAttribute('font-size', '9');
                     text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('style', 'text-shadow: 0 0 3px var(--bg-dark), 0 0 3px var(--bg-dark);');
                     text.textContent = conn.label;
                     svg.appendChild(text);
                 }
@@ -2243,17 +2495,8 @@
                     }
                 });
                 
-                // Add to query history
-                boardState.queryHistory.unshift({
-                    query: query,
-                    results: boardState.searchResults.length,
-                    timestamp: Date.now()
-                });
-                if (boardState.queryHistory.length > 20) boardState.queryHistory.pop();
-                
                 saveBoardState();
                 renderInvestigationBoard();
-                updateQueryHistory();
                 
                 // Show notification
                 showSystemNotification(`SEARCH: Found ${boardState.searchResults.length} matches for "${query}"`);
@@ -2265,6 +2508,86 @@
             input.value = '';
             boardState.searchResults = [];
             renderInvestigationBoard();
+        }
+        
+        function startConnectionDrag(e, card) {
+            const cardEl = document.getElementById(`card-${card.id}`);
+            const container = document.getElementById('board-container');
+            const containerRect = container.getBoundingClientRect();
+            
+            // Calculate center of card relative to board canvas
+            const centerX = card.x + 110; // card width / 2
+            const centerY = card.y + 80;  // approximate card center
+            
+            boardState.tempConnection = {
+                fromId: card.id,
+                fromX: centerX,
+                fromY: centerY,
+                toX: e.clientX - containerRect.left + container.scrollLeft,
+                toY: e.clientY - containerRect.top + container.scrollTop
+            };
+            
+            drawTempConnection();
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        function finishConnectionDrag(targetCardId) {
+            if (!boardState.tempConnection) return;
+            
+            const fromId = boardState.tempConnection.fromId;
+            
+            // Ask for connection type
+            const connectionType = prompt('Connection type:\\n\\n1. Related (cyan)\\n2. Causal (yellow)\\n3. Conflicting (red)\\n\\nEnter (1-3):');
+            const types = {'1': 'related', '2': 'causal', '3': 'conflicting'};
+            const selectedType = types[connectionType] || 'related';
+            
+            const label = prompt('Connection label (optional):');
+            
+            boardState.connections.push({
+                from: fromId,
+                to: targetCardId,
+                type: selectedType,
+                label: label || ''
+            });
+            
+            boardState.tempConnection = null;
+            saveBoardState();
+            renderConnections();
+            
+            const fromCard = boardState.cards.find(c => c.id === fromId);
+            const toCard = boardState.cards.find(c => c.id === targetCardId);
+            showSystemNotification(`✓ Connected "${fromCard.data.subject}" → "${toCard.data.subject}"`);
+        }
+        
+        function drawTempConnection() {
+            if (!boardState.tempConnection) return;
+            
+            const svg = document.getElementById('board-connections');
+            if (!svg) return;
+            
+            // Remove any existing temp line
+            const existingTemp = svg.querySelector('.temp-connection');
+            if (existingTemp) existingTemp.remove();
+            
+            const { fromX, fromY, toX, toY } = boardState.tempConnection;
+            
+            // Create thread-like curve with droop
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const midX = (fromX + toX) / 2;
+            const midY = (fromY + toY) / 2;
+            const distance = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
+            const droop = Math.min(distance * 0.3, 100); // Natural sag
+            
+            const curve = `M ${fromX} ${fromY} Q ${midX} ${midY + droop} ${toX} ${toY}`;
+            line.setAttribute('d', curve);
+            line.setAttribute('class', 'temp-connection');
+            line.setAttribute('stroke', 'rgba(0, 255, 255, 0.5)');
+            line.setAttribute('stroke-width', '2');
+            line.setAttribute('stroke-dasharray', '5,5');
+            line.setAttribute('fill', 'none');
+            
+            svg.appendChild(line);
         }
 
         function toggleBoardMode(mode) {
@@ -2342,6 +2665,12 @@
             updateTagCloud();
         }
 
+        function clearBoardFilters() {
+            boardState.activeFilters.clear();
+            renderInvestigationBoard();
+            updateTagCloud();
+        }
+
         function createNewTag() {
             const tagName = prompt('Enter new tag name:');
             if (!tagName) return;
@@ -2385,7 +2714,7 @@
                 const entry = entityDatabase.tags.get(cleaned);
                 if (!entry.refs.some(r => r.id === cardId)) {
                     entry.refs.push({
-                        type: 'email',
+                        type: card.data?.type || 'card',
                         id: cardId,
                         label: card.data.subject
                     });
@@ -2394,39 +2723,166 @@
                 saveBoardState();
                 renderInvestigationBoard();
                 updateTagCloud();
+                if (boardState.selectedCard === cardId) {
+                    updateCardDetailsPanel(cardId);
+                }
+                showSystemNotification(`Tag "${cleaned}" added`);
             }
         }
 
-        function updateQueryHistory() {
-            const container = document.getElementById('query-history');
+        function updateCardDetailsPanel(cardId) {
+            const container = document.getElementById('card-details-content');
             if (!container) return;
             
-            if (boardState.queryHistory.length === 0) {
-                container.innerHTML = '<div class="text-[var(--text-dim)] italic">No searches yet</div>';
+            const card = boardState.cards.find(c => c.id === cardId);
+            if (!card) {
+                container.innerHTML = '<div class="text-center text-[var(--text-dim)] italic py-8">Card not found</div>';
                 return;
             }
             
-            container.innerHTML = '';
-            boardState.queryHistory.forEach(item => {
-                const el = document.createElement('div');
-                el.className = 'query-item';
-                el.innerHTML = `
-                    <div class="font-bold">${item.query}</div>
-                    <div class="text-[7px] mt-1"><span class="query-result-count">${item.results}</span> results</div>
-                `;
-                el.onclick = () => {
-                    document.getElementById('forensics-search').value = item.query;
-                    performForensicsSearch({key: 'Enter'});
-                };
-                container.appendChild(el);
-            });
+            const data = card.data;
+            const cardType = data.type === 'file' ? 'FILE' : 'EMAIL';
+            const date = data.date ? new Date(data.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Unknown';
+            
+            // Find connections involving this card
+            const connectionsFrom = boardState.connections.filter(c => c.from === cardId);
+            const connectionsTo = boardState.connections.filter(c => c.to === cardId);
+            
+            container.innerHTML = `
+                <div class="mb-3 pb-3 border-b border-[var(--panel-light)]">
+                    <div class="text-[8px] text-[var(--text-dim)] mb-1">${cardType}</div>
+                    <div class="font-bold text-[11px] mb-2 text-[var(--accent)]">${data.subject}</div>
+                    <div class="text-[8px] text-[var(--text-dim)]">${date}</div>
+                </div>
+                
+                <div class="mb-3 pb-3 border-b border-[var(--panel-light)]">
+                    <div class="text-[8px] font-bold text-[var(--text-dim)] mb-1">FROM</div>
+                    <div class="mb-2">${data.sender}</div>
+                    <div class="text-[8px] font-bold text-[var(--text-dim)] mb-1">TO</div>
+                    <div>${data.receiver}</div>
+                </div>
+                
+                <div class="mb-3 pb-3 border-b border-[var(--panel-light)]">
+                    <div class="text-[8px] font-bold text-[var(--text-dim)] mb-2">CONTENT PREVIEW</div>
+                    <div class="text-[8px] leading-relaxed opacity-80">${data.body.substring(0, 200)}${data.body.length > 200 ? '...' : ''}</div>
+                </div>
+                
+                <div class="mb-3 pb-3 border-b border-[var(--panel-light)]">
+                    <div class="text-[8px] font-bold text-[var(--text-dim)] mb-2">TAGS (${card.tags.length})</div>
+                    ${card.tags.length > 0 ? 
+                        card.tags.map(tag => `<div class="inline-block px-2 py-1 mr-1 mb-1 bg-[var(--accent)] bg-opacity-20 border border-[var(--accent)] text-[8px]">${tag}</div>`).join('') 
+                        : '<div class="text-[8px] text-[var(--text-dim)] italic">No tags</div>'}
+                </div>
+                
+                <div class="mb-3">
+                    <div class="text-[8px] font-bold text-[var(--text-dim)] mb-2">CONNECTIONS (${connectionsFrom.length + connectionsTo.length})</div>
+                    ${connectionsFrom.length + connectionsTo.length === 0 ? 
+                        '<div class="text-[8px] text-[var(--text-dim)] italic">No connections</div>' :
+                        `
+                        ${connectionsFrom.map(c => {
+                            const targetCard = boardState.cards.find(card => card.id === c.to);
+                            return `<div class="text-[8px] mb-1 p-1 bg-[var(--panel-light)] bg-opacity-30">→ ${targetCard ? targetCard.data.subject : c.to} ${c.label ? '(' + c.label + ')' : ''}</div>`;
+                        }).join('')}
+                        ${connectionsTo.map(c => {
+                            const sourceCard = boardState.cards.find(card => card.id === c.from);
+                            return `<div class="text-[8px] mb-1 p-1 bg-[var(--panel-light)] bg-opacity-30">← ${sourceCard ? sourceCard.data.subject : c.from} ${c.label ? '(' + c.label + ')' : ''}</div>`;
+                        }).join('')}
+                        `
+                    }
+                </div>
+                
+                <div class="mt-4 pt-3 border-t border-[var(--panel-light)] space-y-1">
+                    <button class="btn-retro w-full py-1 text-[8px]" onclick="promptAddTagToCard('${cardId}')">[ADD TAG]</button>
+                    <button class="btn-retro w-full py-1 text-[8px]" onclick="promptCreateConnection('${cardId}')">[CREATE CONNECTION]</button>
+                    <button class="btn-retro w-full py-1 text-[8px] border-red-500 text-red-500" onclick="deleteCard('${cardId}')">[DELETE CARD]</button>
+                </div>
+            `;
         }
-
-        function clearQueryHistory() {
-            if (!confirm('Clear all query history?')) return;
-            boardState.queryHistory = [];
+        
+        function toggleCardDetailsPanel() {
+            const panel = document.getElementById('card-details-panel');
+            const collapsed = document.getElementById('card-details-collapsed');
+            
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                collapsed.classList.add('hidden');
+            } else {
+                panel.classList.add('hidden');
+                collapsed.classList.remove('hidden');
+            }
+        }
+        
+        function promptAddTagToCard(cardId) {
+            addTagToCard(cardId);
+        }
+        
+        function promptCreateConnection(cardId) {
+            const sourceCard = boardState.cards.find(c => c.id === cardId);
+            if (!sourceCard) return;
+            
+            // Get all other cards
+            const otherCards = boardState.cards.filter(c => c.id !== cardId);
+            
+            if (otherCards.length === 0) {
+                alert('No other cards on the board to connect to.');
+                return;
+            }
+            
+            // Build card selection list
+            let cardList = `Select target card to connect from "${sourceCard.data.subject}":\n\n`;
+            otherCards.forEach((card, idx) => {
+                cardList += `${idx + 1}. ${card.data.subject}\n`;
+            });
+            
+            const selection = prompt(cardList + '\nEnter card number:');
+            if (!selection) return;
+            
+            const cardIndex = parseInt(selection) - 1;
+            if (cardIndex < 0 || cardIndex >= otherCards.length) {
+                alert('Invalid selection');
+                return;
+            }
+            
+            const targetCard = otherCards[cardIndex];
+            
+            // Ask for connection type
+            const connectionType = prompt('Connection type:\n\n1. Related (cyan) - General relationship\n2. Causal (yellow) - Cause and effect\n3. Conflicting (red) - Contradicting information\n\nEnter (1-3):');
+            const types = {'1': 'related', '2': 'causal', '3': 'conflicting'};
+            const selectedType = types[connectionType] || 'related';
+            
+            const label = prompt('Connection label (optional):\nDescribe the relationship:');
+            
+            boardState.connections.push({
+                from: cardId,
+                to: targetCard.id,
+                type: selectedType,
+                label: label || ''
+            });
+            
             saveBoardState();
-            updateQueryHistory();
+            renderConnections();
+            updateCardDetailsPanel(cardId);
+            showSystemNotification(`✓ Connected "${sourceCard.data.subject}" → "${targetCard.data.subject}"`);
+        }
+        
+        function deleteCard(cardId) {
+            if (!confirm('Delete this evidence card?')) return;
+            
+            boardState.cards = boardState.cards.filter(c => c.id !== cardId);
+            boardState.connections = boardState.connections.filter(c => 
+                c.from !== cardId && c.to !== cardId
+            );
+            boardState.selectedCard = null;
+            
+            saveBoardState();
+            renderInvestigationBoard();
+            
+            const container = document.getElementById('card-details-content');
+            if (container) {
+                container.innerHTML = '<div class="text-center text-[var(--text-dim)] italic py-8">Select a card to view details</div>';
+            }
+            
+            showSystemNotification('Card deleted');
         }
 
         function updateBoardStats() {
@@ -2434,44 +2890,185 @@
             if (count) count.textContent = boardState.cards.length;
         }
 
-        function showCardContextMenu(card, event) {
-            // TODO: Implement context menu for connections, delete, etc.
-            const options = [
-                'Create Connection',
-                'Delete Card',
-                'View Full Email'
-            ];
+        function sendToInvestigationBoard() {
+            if (!selectedEmail) {
+                showSystemNotification('No email selected');
+                return;
+            }
             
-            const action = prompt(`CARD: ${card.data.subject}\n\n1. Create Connection\n2. Delete Card\n3. View Full Email\n\nEnter option (1-3):`);
+            // Check if card already exists
+            const existingCard = boardState.cards.find(c => c.id === selectedEmail.id);
+            if (existingCard) {
+                showSystemNotification(`"${selectedEmail.subject}" already on investigation board`);
+                // Open forensics window to show it
+                openWindow('forensics-window');
+                // Highlight the existing card
+                setTimeout(() => {
+                    selectCard(existingCard.id);
+                    // Scroll to card
+                    const cardEl = document.getElementById(`card-${existingCard.id}`);
+                    if (cardEl) {
+                        cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 300);
+                return;
+            }
+            
+            // Add to discovered emails if not already there
+            if (!entityDatabase.discoveredEmails.find(e => e.id === selectedEmail.id)) {
+                entityDatabase.discoveredEmails.push(selectedEmail);
+            }
+            
+            // Create new card at a smart position
+            const gridX = 150 + (boardState.cards.length % 8) * 250;
+            const gridY = 150 + Math.floor(boardState.cards.length / 8) * 200;
+            
+            boardState.cards.push({
+                id: selectedEmail.id,
+                x: gridX,
+                y: gridY,
+                data: selectedEmail,
+                tags: []
+            });
+            
+            saveBoardState();
+            showSystemNotification(`📌 "${selectedEmail.subject}" sent to investigation board`);
+            
+            // Open forensics window
+            openWindow('forensics-window');
+        }
+
+        function sendFileToInvestigationBoard() {
+            const nameEl = document.getElementById('file-preview-name');
+            const userEl = document.getElementById('file-preview-user');
+            const contentEl = document.getElementById('file-preview-content');
+            
+            if (!nameEl || !userEl || !contentEl) {
+                showSystemNotification('No file selected');
+                return;
+            }
+            
+            const fileName = nameEl.innerText;
+            const username = userEl.innerText;
+            const content = contentEl.innerText;
+            const fileId = `file:${username}:${fileName}`;
+            
+            // Check if card already exists
+            const existingCard = boardState.cards.find(c => c.id === fileId);
+            if (existingCard) {
+                showSystemNotification(`"${fileName}" already on investigation board`);
+                openWindow('forensics-window');
+                setTimeout(() => {
+                    selectCard(existingCard.id);
+                    const cardEl = document.getElementById(`card-${existingCard.id}`);
+                    if (cardEl) {
+                        cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 300);
+                return;
+            }
+            
+            // Create file data object similar to email format
+            const fileData = {
+                id: fileId,
+                type: 'file',
+                subject: fileName,
+                sender: username,
+                receiver: 'ARCHIVE',
+                body: content.substring(0, 500), // Preview only
+                date: new Date().toISOString().split('T')[0]
+            };
+            
+            // Create new card
+            const gridX = 150 + (boardState.cards.length % 8) * 250;
+            const gridY = 150 + Math.floor(boardState.cards.length / 8) * 200;
+            
+            boardState.cards.push({
+                id: fileId,
+                x: gridX,
+                y: gridY,
+                data: fileData,
+                tags: []
+            });
+            
+            saveBoardState();
+            showSystemNotification(`📌 File "${fileName}" sent to investigation board`);
+            
+            // Open forensics window
+            openWindow('forensics-window');
+        }
+
+        function addNoteToBoard() {
+            // Clear filters so the new note is visible
+            boardState.activeFilters.clear();
+
+            const existingNotes = boardState.cards.filter(c => c.data?.type === 'note').length;
+            if (existingNotes >= 5) {
+                showSystemNotification('⚠ MEMORY OVERLOAD: Note capacity reached (max 5)');
+                return;
+            }
+
+            const title = prompt('Note title:');
+            if (title === null) return;
+            const body = prompt('Note body (optional):', '') || '';
+            const noteId = `note-${Date.now()}`;
+            const gridX = 150 + (boardState.cards.length % 8) * 250;
+            const gridY = 150 + Math.floor(boardState.cards.length / 8) * 200;
+            
+            boardState.cards.push({
+                id: noteId,
+                x: gridX,
+                y: gridY,
+                data: {
+                    id: noteId,
+                    type: 'note',
+                    subject: title || 'UNTITLED NOTE',
+                    sender: 'OPERATOR',
+                    receiver: 'BOARD',
+                    body: body || ' ',
+                    date: new Date().toISOString().split('T')[0]
+                },
+                tags: []
+            });
+            saveBoardState();
+            renderInvestigationBoard();
+            selectCard(noteId);
+            const cardEl = document.getElementById(`card-${noteId}`);
+            if (cardEl) {
+                cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            showSystemNotification('Note added to board');
+        }
+
+        function showCardContextMenu(card, event) {
+            const action = prompt(`CARD: ${card.data.subject}\n\n1. Create Connection\n2. Add Tag\n3. Delete Card\n4. View Full Content\n\nEnter option (1-4):`);
             
             if (action === '1') {
-                const targetId = prompt('Enter target card ID to connect:');
-                if (targetId) {
-                    const connectionType = prompt('Connection type:\n1. Related\n2. Causal\n3. Conflicting\n\nEnter (1-3):');
-                    const types = {' 1': 'related', '2': 'causal', '3': 'conflicting'};
-                    const label = prompt('Connection label (optional):');
-                    
-                    boardState.connections.push({
-                        from: card.id,
-                        to: targetId,
-                        type: types[connectionType] || 'related',
-                        label: label || ''
-                    });
-                    
-                    saveBoardState();
-                    renderConnections();
-                }
+                promptCreateConnection(card.id);
             } else if (action === '2') {
-                if (confirm('Delete this evidence card?')) {
-                    boardState.cards = boardState.cards.filter(c => c.id !== card.id);
-                    boardState.connections = boardState.connections.filter(c => 
-                        c.from !== card.id && c.to !== card.id
-                    );
-                    saveBoardState();
-                    renderInvestigationBoard();
-                }
+                addTagToCard(card.id);
             } else if (action === '3') {
-                showSpecificEmail(card.data.id);
+                deleteCard(card.id);
+            } else if (action === '4') {
+                if (card.data.type === 'file') {
+                    alert('File content:\n\n' + card.data.body);
+                } else {
+                    // For emails, try to open in viewer
+                    const emailData = entityDatabase.discoveredEmails.find(e => e.id === card.id);
+                    if (emailData) {
+                        openWindow('archive-window');
+                        setTimeout(() => {
+                            const emailItems = document.querySelectorAll('.email-item');
+                            emailItems.forEach(item => {
+                                if (item.textContent.includes(card.id)) {
+                                    item.click();
+                                }
+                            });
+                        }, 300);
+                    } else {
+                        alert('Email content:\n\n' + card.data.body);
+                    }
+                }
             }
         }
 
@@ -5565,7 +6162,7 @@ Good luck, Investigator.
                 emailTagsEl.innerText = '---';
             } else {
                 emailTagsEl.innerHTML = tagsForEmail.map(t => 
-                    `<span style="display: inline-block; background: ${t.color}; color: #000; padding: 2px 6px; margin-right: 4px; border-radius: 2px; font-weight: bold; font-size: 9px;">${t.name}</span>`
+                    `<span style="display: inline-block; background: ${t.color}; color: var(--bg-dark); padding: 2px 6px; margin-right: 4px; border-radius: 2px; font-weight: bold; font-size: 9px;">${t.name}</span>`
                 ).join('');
             }
         }
@@ -5598,7 +6195,7 @@ Good luck, Investigator.
                 fileTagsEl.innerText = '---';
             } else {
                 fileTagsEl.innerHTML = tagsForFile.map(t => 
-                    `<span style="display: inline-block; background: ${t.color}; color: #000; padding: 2px 6px; margin-right: 4px; border-radius: 2px; font-weight: bold; font-size: 9px;">${t.name}</span>`
+                    `<span style="display: inline-block; background: ${t.color}; color: var(--bg-dark); padding: 2px 6px; margin-right: 4px; border-radius: 2px; font-weight: bold; font-size: 9px;">${t.name}</span>`
                 ).join('');
             }
         }
@@ -5617,7 +6214,7 @@ Good luck, Investigator.
             // If image path provided, create a container with image and overlay
             if (imagePath) {
                 return `
-                    <div class="w-full h-full relative bg-black/20" style="background-image: url('${imagePath}'); background-size: cover; background-position: center;">
+                    <div class="w-full h-full relative" style="background-image: url('${imagePath}'); background-size: cover; background-position: center; background-color: var(--panel-dark);">
                         <svg width="100%" height="100%" class="absolute inset-0 opacity-30" preserveAspectRatio="none">
                             <defs>
                                 <pattern id="grid-overlay" width="40" height="40" patternUnits="userSpaceOnUse">
