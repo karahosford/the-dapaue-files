@@ -254,6 +254,178 @@
             color: var(--bg-dark);
         }
 
+        /* Evidence Card Styles */
+        .evidence-card {
+            position: absolute;
+            width: 220px;
+            background: var(--panel-dark);
+            border: 1px solid var(--panel-light);
+            cursor: move;
+            user-select: none;
+            transition: box-shadow 0.2s, border-color 0.2s;
+            z-index: 10;
+        }
+
+        .evidence-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .evidence-card.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            z-index: 20;
+        }
+
+        .evidence-card.search-match {
+            border-color: #ffff00;
+            animation: pulse-yellow 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-yellow {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 255, 0, 0.4); }
+            50% { box-shadow: 0 0 15px rgba(255, 255, 0, 0.8); }
+        }
+
+        .card-header {
+            background: var(--panel-light);
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--panel-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-type {
+            font-size: 8px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .card-date {
+            font-size: 7px;
+            color: var(--text-dim);
+        }
+
+        .card-body {
+            padding: 8px;
+            font-size: 9px;
+            line-height: 1.3;
+            max-height: 120px;
+            overflow: hidden;
+        }
+
+        .card-subject {
+            font-weight: bold;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            font-size: 10px;
+        }
+
+        .card-preview {
+            color: var(--text-dim);
+            line-height: 1.4;
+        }
+
+        .card-tags {
+            padding: 4px 8px;
+            border-top: 1px solid var(--panel-light);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            min-height: 20px;
+        }
+
+        .evidence-tag {
+            font-size: 7px;
+            padding: 2px 5px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .evidence-tag:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: var(--accent);
+        }
+
+        .evidence-tag.filtered {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        /* Connection Line Styles */
+        .connection-line {
+            stroke-width: 2;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .connection-line.type-related {
+            stroke: var(--accent);
+        }
+
+        .connection-line.type-causal {
+            stroke: #ffff00;
+        }
+
+        .connection-line.type-conflicting {
+            stroke: #ff0066;
+        }
+
+        .connection-line:hover {
+            opacity: 1;
+            stroke-width: 3;
+        }
+
+        /* Tag Cloud Styles */
+        .tag-cloud-item {
+            padding: 4px 8px;
+            background: rgba(0, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tag-cloud-item:hover {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: var(--accent);
+        }
+
+        .tag-cloud-item.active {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border-color: var(--accent);
+        }
+
+        .tag-frequency {
+            font-size: 8px;
+            opacity: 0.6;
+        }
+
+        /* Query History Styles */
+        .query-item {
+            padding: 4px 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .query-item:hover {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: var(--accent);
+        }
+
+        .query-result-count {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
         /* Responsive design for smaller screens */
         @media (max-width: 768px) {
             .window {
@@ -387,6 +559,29 @@
             justify-content: flex-start;
         }
 
+        /* Sidebar Collapse Styling */
+        #sidebar-node {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            width: auto;
+            min-width: 48px;
+        }
+
+        #sidebar-node.collapsed {
+            width: 48px;
+        }
+
+        #sidebar-node.collapsed .sidebar-label {
+            display: none;
+        }
+
+        #sidebar-node.collapsed button {
+            width: 32px;
+            padding: 4px !important;
+            font-size: 8px !important;
+            white-space: nowrap;
+        }
+
         .metadata-label { color: var(--text-dim); font-size: 11px; margin-bottom: 2px; }
         .metadata-value {
             color: var(--text-main);
@@ -502,9 +697,7 @@
 
         /* Intro Animations */
         #boot-log {
-            max-height: 250px;
-            overflow-y: hidden;
-            mask-image: linear-gradient(to top, black 80%, transparent 100%);
+            overflow-y: auto;
         }
 
         .form-glitch-in {
@@ -678,9 +871,9 @@
 
     <!-- Intro / Login Overlay -->
     <div id="intro-overlay" class="absolute inset-0 z-[2000] bg-[#0a0a0a] flex flex-col items-center justify-center p-8" style="display: none;">
-        <div class="max-w-2xl w-full flex flex-col items-center">
+        <div class="max-w-2xl w-full h-full flex flex-col">
             <!-- Legacy Boot Log Window -->
-            <div id="boot-log" class="w-full text-[11px] text-[#808080] font-mono leading-tight mb-12 h-96 overflow-y-auto scrollbar-hidden"></div>
+            <div id="boot-log" class="w-full flex-1 text-[11px] text-[#808080] font-mono leading-tight mb-6 overflow-y-auto scrollbar-hidden"></div>
             
             <!-- Login Box -->
             <div id="login-form" class="hidden border-2 border-[var(--panel-light)] p-10 bg-[var(--panel-dark)] w-full max-w-md shadow-2xl relative">
@@ -740,6 +933,10 @@
     <div id="desktop" class="hidden">
         <!-- Desktop Icons -->
         <div id="desktop-icons">
+            <div class="desktop-icon" onclick="openWindow('briefing-window')">
+                <div class="icon-image">📄</div>
+                <div class="icon-label">BRIEFING</div>
+            </div>
             <div class="desktop-icon" onclick="openWindow('user-access-window')">
                 <div class="icon-image">⌘</div>
                 <div class="icon-label">TERMINAL</div>
@@ -752,6 +949,10 @@
                 <div class="icon-image">📊</div>
                 <div class="icon-label">SYSMON</div>
             </div>
+            <div class="desktop-icon" onclick="openWindow('server-monitor-window'); renderServerMonitor();">
+                <div class="icon-image">🖥️</div>
+                <div class="icon-label">SERVERS</div>
+            </div>
             <div class="desktop-icon" onclick="openWindow('forensics-window')">
                 <div class="icon-image">🔍</div>
                 <div class="icon-label">FORENSICS</div>
@@ -762,6 +963,69 @@
             </div>
         </div>
         
+        <!-- SERVER MONITOR Window -->
+        <div id="server-monitor-window" class="window" style="width: 800px; height: 520px; left: 20%; top: 12%;">
+            <div class="window-titlebar" onmousedown="startDrag(event, 'server-monitor-window')">
+                <span class="window-title">SERVER_MONITOR // REMOTE_NODES</span>
+                <div class="window-controls">
+                    <div class="window-btn" onclick="minimizeWindow('server-monitor-window')">_</div>
+                    <div class="window-btn" onclick="closeWindow('server-monitor-window')">X</div>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="w-full h-full bg-[var(--bg-dark)] flex">
+                    <!-- Server List -->
+                    <div class="w-64 border-r-2 border-[var(--panel-light)] p-3 overflow-y-auto">
+                        <div class="text-[var(--accent)] font-bold mb-2 text-xs">REMOTE NODES</div>
+                        <div id="server-list" class="space-y-2 text-[10px]"></div>
+                    </div>
+
+                    <!-- Server Detail / Auth -->
+                    <div class="flex-1 p-4 flex flex-col gap-3">
+                        <div class="border-2 border-[var(--panel-light)] p-3 bg-[var(--panel-dark)]">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="text-[var(--accent)] font-bold text-xs">NODE DETAIL</div>
+                                    <div id="server-detail-name" class="text-sm font-bold mt-1">---</div>
+                                </div>
+                                <div class="text-right text-[9px]">
+                                    <div>Status: <span id="server-detail-status">N/A</span></div>
+                                    <div>Latency: <span id="server-detail-latency">--</span> ms</div>
+                                    <div>Load: <span id="server-detail-load">--</span>%</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3 mt-3 text-[9px]">
+                                <div class="border border-[var(--panel-light)] p-2">TEMP: <span id="server-detail-temp">--</span>°C</div>
+                                <div class="border border-[var(--panel-light)] p-2">PACKET_LOSS: <span id="server-detail-loss">--</span>%</div>
+                                <div class="border border-[var(--panel-light)] p-2">UPTIME: <span id="server-detail-uptime">--</span></div>
+                            </div>
+                            <div class="mt-3 flex items-center gap-3">
+                                <button class="btn-retro px-3 py-2 text-[10px]" onclick="setActiveServer()">[SELECT_NODE]</button>
+                                <span id="active-server-badge" class="text-[9px] text-[var(--text-dim)]"></span>
+                            </div>
+                        </div>
+
+                        <div class="border-2 border-[var(--panel-light)] p-3 bg-[var(--panel-dark)]">
+                            <div class="text-[var(--accent)] font-bold text-xs mb-2">AUTHENTICATION</div>
+                            <div class="grid grid-cols-3 gap-3 text-[10px]">
+                                <div>
+                                    <div class="text-[8px] text-[var(--text-dim)] mb-1 tracking-widest">USERNAME</div>
+                                    <input id="server-auth-username" type="text" class="w-full bg-[#0a0a0a] border border-[var(--panel-light)] p-2 text-xs text-white outline-none font-mono">
+                                </div>
+                                <div>
+                                    <div class="text-[8px] text-[var(--text-dim)] mb-1 tracking-widest">ACCESS_KEY</div>
+                                    <input id="server-auth-password" type="password" class="w-full bg-[#0a0a0a] border border-[var(--panel-light)] p-2 text-xs text-white outline-none font-mono">
+                                </div>
+                                <div class="flex items-end">
+                                    <button class="btn-retro w-full p-2 text-[10px]" onclick="authenticateServerForNode()">[AUTHENTICATE]</button>
+                                </div>
+                            </div>
+                            <div id="server-auth-status" class="mt-2 text-[9px] text-[var(--text-dim)]">Provide valid credentials to unlock data for the selected node.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Logout Button -->
         <button onclick="showLogoutModal()" class="absolute top-4 right-4 text-[10px] px-4 py-2 border border-red-500 text-red-500 hover:bg-red-900/40 font-bold transition-colors z-20">
             [X] LOGOUT
@@ -787,6 +1051,80 @@
                         <div class="flex gap-2">
                             <span class="text-[var(--accent)]">></span>
                             <input id="terminal-input" type="text" class="flex-1 bg-transparent outline-none text-[var(--text-main)]" placeholder="Enter command..." onkeypress="if(event.key==='Enter') executeCommand()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Briefing Document Window -->
+        <div id="briefing-window" class="window" style="width: 650px; height: 550px; left: 20%; top: 15%;">
+            <div class="window-titlebar" onmousedown="startDrag(event, 'briefing-window')">
+                <span class="window-title">MISSION_BRIEFING.DOC // CLASSIFIED</span>
+                <div class="window-controls">
+                    <div class="window-btn" onclick="minimizeWindow('briefing-window')">_</div>
+                    <div class="window-btn" onclick="closeWindow('briefing-window')">X</div>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="w-full h-full bg-[var(--bg-dark)] text-[var(--text-main)] p-6 font-mono text-xs overflow-y-auto leading-relaxed">
+                    <div class="border-b-2 border-[var(--panel-light)] pb-3 mb-4">
+                        <div class="text-red-500 font-bold text-sm mb-2">⚠ CLASSIFICATION: RESTRICTED ⚠</div>
+                        <div class="text-[10px] text-[var(--text-dim)]">
+                            <div>FROM: DIRECTOR_OVERSIGHT // DAPAUE_COMMAND</div>
+                            <div>TO: INVESTIGATION_UNIT // NEURAL-LINK_OPERATOR</div>
+                            <div>DATE: 2099-01-15 08:42:17</div>
+                            <div>SUBJECT: ARCHIVE_INVESTIGATION_MANDATE</div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <p>OPERATOR,</p>
+                        
+                        <p>YOU HAVE BEEN GRANTED EMERGENCY ACCESS TO THE DAPAUE ARCHIVE SYSTEM FOLLOWING RECENT ANOMALOUS ACTIVITY ACROSS MULTIPLE REMOTE NODES. YOUR PRIMARY OBJECTIVE IS TO CONDUCT A COMPREHENSIVE INVESTIGATION INTO ARCHIVED COMMUNICATIONS AND DATA FRAGMENTS.</p>
+                        
+                        <div class="border-l-2 border-yellow-500 pl-3 my-4">
+                            <div class="text-yellow-500 font-bold mb-2">PRIMARY OBJECTIVES:</div>
+                            <div class="space-y-1">
+                                <div>◆ ESTABLISH CONNECTION TO REMOTE ARCHIVE NODES</div>
+                                <div>◆ AUTHENTICATE ACCESS USING PROVIDED CREDENTIALS</div>
+                                <div>◆ REVIEW STAFF COMMUNICATIONS FOR IRREGULARITIES</div>
+                                <div>◆ IDENTIFY PATTERNS, CONNECTIONS, AND ANOMALIES</div>
+                                <div>◆ DOCUMENT FINDINGS USING FORENSICS TOOLS</div>
+                            </div>
+                        </div>
+                        
+                        <p>THE ARCHIVE CONTAINS SENSITIVE COMMUNICATIONS FROM MULTIPLE DAPAUE PERSONNEL. SOME DATA MAY BE ENCRYPTED, FRAGMENTED, OR RESTRICTED. YOU ARE AUTHORIZED TO USE THE TERMINAL SYSTEM TO UNLOCK USER ACCOUNTS AND ACCESS THEIR CORRESPONDENCE.</p>
+                        
+                        <p>FIVE REMOTE NODES ARE AVAILABLE. EACH REQUIRES AUTHENTICATION BEFORE DATA ACCESS IS GRANTED. USE THE SERVER MONITOR APPLICATION TO SELECT AND AUTHENTICATE NODES. STAFF CREDENTIALS ARE STORED IN THE SECURITY DATABASE.</p>
+                        
+                        <div class="border-l-2 border-cyan-500 pl-3 my-4">
+                            <div class="text-cyan-500 font-bold mb-2">AVAILABLE TOOLS:</div>
+                            <div class="space-y-1">
+                                <div>• TERMINAL: Command interface for account access</div>
+                                <div>• SERVERS: Node selection and authentication</div>
+                                <div>• SYSTEM-V: Archive email and file browser</div>
+                                <div>• FORENSICS: Investigation board and timeline</div>
+                                <div>• TAG WRANGLE: Pattern analysis and connections</div>
+                                <div>• NOTEPAD: Personal investigation notes</div>
+                            </div>
+                        </div>
+                        
+                        <p>TIME IS CRITICAL. IRREGULAR PATTERNS IN THE DATA SUGGEST POTENTIAL SECURITY BREACHES OR COMPROMISED PERSONNEL. YOUR INVESTIGATION MAY REVEAL INFORMATION REGARDING [REDACTED] AND THE CURRENT STATUS OF [REDACTED].</p>
+                        
+                        <p>ALL FINDINGS MUST BE DOCUMENTED. USE THE NOTEPAD FOR PERSONAL ANNOTATIONS. THE FORENSICS BOARD WILL AUTO-POPULATE AS YOU DISCOVER NEW INFORMATION.</p>
+                        
+                        <div class="border-2 border-red-500 p-3 my-4 bg-red-900/10">
+                            <div class="text-red-500 font-bold mb-2">⚠ SECURITY NOTICE:</div>
+                            <div>THIS SESSION IS MONITORED. UNAUTHORIZED DATA EXTRACTION OR TAMPERING WILL RESULT IN IMMEDIATE NEURAL-LINK TERMINATION AND DISCIPLINARY ACTION.</div>
+                        </div>
+                        
+                        <p>BEGIN YOUR INVESTIGATION IMMEDIATELY. REPORT ANY CRITICAL DISCOVERIES THROUGH PROPER CHANNELS.</p>
+                        
+                        <div class="mt-6 pt-4 border-t border-[var(--panel-light)] text-[var(--text-dim)] text-[10px]">
+                            <div>DIRECTOR_OVERSIGHT</div>
+                            <div>DAPAUE COMMAND // INVESTIGATION DIVISION</div>
+                            <div class="mt-2">--- END TRANSMISSION ---</div>
                         </div>
                     </div>
                 </div>
@@ -897,7 +1235,7 @@
         </div>
 
         <!-- FORENSICS Investigation Board Window -->
-        <div id="forensics-window" class="window" style="width: 85%; height: 80%; left: 7.5%; top: 10%;">
+        <div id="forensics-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 7.5%;">
             <div class="window-titlebar" onmousedown="startDrag(event, 'forensics-window')">
                 <span class="window-title">FORENSICS // INVESTIGATION_BOARD</span>
                 <div class="window-controls">
@@ -907,57 +1245,62 @@
             </div>
             <div class="window-content">
                 <div class="w-full h-full bg-[var(--bg-dark)] flex flex-col">
-                    <!-- Tab Navigation -->
-                    <div class="border-b-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex">
-                        <button id="forensics-tab-timeline" class="px-4 py-2 text-xs border-r border-[var(--panel-light)] hover:bg-[var(--panel-light)] active" onclick="switchForensicsTab('timeline')">TIMELINE</button>
-                        <button id="forensics-tab-entities" class="px-4 py-2 text-xs border-r border-[var(--panel-light)] hover:bg-[var(--panel-light)]" onclick="switchForensicsTab('entities')">ENTITIES</button>
-                        <button id="forensics-tab-tags" class="px-4 py-2 text-xs hover:bg-[var(--panel-light)]" onclick="switchForensicsTab('tags')">TAGS</button>
-                        <div class="ml-auto px-4 py-2 text-[9px] text-[var(--text-dim)]">
-                            DISCOVERED: <span id="forensics-count">0</span> ITEMS
+                    <!-- Search & Control Bar -->
+                    <div class="border-b-2 border-[var(--panel-light)] bg-[var(--panel-dark)] p-2 flex items-center gap-3">
+                        <div class="flex items-center gap-2 flex-1">
+                            <span class="text-[9px] text-[var(--text-dim)]">🔍</span>
+                            <input id="forensics-search" type="text" placeholder="SEARCH EVIDENCE..." class="flex-1 bg-[#0a0a0a] border border-[var(--panel-light)] px-3 py-1 text-[10px] font-mono outline-none" onkeyup="performForensicsSearch(event)">
+                            <button class="btn-retro px-2 py-1 text-[8px]" onclick="clearForensicsSearch()">[CLEAR]</button>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button id="board-mode-btn" class="btn-retro px-3 py-1 text-[9px] active" onclick="toggleBoardMode('board')">[BOARD]</button>
+                            <button id="timeline-mode-btn" class="btn-retro px-3 py-1 text-[9px]" onclick="toggleBoardMode('timeline')">[TIMELINE]</button>
+                            <span class="text-[9px] text-[var(--text-dim)] ml-2">EVIDENCE: <span id="forensics-count">0</span></span>
                         </div>
                     </div>
                     
-                    <!-- Content Area -->
+                    <!-- Main Content Area -->
                     <div class="flex-1 overflow-hidden flex">
-                        <div class="flex-1 overflow-y-auto p-4">
-                        <!-- Timeline View -->
-                        <div id="forensics-timeline" class="forensics-panel">
-                            <div class="text-xs mb-4 text-[var(--text-dim)]">Chronological view of all discovered communications and events</div>
-                            <div id="forensics-timeline-list" class="space-y-3"></div>
+                        <!-- Tag Sidebar -->\n                        <div class="w-48 border-r-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col">
+                            <div class="p-2 border-b border-[var(--panel-light)]">
+                                <div class="text-[9px] font-bold text-[var(--accent)] mb-2">TAGS</div>
+                                <button class="btn-retro w-full py-1 text-[8px]" onclick="createNewTag()">[+ NEW TAG]</button>
+                            </div>
+                            <div id="forensics-tag-cloud" class="flex-1 overflow-y-auto p-2 text-[9px] space-y-1"></div>
+                            <div class="p-2 border-t border-[var(--panel-light)] text-[8px] text-[var(--text-dim)]">
+                                Click tag to filter
+                            </div>
                         </div>
                         
-                        <!-- Entities View -->
-                        <div id="forensics-entities" class="forensics-panel hidden">
-                            <div class="text-xs mb-4 text-[var(--text-dim)]">Catalog of people, locations, and key items mentioned across communications</div>
-                            <div class="grid grid-cols-3 gap-4">
-                                <div>
-                                    <div class="text-xs font-bold mb-2 text-[var(--accent)]">PEOPLE</div>
-                                    <div id="forensics-people" class="space-y-1 text-[10px]"></div>
-                                </div>
-                                <div>
-                                    <div class="text-xs font-bold mb-2 text-[var(--accent)]">LOCATIONS</div>
-                                    <div id="forensics-locations" class="space-y-1 text-[10px]"></div>
-                                </div>
-                                <div>
-                                    <div class="text-xs font-bold mb-2 text-[var(--accent)]">KEY ITEMS</div>
-                                    <div id="forensics-items" class="space-y-1 text-[10px]"></div>
+                        <!-- Evidence Board Canvas -->
+                        <div class="flex-1 flex flex-col overflow-hidden">
+                            <div id="board-container" class="flex-1 relative overflow-auto bg-[#050505]" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(255,255,255,0.02) 24px, rgba(255,255,255,0.02) 25px), repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(255,255,255,0.02) 24px, rgba(255,255,255,0.02) 25px);">
+                                <div id="board-canvas" class="relative" style="width: 3000px; height: 2000px; min-width: 100%; min-height: 100%;">
+                                    <!-- Evidence cards will be dynamically placed here -->
+                                    <svg id="board-connections" class="absolute inset-0 pointer-events-none" style="width: 100%; height: 100%; z-index: 1;">
+                                        <!-- Connection lines drawn here -->
+                                    </svg>
+                                    <div id="board-cards" class="absolute inset-0" style="z-index: 2;">
+                                        <!-- Evidence cards placed here -->
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                             
-                            <!-- Tags View -->
-                            <div id="forensics-tags" class="forensics-panel hidden">
-                                <div class="text-xs mb-2 text-[var(--text-dim)]">User-created tags. Click to inspect and highlight connections.</div>
-                                <div id="forensics-tags-list" class="space-y-2 text-[10px]"></div>
+                            <!-- Timeline Rail (hidden by default) -->
+                            <div id="timeline-rail" class="border-t-2 border-[var(--panel-light)] bg-[var(--panel-dark)] p-2 overflow-x-auto hidden" style="height: 120px;">
+                                <div class="text-[8px] text-[var(--text-dim)] mb-1">CHRONOLOGICAL TIMELINE</div>
+                                <div id="timeline-track" class="relative h-full"></div>
                             </div>
                         </div>
-                        <!-- Sidebar for tag details -->
-                        <div id="forensics-sidebar" class="w-64 border-l-2 border-[var(--panel-light)] bg-[var(--panel-dark)] hidden">
-                            <div class="p-3 border-b-2 border-[var(--panel-light)] bg-[var(--panel-light)] text-[var(--bg-dark)]">
-                                <span id="forensics-sidebar-title" class="text-xs font-bold uppercase tracking-wider">TAG_DETAILS</span>
+                        
+                        <!-- Query History Sidebar -->
+                        <div class="w-40 border-l-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col">
+                            <div class="p-2 border-b border-[var(--panel-light)] text-[9px] font-bold text-[var(--accent)]">
+                                QUERY HISTORY
                             </div>
-                            <div class="p-3 overflow-y-auto text-[10px]">
-                                <div id="forensics-sidebar-content" class="space-y-2"></div>
+                            <div id="query-history" class="flex-1 overflow-y-auto p-2 text-[8px] space-y-1 text-[var(--text-dim)]"></div>
+                            <div class="p-2 border-t border-[var(--panel-light)]">
+                                <button class="btn-retro w-full py-1 text-[8px]" onclick="clearQueryHistory()">[CLEAR]</button>
                             </div>
                         </div>
                     </div>
@@ -1019,18 +1362,23 @@
             <div class="flex items-center gap-4">
                 <span class="font-bold">SYSTEM-V // ARCHIVE_99 // DAPAUE</span>
 
-                <span id="current-user-display" class="text-[9px] text-green-500 border border-green-900/40 px-2 py-0.5 cursor-pointer hover:border-green-500 hover:bg-green-900/20 transition-all" onclick="openUserSelector()">USER: ARCHIVIST_01</span>
+                <span id="current-user-display" class="text-[9px] text-green-500 border border-green-900/40 px-2 py-0.5 cursor-pointer hover:border-green-500 hover:bg-green-900/20 transition-all" onclick="openUserSelector()">USER: GUEST</span>
+            </div>
+            <div class="flex items-center gap-3 text-[9px]">
+                <span class="text-[var(--text-dim)]">ACTIVE_NODE:</span>
+                <span id="active-server-display" class="text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20" onclick="openNodeSelector()">NONE</span>
             </div>
         </div>
 
         <div class="flex-1 flex overflow-hidden">
             <!-- Sidebar -->
             <div id="sidebar-node" class="w-20 md:w-48 border-r-2 border-[var(--panel-light)] flex flex-col p-2 gap-2 bg-[var(--panel-dark)] reveal-node">
-                <button id="tab-inbox" class="btn-retro active p-2 text-xs text-left" onclick="switchTab('inbox')">[01] INBOX</button>
-                <button id="tab-sent" class="btn-retro p-2 text-xs text-left" onclick="switchTab('sent')">[02] SENT</button>
-                <button id="tab-trash" class="btn-retro p-2 text-xs text-left" onclick="switchTab('trash')">[03] TRASH</button>
+                <button onclick="toggleSidebarPanel()" class="btn-retro p-2 text-xs text-center mb-2 opacity-70 hover:opacity-100" title="Toggle sidebar">[◄►]</button>
+                <button id="tab-inbox" class="btn-retro active p-2 text-xs text-left" onclick="switchTab('inbox')"><span class="sidebar-label">[01] INBOX</span></button>
+                <button id="tab-sent" class="btn-retro p-2 text-xs text-left" onclick="switchTab('sent')"><span class="sidebar-label">[02] SENT</span></button>
+                <button id="tab-trash" class="btn-retro p-2 text-xs text-left" onclick="switchTab('trash')"><span class="sidebar-label">[03] TRASH</span></button>
                 <div class="mt-4 pt-4 border-t-2 border-[var(--panel-light)]">
-                    <button id="tab-explorer" class="btn-retro p-2 text-xs text-left" onclick="switchTab('explorer')">[04] FILE EXPLORER</button>
+                    <button id="tab-explorer" class="btn-retro p-2 text-xs text-left" onclick="switchTab('explorer')"><span class="sidebar-label">[04] FILE EXPLORER</span></button>
                 </div>
             </div>
 
@@ -1089,7 +1437,7 @@
             <div id="metadata-node" class="border-l-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col reveal-node">
                 <div id="metadata-header" class="p-3 border-b-2 border-[var(--panel-light)] bg-[var(--panel-light)] flex justify-between items-center text-[var(--bg-dark)]">
                     <span id="metadata-title" class="text-xs font-bold uppercase tracking-wider">PACKET_METADATA</span>
-                    <button onclick="toggleMetadata()" class="hover:opacity-50 text-xs font-bold px-1" id="metadata-toggle-btn">[>]</button>
+                    <button onclick="toggleMetadataPanel()" class="text-xs cursor-pointer hover:opacity-80 font-bold" title="Toggle metadata">[◄►]</button>
                 </div>
                 <div id="metadata-content" class="flex-1 overflow-y-auto p-4 scrollbar-hidden">
                     <div id="metadata-empty" class="text-[10px] text-[var(--text-dim)] text-center mt-10 italic">WAITING_FOR_DATA...</div>
@@ -1322,8 +1670,8 @@
                     console.log('[App] Data source:', window.dataSource || 'unknown');
                     if (!currentUser) {
                         currentUser = {
-                            username: 'ARCHIVIST_01',
-                            name: 'Archivist (System Default)',
+                            username: 'GUEST',
+                            name: 'GUEST',
                             emails: (typeof emails !== 'undefined') ? emails : []
                         };
                     }
@@ -1389,13 +1737,28 @@
             
             // Show welcome notification
             showSystemNotification();
+
+            // Enable admin mode: unlock all servers and bypass locks
+            if (typeof serverNodes !== 'undefined') {
+                window.adminMode = true;
+                // Select first online node or first node
+                const preferred = serverNodes.find(n => n.status !== 'OFFLINE') || serverNodes[0];
+                if (preferred) {
+                    window.activeServerId = preferred.id;
+                }
+                if (!window.serverAccess) window.serverAccess = {};
+                serverNodes.forEach(n => { window.serverAccess[n.id] = true; });
+                if (typeof saveServerState === 'function') { saveServerState(); }
+                if (typeof updateActiveServerDisplay === 'function') { updateActiveServerDisplay(); }
+                if (typeof renderServerMonitor === 'function') { renderServerMonitor(); }
+            }
             
             // Load default state
             // Ensure default user exists
             if (!currentUser) {
                 currentUser = {
-                    username: 'ARCHIVIST_01',
-                    name: 'Archivist (System Default)',
+                    username: 'GUEST',
+                    name: 'GUEST',
                     emails: (typeof emails !== 'undefined') ? emails : []
                 };
             }
@@ -1416,6 +1779,16 @@
             }
         }
 
+        function toggleMetadataPanel() {
+            const metadataNode = document.getElementById('metadata-node');
+            metadataNode.classList.toggle('collapsed');
+        }
+
+        function toggleSidebarPanel() {
+            const sidebarNode = document.getElementById('sidebar-node');
+            sidebarNode.classList.toggle('collapsed');
+        }
+
         function showSystemNotification() {
             const notification = document.createElement('div');
             notification.className = 'system-notification';
@@ -1433,6 +1806,134 @@
             `;
             document.body.appendChild(notification);
         }
+
+        // ===== Server Monitor Logic =====
+        let serverNodes = [
+            { id: 'NODE-01', name: 'ARCHIVE_NODE_01', status: 'ONLINE', latency: 12, load: 35, temp: 48, loss: 0.2, uptime: '482d', selected: false },
+            { id: 'NODE-02', name: 'ARCHIVE_NODE_02', status: 'ONLINE', latency: 20, load: 52, temp: 55, loss: 0.5, uptime: '312d', selected: false },
+            { id: 'NODE-03', name: 'ARCHIVE_NODE_03', status: 'WARNING', latency: 55, load: 76, temp: 68, loss: 2.1, uptime: '128d', selected: false },
+            { id: 'NODE-04', name: 'ARCHIVE_NODE_04', status: 'OFFLINE', latency: 0, load: 0, temp: 0, loss: 0, uptime: '0d', selected: false },
+            { id: 'NODE-05', name: 'ARCHIVE_NODE_05', status: 'ONLINE', latency: 18, load: 43, temp: 51, loss: 0.3, uptime: '905d', selected: false }
+        ];
+        let activeServerId = localStorage.getItem('dapaue-active-server') || null;
+        let serverAccess = JSON.parse(localStorage.getItem('dapaue-server-access') || '{}');
+        let adminMode = false;
+
+        function saveServerState() {
+            localStorage.setItem('dapaue-active-server', activeServerId || '');
+            localStorage.setItem('dapaue-server-access', JSON.stringify(serverAccess));
+        }
+
+        function renderServerMonitor() {
+            const list = document.getElementById('server-list');
+            if (!list) return;
+            list.innerHTML = '';
+            serverNodes.forEach(n => {
+                const row = document.createElement('div');
+                row.className = 'p-2 border border-[var(--panel-light)] hover:bg-[var(--panel-dark)] cursor-pointer flex items-center justify-between';
+
+                let indicatorClass = 'warning';
+                if (n.status === 'ONLINE') indicatorClass = 'online';
+                if (n.status === 'OFFLINE') indicatorClass = 'offline';
+                const isActive = n.id === activeServerId;
+                const isAuthed = !!serverAccess[n.id];
+
+                row.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="status-indicator ${indicatorClass}"></span>
+                        <div>
+                            <div class="font-bold text-[10px]">${n.name}</div>
+                            <div class="text-[8px] text-[var(--text-dim)]">${n.id} • ${n.status}</div>
+                        </div>
+                    </div>
+                    <div class="text-[8px] text-right">
+                        <div>${n.latency}ms • ${n.load}%</div>
+                        <div>${isActive ? 'ACTIVE' : ''} ${isAuthed ? '• AUTH' : ''}</div>
+                    </div>`;
+                row.onclick = () => selectServerNode(n.id);
+                list.appendChild(row);
+            });
+
+            if (activeServerId) updateServerDetail(activeServerId);
+            updateActiveServerDisplay();
+        }
+
+        function selectServerNode(id) {
+            updateServerDetail(id);
+        }
+
+        function updateServerDetail(id) {
+            const n = serverNodes.find(s => s.id === id);
+            if (!n) return;
+            document.getElementById('server-detail-name').innerText = `${n.name} // ${n.id}`;
+            document.getElementById('server-detail-status').innerText = n.status;
+            document.getElementById('server-detail-latency').innerText = n.latency;
+            document.getElementById('server-detail-load').innerText = n.load;
+            document.getElementById('server-detail-temp').innerText = n.temp;
+            document.getElementById('server-detail-loss').innerText = n.loss;
+            document.getElementById('server-detail-uptime').innerText = n.uptime;
+
+            const badge = document.getElementById('active-server-badge');
+            if (badge) badge.innerText = (activeServerId === id ? '[ACTIVE]' : '[IDLE]') + (serverAccess[id] ? ' [AUTH]' : '');
+
+            const win = document.getElementById('server-monitor-window');
+            if (win) win.dataset.currentNode = id;
+        }
+
+        function setActiveServer() {
+            const win = document.getElementById('server-monitor-window');
+            if (!win || !win.dataset.currentNode) return;
+            activeServerId = win.dataset.currentNode;
+            saveServerState();
+            updateActiveServerDisplay();
+            renderServerMonitor();
+        }
+
+        function updateActiveServerDisplay() {
+            const el = document.getElementById('active-server-display');
+            if (!el) return;
+            if (!activeServerId) { el.innerText = 'NONE'; return; }
+            const n = serverNodes.find(s => s.id === activeServerId);
+            el.innerText = n ? n.id : 'NONE';
+        }
+
+        function authenticateServerForNode() {
+            const win = document.getElementById('server-monitor-window');
+            const id = win && win.dataset.currentNode ? win.dataset.currentNode : activeServerId;
+            const statusEl = document.getElementById('server-auth-status');
+            if (!id) { if (statusEl) statusEl.innerText = 'Select a node first.'; return; }
+            const user = document.getElementById('server-auth-username').value.trim();
+            const pass = document.getElementById('server-auth-password').value.trim();
+            if (!user || !pass) { if (statusEl) statusEl.innerText = 'Provide USERNAME and ACCESS_KEY.'; return; }
+
+            const match = (typeof staffUsers !== 'undefined') ? staffUsers.find(u => u.username.toLowerCase() === user.toLowerCase() && u.accessCode === pass) : null;
+            if (match) {
+                serverAccess[id] = true;
+                saveServerState();
+                if (statusEl) statusEl.innerText = `AUTH_SUCCESS: ${match.name}`;
+                updateServerDetail(id);
+            } else {
+                if (statusEl) statusEl.innerText = 'AUTH_FAILED: Invalid credentials';
+            }
+        }
+
+        setInterval(() => {
+            serverNodes = serverNodes.map(n => {
+                if (n.status === 'OFFLINE') return n;
+                const jitter = (v, d, min=0, max=100) => Math.min(max, Math.max(min, Math.round(v + (Math.random()*2-1)*d)));
+                return {
+                    ...n,
+                    latency: jitter(n.latency, 4, 5, 180),
+                    load: jitter(n.load, 6, 0, 100),
+                    temp: jitter(n.temp, 2, 20, 95),
+                    loss: Math.max(0, +(n.loss + (Math.random()*0.2-0.1)).toFixed(2))
+                };
+            });
+            const win = document.getElementById('server-monitor-window');
+            if (win && win.style.display !== 'none') {
+                renderServerMonitor();
+            }
+        }, 3000);
 
         async function runBootSequence() {
             const log = document.getElementById('boot-log');
@@ -1494,88 +1995,499 @@
         }
 
         function switchForensicsTab(tab) {
-            // Update tab buttons
-            document.querySelectorAll('[id^="forensics-tab-"]').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.getElementById(`forensics-tab-${tab}`).classList.add('active');
-            
-            // Switch panels
-            document.querySelectorAll('.forensics-panel').forEach(panel => panel.classList.add('hidden'));
-            const activePanel = document.getElementById(`forensics-${tab}`);
-            activePanel.classList.remove('hidden');
-            
-            // Refresh data
-            if (tab === 'timeline') updateForensicsTimeline();
-            if (tab === 'entities') updateForensicsEntities();
-            if (tab === 'tags') updateForensicsTags();
+            // Legacy function - kept for compatibility but redirects to new board
+            initializeInvestigationBoard();
         }
 
-        function updateForensicsTimeline() {
-            const container = document.getElementById('forensics-timeline-list');
+        // ========== INVESTIGATION BOARD SYSTEM ==========
+        
+        let boardState = {
+            mode: 'board', // 'board' or 'timeline'
+            cards: [], // {id, x, y, data, tags:[]}
+            connections: [], // {from, to, type, label}
+            selectedCard: null,
+            dragState: null,
+            searchResults: [],
+            activeFilters: new Set(), // active tag filters
+            queryHistory: [],
+            zoom: 1
+        };
+
+        function initializeInvestigationBoard() {
+            loadBoardState();
+            renderInvestigationBoard();
+            updateQueryHistory();
+            updateTagCloud();
+            updateBoardStats();
+        }
+
+        function loadBoardState() {
+            const saved = localStorage.getItem('forensics-board-state');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    boardState = { ...boardState, ...parsed };
+                } catch(e) {}
+            }
+            
+            // Sync cards with discovered emails
+            syncCardsWithEmails();
+        }
+
+        function saveBoardState() {
+            localStorage.setItem('forensics-board-state', JSON.stringify({
+                cards: boardState.cards,
+                connections: boardState.connections,
+                queryHistory: boardState.queryHistory
+            }));
+        }
+
+        function syncCardsWithEmails() {
+            const existingIds = new Set(boardState.cards.map(c => c.id));
+            
+            // Add new discovered emails as cards
+            entityDatabase.discoveredEmails.forEach((email, idx) => {
+                if (!existingIds.has(email.id)) {
+                    // Auto-position new cards in a grid
+                    const gridX = 150 + (boardState.cards.length % 8) * 250;
+                    const gridY = 150 + Math.floor(boardState.cards.length / 8) * 200;
+                    
+                    boardState.cards.push({
+                        id: email.id,
+                        x: gridX,
+                        y: gridY,
+                        data: email,
+                        tags: []
+                    });
+                }
+            });
+        }
+
+        function renderInvestigationBoard() {
+            const cardsContainer = document.getElementById('board-cards');
+            const connectionsContainer = document.getElementById('board-connections');
+            if (!cardsContainer) return;
+            
+            cardsContainer.innerHTML = '';
+            
+            // Filter cards based on active filters
+            let displayedCards = boardState.cards;
+            if (boardState.activeFilters.size > 0) {
+                displayedCards = boardState.cards.filter(card => 
+                    card.tags.some(tag => boardState.activeFilters.has(tag))
+                );
+            }
+            
+            // Render each evidence card
+            displayedCards.forEach(card => {
+                const cardEl = createEvidenceCard(card);
+                cardsContainer.appendChild(cardEl);
+            });
+            
+            // Render connections
+            renderConnections();
+        }
+
+        function createEvidenceCard(card) {
+            const el = document.createElement('div');
+            el.className = 'evidence-card';
+            el.id = `card-${card.id}`;
+            el.style.left = `${card.x}px`;
+            el.style.top = `${card.y}px`;
+            
+            const isMatch = boardState.searchResults.includes(card.id);
+            if (isMatch) el.classList.add('search-match');
+            if (boardState.selectedCard === card.id) el.classList.add('selected');
+            
+            const email = card.data;
+            const date = new Date(email.date).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
+            
+            el.innerHTML = `
+                <div class="card-header">
+                    <span class="card-type">EMAIL</span>
+                    <span class="card-date">${date}</span>
+                </div>
+                <div class="card-body">
+                    <div class="card-subject">${email.subject}</div>
+                    <div class="text-[8px] text-[var(--text-dim)] mb-2">
+                        FROM: ${email.sender}<br>
+                        TO: ${email.receiver}
+                    </div>
+                    <div class="card-preview">${email.body.substring(0, 100)}...</div>
+                </div>
+                <div class="card-tags" id="card-tags-${card.id}">
+                    ${card.tags.map(tag => `<span class="evidence-tag ${boardState.activeFilters.has(tag) ? 'filtered' : ''}" onclick="toggleTagFilter('${tag}')">${tag}</span>`).join('')}
+                    <span class="evidence-tag" style="opacity: 0.5;" onclick="addTagToCard('${card.id}')">+</span>
+                </div>
+            `;
+            
+            // Drag events
+            el.onmousedown = (e) => startCardDrag(e, card);
+            el.onclick = (e) => {
+                if (!boardState.dragState) selectCard(card.id);
+            };
+            el.oncontextmenu = (e) => {
+                e.preventDefault();
+                showCardContextMenu(card, e);
+            };
+            
+            return el;
+        }
+
+        function startCardDrag(e, card) {
+            if (e.target.classList.contains('evidence-tag')) return; // Don't drag when clicking tags
+            
+            boardState.dragState = {
+                cardId: card.id,
+                startX: e.clientX,
+                startY: e.clientY,
+                cardStartX: card.x,
+                cardStartY: card.y
+            };
+            
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Global mouse events for dragging
+        document.addEventListener('mousemove', (e) => {
+            if (!boardState.dragState) return;
+            
+            const dx = e.clientX - boardState.dragState.startX;
+            const dy = e.clientY - boardState.dragState.startY;
+            
+            const card = boardState.cards.find(c => c.id === boardState.dragState.cardId);
+            if (!card) return;
+            
+            card.x = boardState.dragState.cardStartX + dx;
+            card.y = boardState.dragState.cardStartY + dy;
+            
+            const el = document.getElementById(`card-${card.id}`);
+            if (el) {
+                el.style.left = `${card.x}px`;
+                el.style.top = `${card.y}px`;
+            }
+            
+            renderConnections();
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (boardState.dragState) {
+                boardState.dragState = null;
+                saveBoardState();
+            }
+        });
+
+        function selectCard(cardId) {
+            boardState.selectedCard = cardId;
+            document.querySelectorAll('.evidence-card').forEach(el => el.classList.remove('selected'));
+            const el = document.getElementById(`card-${cardId}`);
+            if (el) el.classList.add('selected');
+        }
+
+        function renderConnections() {
+            const svg = document.getElementById('board-connections');
+            if (!svg) return;
+            
+            svg.innerHTML = '';
+            
+            boardState.connections.forEach(conn => {
+                const fromCard = boardState.cards.find(c => c.id === conn.from);
+                const toCard = boardState.cards.find(c => c.id === conn.to);
+                if (!fromCard || !toCard) return;
+                
+                // Calculate center points of cards
+                const x1 = fromCard.x + 110; // half card width
+                const y1 = fromCard.y + 80;  // approximate center
+                const x2 = toCard.x + 110;
+                const y2 = toCard.y + 80;
+                
+                // Create curved line
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const midX = (x1 + x2) / 2;
+                const midY = (y1 + y2) / 2;
+                const curve = `M ${x1} ${y1} Q ${midX} ${midY - 50} ${x2} ${y2}`;
+                line.setAttribute('d', curve);
+                line.setAttribute('class', `connection-line type-${conn.type}`);
+                line.setAttribute('fill', 'none');
+                
+                svg.appendChild(line);
+                
+                // Add label if exists
+                if (conn.label) {
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', midX);
+                    text.setAttribute('y', midY - 55);
+                    text.setAttribute('fill', 'var(--text-dim)');
+                    text.setAttribute('font-size', '9');
+                    text.setAttribute('text-anchor', 'middle');
+                    text.textContent = conn.label;
+                    svg.appendChild(text);
+                }
+            });
+        }
+
+        function performForensicsSearch(event) {
+            if (event.key === 'Enter') {
+                const input = document.getElementById('forensics-search');
+                const query = input.value.trim().toLowerCase();
+                if (!query) return;
+                
+                // Perform search
+                boardState.searchResults = [];
+                boardState.cards.forEach(card => {
+                    const email = card.data;
+                    const searchable = `${email.subject} ${email.sender} ${email.receiver} ${email.body} ${card.tags.join(' ')}`.toLowerCase();
+                    if (searchable.includes(query)) {
+                        boardState.searchResults.push(card.id);
+                    }
+                });
+                
+                // Add to query history
+                boardState.queryHistory.unshift({
+                    query: query,
+                    results: boardState.searchResults.length,
+                    timestamp: Date.now()
+                });
+                if (boardState.queryHistory.length > 20) boardState.queryHistory.pop();
+                
+                saveBoardState();
+                renderInvestigationBoard();
+                updateQueryHistory();
+                
+                // Show notification
+                showSystemNotification(`SEARCH: Found ${boardState.searchResults.length} matches for "${query}"`);
+            }
+        }
+
+        function clearForensicsSearch() {
+            const input = document.getElementById('forensics-search');
+            input.value = '';
+            boardState.searchResults = [];
+            renderInvestigationBoard();
+        }
+
+        function toggleBoardMode(mode) {
+            boardState.mode = mode;
+            document.getElementById('board-mode-btn').classList.toggle('active', mode === 'board');
+            document.getElementById('timeline-mode-btn').classList.toggle('active', mode === 'timeline');
+            
+            if (mode === 'timeline') {
+                arrangeCardsInTimeline();
+                document.getElementById('timeline-rail').classList.remove('hidden');
+            } else {
+                document.getElementById('timeline-rail').classList.add('hidden');
+            }
+        }
+
+        function arrangeCardsInTimeline() {
+            // Sort cards by date and arrange horizontally
+            const sorted = [...boardState.cards].sort((a, b) => 
+                new Date(a.data.date) - new Date(b.data.date)
+            );
+            
+            sorted.forEach((card, idx) => {
+                card.x = 150 + idx * 250;
+                card.y = 400; // Fixed vertical position for timeline
+            });
+            
+            renderInvestigationBoard();
+            saveBoardState();
+        }
+
+        function updateTagCloud() {
+            const container = document.getElementById('forensics-tag-cloud');
             if (!container) return;
             
-            const emails = entityDatabase.discoveredEmails.slice().sort((a, b) => a.date.localeCompare(b.date));
+            // Collect all tags with frequencies
+            const tagCounts = {};
+            boardState.cards.forEach(card => {
+                card.tags.forEach(tag => {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                });
+            });
             
-            if (emails.length === 0) {
-                container.innerHTML = '<div class="text-center text-[var(--text-dim)] text-xs p-8">NO DATA DISCOVERED YET<br><br>Read emails to populate timeline</div>';
+            // Also include tags from entityDatabase
+            entityDatabase.tags.forEach((entry, tagName) => {
+                if (!tagCounts[tagName]) tagCounts[tagName] = entry.refs?.length || 0;
+            });
+            
+            const tags = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]);
+            
+            if (tags.length === 0) {
+                container.innerHTML = '<div class="text-[var(--text-dim)] italic p-2">No tags yet</div>';
                 return;
             }
             
             container.innerHTML = '';
-            emails.forEach(email => {
-                const item = document.createElement('div');
-                item.className = 'border-l-2 border-[var(--accent)] pl-3 pb-3';
-                item.innerHTML = `
-                    <div class="text-[9px] text-[var(--text-dim)] mb-1">${email.date} | ${email.id}</div>
-                    <div class="text-xs font-bold mb-1">${email.subject}</div>
-                    <div class="text-[10px] text-[var(--text-dim)]">FROM: ${email.sender} → TO: ${email.receiver}</div>
-                    <div class="text-[9px] mt-1 opacity-60">${email.body.substring(0, 120)}...</div>
+            tags.forEach(([tag, count]) => {
+                const el = document.createElement('div');
+                el.className = `tag-cloud-item ${boardState.activeFilters.has(tag) ? 'active' : ''}`;
+                el.innerHTML = `
+                    <span>${tag}</span>
+                    <span class="tag-frequency">${count}</span>
                 `;
-                container.appendChild(item);
+                el.onclick = () => toggleTagFilter(tag);
+                container.appendChild(el);
             });
+        }
+
+        function toggleTagFilter(tag) {
+            if (boardState.activeFilters.has(tag)) {
+                boardState.activeFilters.delete(tag);
+            } else {
+                boardState.activeFilters.add(tag);
+            }
+            renderInvestigationBoard();
+            updateTagCloud();
+        }
+
+        function createNewTag() {
+            const tagName = prompt('Enter new tag name:');
+            if (!tagName) return;
             
-            document.getElementById('forensics-count').innerText = emails.length;
+            const cleaned = tagName.trim().toUpperCase().replace(/\s+/g, '_');
+            if (!cleaned) return;
+            
+            // Add to entityDatabase if not exists
+            if (!entityDatabase.tags.has(cleaned)) {
+                entityDatabase.tags.set(cleaned, {
+                    color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
+                    refs: []
+                });
+            }
+            
+            updateTagCloud();
+            saveBoardState();
+        }
+
+        function addTagToCard(cardId) {
+            const tagName = prompt('Enter tag name:');
+            if (!tagName) return;
+            
+            const cleaned = tagName.trim().toUpperCase().replace(/\s+/g, '_');
+            if (!cleaned) return;
+            
+            const card = boardState.cards.find(c => c.id === cardId);
+            if (!card) return;
+            
+            if (!card.tags.includes(cleaned)) {
+                card.tags.push(cleaned);
+                
+                // Also add to entityDatabase
+                if (!entityDatabase.tags.has(cleaned)) {
+                    entityDatabase.tags.set(cleaned, {
+                        color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
+                        refs: []
+                    });
+                }
+                
+                const entry = entityDatabase.tags.get(cleaned);
+                if (!entry.refs.some(r => r.id === cardId)) {
+                    entry.refs.push({
+                        type: 'email',
+                        id: cardId,
+                        label: card.data.subject
+                    });
+                }
+                
+                saveBoardState();
+                renderInvestigationBoard();
+                updateTagCloud();
+            }
+        }
+
+        function updateQueryHistory() {
+            const container = document.getElementById('query-history');
+            if (!container) return;
+            
+            if (boardState.queryHistory.length === 0) {
+                container.innerHTML = '<div class="text-[var(--text-dim)] italic">No searches yet</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            boardState.queryHistory.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'query-item';
+                el.innerHTML = `
+                    <div class="font-bold">${item.query}</div>
+                    <div class="text-[7px] mt-1"><span class="query-result-count">${item.results}</span> results</div>
+                `;
+                el.onclick = () => {
+                    document.getElementById('forensics-search').value = item.query;
+                    performForensicsSearch({key: 'Enter'});
+                };
+                container.appendChild(el);
+            });
+        }
+
+        function clearQueryHistory() {
+            if (!confirm('Clear all query history?')) return;
+            boardState.queryHistory = [];
+            saveBoardState();
+            updateQueryHistory();
+        }
+
+        function updateBoardStats() {
+            const count = document.getElementById('forensics-count');
+            if (count) count.textContent = boardState.cards.length;
+        }
+
+        function showCardContextMenu(card, event) {
+            // TODO: Implement context menu for connections, delete, etc.
+            const options = [
+                'Create Connection',
+                'Delete Card',
+                'View Full Email'
+            ];
+            
+            const action = prompt(`CARD: ${card.data.subject}\n\n1. Create Connection\n2. Delete Card\n3. View Full Email\n\nEnter option (1-3):`);
+            
+            if (action === '1') {
+                const targetId = prompt('Enter target card ID to connect:');
+                if (targetId) {
+                    const connectionType = prompt('Connection type:\n1. Related\n2. Causal\n3. Conflicting\n\nEnter (1-3):');
+                    const types = {' 1': 'related', '2': 'causal', '3': 'conflicting'};
+                    const label = prompt('Connection label (optional):');
+                    
+                    boardState.connections.push({
+                        from: card.id,
+                        to: targetId,
+                        type: types[connectionType] || 'related',
+                        label: label || ''
+                    });
+                    
+                    saveBoardState();
+                    renderConnections();
+                }
+            } else if (action === '2') {
+                if (confirm('Delete this evidence card?')) {
+                    boardState.cards = boardState.cards.filter(c => c.id !== card.id);
+                    boardState.connections = boardState.connections.filter(c => 
+                        c.from !== card.id && c.to !== card.id
+                    );
+                    saveBoardState();
+                    renderInvestigationBoard();
+                }
+            } else if (action === '3') {
+                showSpecificEmail(card.data.id);
+            }
+        }
+
+        function updateForensicsTimeline() {
+            // Legacy function - redirect to new board
+            initializeInvestigationBoard();
         }
 
         function updateForensicsEntities() {
-            // Extract entities from all discovered emails
-            const people = new Set();
-            const locations = new Set();
-            const items = new Set();
-            
-            entityDatabase.discoveredEmails.forEach(email => {
-                people.add(email.sender);
-                people.add(email.receiver);
-                
-                // Extract from body
-                const body = email.body.toLowerCase();
-                if (body.includes('sector') || body.includes('sector-4')) locations.add('Sector-4');
-                if (body.includes('dapaue') || body.includes('archive')) locations.add('DAPAUE Archive');
-                if (body.includes('1989')) items.add('1989 Event');
-                if (body.includes('containment')) items.add('Containment Protocols');
-                if (body.includes('neural')) items.add('Neural-Link System');
-                if (body.includes('temporal')) items.add('Temporal Anomaly');
-            });
-            
-            const renderList = (container, set) => {
-                if (!container) return;
-                container.innerHTML = '';
-                if (set.size === 0) {
-                    container.innerHTML = '<div class="text-[var(--text-dim)] italic">None discovered</div>';
-                    return;
-                }
-                Array.from(set).forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'py-1 px-2 border-l border-[var(--panel-light)] hover:bg-[var(--panel-dark)] cursor-pointer';
-                    div.textContent = item;
-                    container.appendChild(div);
-                });
-            };
-            
-            renderList(document.getElementById('forensics-people'), people);
-            renderList(document.getElementById('forensics-locations'), locations);
-            renderList(document.getElementById('forensics-items'), items);
+            // Legacy function - data now handled by board
+            initializeInvestigationBoard();
+        }
+
+        function updateForensicsTags() {
+            // Legacy function - redirect to new board
+            initializeInvestigationBoard();
         }
 
         function clusterNodesByConnectivity(nodes, adjacency) {
@@ -3059,7 +3971,7 @@
             await new Promise(r => setTimeout(r, 600));
             document.getElementById('login-title').classList.remove('opacity-30');
             
-            await typeValue('input-opid', 'ARCHIVIST_01');
+            await typeValue('input-opid', 'GUEST');
             await new Promise(r => setTimeout(r, 400));
             await typeValue('input-auth', '********');
             
@@ -3117,8 +4029,8 @@
                 seedStaticEntities();
                 if (!currentUser) {
                     currentUser = {
-                        username: 'ARCHIVIST_01',
-                        name: 'Archivist (System Default)',
+                        username: 'GUEST',
+                        name: 'GUEST',
                         emails: (typeof emails !== 'undefined') ? emails : []
                     };
                 }
@@ -3140,6 +4052,11 @@
             const win = document.getElementById(windowId);
             win.style.display = 'flex';
             focusWindow(windowId);
+            
+            // Initialize investigation board when forensics opens
+            if (windowId === 'forensics-window') {
+                initializeInvestigationBoard();
+            }
             
             // Show in taskbar
             const taskbarId = 'taskbar-' + windowId.replace('-window', '');
@@ -3222,7 +4139,7 @@
             const username = currentUser.username;
             
             // Check if this is the default archivist (no personal files)
-            if (username === 'ARCHIVIST_01') {
+            if (username === 'GUEST') {
                 const msg = document.createElement('div');
                 msg.className = 'p-4 text-xs opacity-60 text-center';
                 msg.textContent = 'UNLOCK USER ACCOUNT TO ACCESS FILES';
@@ -3637,6 +4554,124 @@ Good luck, Investigator.
             modal.onclick = () => document.body.removeChild(modal);
             modal.appendChild(panel);
             document.body.appendChild(modal);
+        }
+
+        function openNodeSelector() {
+            const modal = document.createElement('div');
+            modal.id = 'node-selector-modal';
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.right = '0';
+            modal.style.bottom = '0';
+            modal.style.background = 'rgba(0, 0, 0, 0.8)';
+            modal.style.zIndex = '5000';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.style.cursor = 'pointer';
+
+            const panel = document.createElement('div');
+            panel.style.background = 'var(--panel-dark)';
+            panel.style.border = '2px solid var(--panel-light)';
+            panel.style.padding = '20px';
+            panel.style.minWidth = '360px';
+            panel.style.maxHeight = '420px';
+            panel.style.overflow = 'auto';
+            panel.style.cursor = 'default';
+            panel.style.color = 'var(--light)';
+            panel.style.fontFamily = 'monospace';
+            panel.style.fontSize = '11px';
+
+            const title = document.createElement('div');
+            title.style.fontSize = '13px';
+            title.style.fontWeight = 'bold';
+            title.style.marginBottom = '12px';
+            title.style.color = 'var(--accent)';
+            title.innerText = 'SELECT ACCESSIBLE NODE';
+            panel.appendChild(title);
+
+            // Build list of nodes and their access state
+            const nodes = (typeof serverNodes !== 'undefined') ? serverNodes : [];
+            if (!nodes.length) {
+                const msg = document.createElement('div');
+                msg.style.color = 'var(--text-dim)';
+                msg.innerText = 'No remote nodes detected';
+                panel.appendChild(msg);
+            } else {
+                nodes.forEach(n => {
+                    const accessible = adminMode || (serverAccess && serverAccess[n.id]);
+                    const row = document.createElement('div');
+                    row.style.display = 'flex';
+                    row.style.alignItems = 'center';
+                    row.style.justifyContent = 'space-between';
+                    row.style.gap = '10px';
+                    row.style.padding = '10px';
+                    row.style.margin = '4px 0';
+                    row.style.border = '1px solid var(--panel-light)';
+                    row.style.borderRadius = '2px';
+                    row.style.transition = 'all 0.2s';
+                    row.style.opacity = accessible ? '1' : '0.5';
+                    row.style.cursor = accessible ? 'pointer' : 'not-allowed';
+
+                    const left = document.createElement('div');
+                    left.style.display = 'flex';
+                    left.style.alignItems = 'center';
+                    left.style.gap = '8px';
+                    const indicator = document.createElement('span');
+                    indicator.className = 'status-indicator ' + (n.status === 'ONLINE' ? 'online' : (n.status === 'OFFLINE' ? 'offline' : 'warning'));
+                    const name = document.createElement('div');
+                    name.innerHTML = `<div class='font-bold'>${n.name}</div><div class='text-[9px] text-[var(--text-dim)]'>${n.id} • ${n.status}</div>`;
+                    left.appendChild(indicator);
+                    left.appendChild(name);
+
+                    const right = document.createElement('div');
+                    right.className = 'text-[9px]';
+                    right.innerText = `${n.latency}ms • ${n.load}% ${accessible ? '• AUTH' : '• LOCKED'}`;
+
+                    row.appendChild(left);
+                    row.appendChild(right);
+
+                    if (accessible) {
+                        row.onmouseover = () => { row.style.backgroundColor = 'var(--panel-light)'; };
+                        row.onmouseout = () => { row.style.backgroundColor = 'transparent'; };
+                        row.onclick = () => {
+                            setActiveServerById(n.id);
+                            document.body.removeChild(modal);
+                        };
+                    } else {
+                        row.onclick = () => {
+                            // Encourage auth via Server Monitor
+                            openWindow('server-monitor-window');
+                            renderServerMonitor();
+                            updateServerDetail(n.id);
+                        };
+                    }
+
+                    panel.appendChild(row);
+                });
+            }
+
+            const hint = document.createElement('div');
+            hint.style.marginTop = '10px';
+            hint.style.fontSize = '9px';
+            hint.style.color = 'var(--text-dim)';
+            hint.innerText = 'Tip: Authenticate locked nodes in SERVER MONITOR.';
+            panel.appendChild(hint);
+
+            panel.onclick = (e) => e.stopPropagation();
+            modal.onclick = () => document.body.removeChild(modal);
+            modal.appendChild(panel);
+            document.body.appendChild(modal);
+        }
+
+        function setActiveServerById(id) {
+            activeServerId = id;
+            if (typeof saveServerState === 'function') saveServerState();
+            if (typeof updateActiveServerDisplay === 'function') updateActiveServerDisplay();
+            if (typeof renderServerMonitor === 'function') renderServerMonitor();
+            // Refresh archive list if open
+            try { loadEmailList(); } catch(_) {}
         }
 
         // Save/Load Game System
@@ -4183,15 +5218,6 @@ Good luck, Investigator.
                 circle.style.backgroundColor = 'var(--text-dim)';
             }
         }
-
-        function toggleMetadata() {
-            playClickSound();
-            const node = document.getElementById('metadata-node');
-            const btn = document.getElementById('metadata-toggle-btn');
-            node.classList.toggle('collapsed');
-            btn.innerText = node.classList.contains('collapsed') ? '[<]' : '[>]';
-        }
-
         function resetMetadataPanel(mode = 'email') {
             const title = document.getElementById('metadata-title');
             const empty = document.getElementById('metadata-empty');
@@ -4390,6 +5416,18 @@ Good luck, Investigator.
             const list = document.getElementById('list-node');
             if (!list) return;
             list.innerHTML = '';
+
+            // Gate access by active server + authentication (skip when admin mode)
+            if (!adminMode) {
+                if (!activeServerId) {
+                    list.innerHTML = '<div class="p-4 text-center text-[var(--text-dim)] text-xs">NO ACTIVE NODE SELECTED<br><button class="btn-retro px-2 py-1 mt-2" onclick="openWindow(\'server-monitor-window\'); renderServerMonitor();">[OPEN SERVER MONITOR]</button></div>';
+                    return;
+                }
+                if (!serverAccess || !serverAccess[activeServerId]) {
+                    list.innerHTML = `<div class="p-4 text-center text-[var(--text-dim)] text-xs">NODE ${activeServerId} LOCKED<br><span class="opacity-70">Provide valid credentials in SERVER MONITOR.</span><br><button class="btn-retro px-2 py-1 mt-2" onclick="openWindow('server-monitor-window'); renderServerMonitor();">[AUTHENTICATE]</button></div>`;
+                    return;
+                }
+            }
             
             // Use current user's emails
             const userEmails = currentUser.emails || [];
@@ -4402,7 +5440,7 @@ Good luck, Investigator.
             
             filtered.forEach(e => {
                 const div = document.createElement('div');
-                const isLocked = e.locked && !unlockedCodes.has(e.unlockCode);
+                const isLocked = e.locked && !unlockedCodes.has(e.unlockCode) && !adminMode;
                 const isFragment = e.fragment;
                 
                 let statusIcons = '';
@@ -5074,11 +6112,11 @@ Good luck, Investigator.
                     
                 case 'logout':
                     currentUser = {
-                        username: 'ARCHIVIST_01',
-                        name: 'Archivist (System Default)',
+                        username: 'GUEST',
+                        name: 'GUEST',
                         emails: emails
                     };
-                    document.getElementById('current-user-display').innerText = `USER: ARCHIVIST_01`;
+                    document.getElementById('current-user-display').innerText = `USER: GUEST`;
                     document.getElementById('current-user-display').className = 'text-[9px] text-green-500 border border-green-900/40 px-2 py-0.5';
                     
                     // Reset window title and taskbar
@@ -5198,10 +6236,10 @@ Good luck, Investigator.
                                     // Reseed catalogs
                                     if (typeof seedStaticEntities === 'function') seedStaticEntities();
                                     // Refresh current user if default archivist
-                                    if (!currentUser || currentUser.username === 'ARCHIVIST_01') {
+                                    if (!currentUser || currentUser.username === 'GUEST') {
                                         currentUser = {
-                                            username: 'ARCHIVIST_01',
-                                            name: 'Archivist (System Default)',
+                                            username: 'GUEST',
+                                            name: 'GUEST',
                                             emails: (typeof emails !== 'undefined') ? emails : []
                                         };
                                     }
