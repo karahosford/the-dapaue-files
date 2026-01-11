@@ -44,7 +44,6 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
-            zoom: 1.2;
         }
 
         /* --- CRT FX --- */
@@ -98,6 +97,308 @@
 
         .btn-retro:hover { background: var(--text-main); color: var(--bg-dark); cursor: pointer; }
         .btn-retro.active { background: var(--text-main); color: var(--bg-dark); }
+
+        /* Themed Note Input Modal */
+        .forensics-note-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .forensics-note-modal-content {
+            background: var(--bg-dark);
+            border: 2px solid var(--accent);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .forensics-note-modal-content .modal-header {
+            background: linear-gradient(90deg, rgba(16,185,129,0.2), rgba(59,130,246,0.1));
+            border-bottom: 2px solid var(--accent);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 11px;
+            letter-spacing: 0.05em;
+        }
+
+        .forensics-note-modal-content .close-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .forensics-note-modal-content .close-btn:hover {
+            color: var(--text-main);
+        }
+
+        .forensics-note-modal-content .modal-body {
+            padding: 16px;
+        }
+
+        .forensics-note-modal-content .form-group {
+            margin-bottom: 16px;
+        }
+
+        .forensics-note-modal-content .form-label {
+            display: block;
+            color: var(--text-main);
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            letter-spacing: 0.05em;
+        }
+
+        .forensics-note-modal-content .form-input,
+        .forensics-note-modal-content .form-textarea {
+            width: 100%;
+            background: var(--panel-dark);
+            border: 1px solid var(--panel-light);
+            color: var(--text-main);
+            padding: 8px 12px;
+            font-family: monospace;
+            font-size: 10px;
+            outline: none;
+            transition: border 0.2s;
+            box-sizing: border-box;
+        }
+
+        .forensics-note-modal-content .form-input:focus,
+        .forensics-note-modal-content .form-textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+        }
+
+        .forensics-note-modal-content .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: monospace;
+        }
+
+        .forensics-note-modal-content .modal-footer {
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--panel-light);
+            padding: 12px 16px;
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .forensics-note-modal-content .modal-footer .btn-retro {
+            min-width: 80px;
+        }
+
+        /* Connection Modal Styling */
+        .connection-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .connection-modal-content {
+            background: var(--bg-dark);
+            border: 2px solid var(--accent);
+            width: 90%;
+            max-width: 550px;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .connection-modal-content .modal-header {
+            background: linear-gradient(90deg, rgba(16,185,129,0.2), rgba(59,130,246,0.1));
+            border-bottom: 2px solid var(--accent);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 11px;
+            letter-spacing: 0.05em;
+        }
+
+        .connection-modal-content .close-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .connection-modal-content .close-btn:hover {
+            color: var(--text-main);
+        }
+
+        .connection-modal-content .modal-body {
+            padding: 16px;
+        }
+
+        .connection-context {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .connection-context .context-label {
+            color: var(--text-dim);
+            font-size: 9px;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+            opacity: 0.7;
+        }
+
+        .connection-context .context-value {
+            color: var(--text-main);
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            word-wrap: break-word;
+        }
+
+        .connection-context .arrow {
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: bold;
+            margin: 4px 0;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .connection-modal-content .form-label {
+            display: block;
+            color: var(--text-main);
+            font-size: 10px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+
+        .connection-types {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .connection-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--panel-dark);
+            border: 1px solid var(--panel-light);
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 2px;
+        }
+
+        .connection-option:hover {
+            border-color: var(--accent);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .connection-option.selected {
+            border-color: var(--accent);
+            background: rgba(16, 185, 129, 0.1);
+            box-shadow: inset 0 0 8px rgba(16, 185, 129, 0.15);
+        }
+
+        .type-indicator {
+            width: 14px;
+            height: 14px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .type-indicator.related {
+            background: #06b6d4;
+            box-shadow: 0 0 6px rgba(6, 182, 212, 0.5);
+        }
+
+        .type-indicator.causal {
+            background: #eab308;
+            box-shadow: 0 0 6px rgba(234, 179, 8, 0.5);
+        }
+
+        .type-indicator.conflicting {
+            background: #ef4444;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+        }
+
+        .type-info {
+            flex: 1;
+        }
+
+        .type-name {
+            color: var(--text-main);
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.05em;
+        }
+
+        .type-desc {
+            color: var(--text-dim);
+            font-size: 9px;
+            margin-top: 2px;
+        }
+
+        .connection-modal-content .form-input {
+            width: 100%;
+            background: var(--panel-dark);
+            border: 1px solid var(--panel-light);
+            color: var(--text-main);
+            padding: 8px 12px;
+            font-family: monospace;
+            font-size: 10px;
+            outline: none;
+            transition: border 0.2s;
+            box-sizing: border-box;
+        }
+
+        .connection-modal-content .form-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
+        }
+
+        .connection-modal-content .modal-footer {
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--panel-light);
+            padding: 12px 16px;
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .connection-modal-content .modal-footer .btn-retro {
+            min-width: 100px;
+        }
 
         .scrollbar-hidden::-webkit-scrollbar { display: none; }
         
@@ -164,7 +465,8 @@
             width: 80px;
             padding: 10px;
             cursor: pointer;
-            transition: background 0.2s;
+            position: relative;
+            transition: background 0.2s, transform 0.05s ease;
             border: 2px solid transparent;
         }
 
@@ -883,10 +1185,344 @@
             line-height: 1.6;
             color: var(--text-main);
         }
+
+        /* Instability overlay (mild glitch) */
+        #instability-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 150;
+            opacity: 0;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(255, 102, 0, 0.08) 0px,
+                rgba(255, 102, 0, 0.08) 3px,
+                rgba(0, 0, 0, 0.12) 5px,
+                rgba(0, 0, 0, 0.12) 7px
+            );
+            mix-blend-mode: screen;
+            transition: opacity 0.2s ease;
+        }
+
+        #instability-overlay.active {
+            opacity: 0.55;
+            animation: instabilityJitter 0.14s steps(2) infinite;
+        }
+
+        @keyframes instabilityJitter {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-1px, 1px); }
+            100% { transform: translate(1px, -1px); }
+        }
+
+        /* Global glitch wash for sustained instability */
+        #global-glitch-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 4000;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 0, 76, 0.04) 0px,
+                rgba(255, 0, 76, 0.04) 2px,
+                rgba(0, 255, 255, 0.05) 4px,
+                rgba(0, 0, 0, 0.22) 6px
+            );
+            mix-blend-mode: screen;
+            opacity: 0;
+            transform: scale(1);
+            transition: opacity 0.05s ease, transform 0.05s ease;
+            filter: saturate(1.4) contrast(1.2);
+        }
+
+        #global-glitch-overlay.active {
+            opacity: 0.75;
+            animation: globalGlitchJitter 0.06s steps(3) infinite;
+        }
+
+        .global-glitch-shake * {
+            animation: globalGlitchShake 0.08s steps(3) infinite;
+        }
+
+        @keyframes globalGlitchJitter {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(-4px, 2px) scale(1.008) rotate(-0.5deg); }
+            66% { transform: translate(3px, -3px) scale(0.996) rotate(0.4deg); }
+            100% { transform: translate(2px, -1px) scale(1.004) rotate(-0.2deg); }
+        }
+
+        @keyframes globalGlitchShake {
+            0% { transform: translate(0, 0) skewX(-0.5deg) skewY(0.3deg); }
+            33% { transform: translate(2px, -2px) skewX(0.6deg) skewY(-0.4deg); }
+            66% { transform: translate(-3px, 1px) skewX(-0.4deg) skewY(0.5deg); }
+            100% { transform: translate(-1px, 2px) skewX(0.3deg) skewY(-0.2deg); }
+        }
+
+        /* Glitch artifact blocks */
+        #glitch-artifacts {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 4500;
+        }
+
+        .glitch-block {
+            position: absolute;
+            background: #000000;
+            opacity: 0.85;
+            box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+            mix-blend-mode: multiply;
+        }
+
+        /* Cooling lock overlay */
+        #cooling-lock {
+            position: fixed;
+            inset: 0;
+            z-index: 5000;
+            background: rgba(0, 0, 0, 0.78);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+
+        #cooling-lock.active {
+            display: flex;
+        }
+
+        .cooling-box {
+            width: 420px;
+            max-width: 90vw;
+            background: rgba(26, 26, 26, 0.95);
+            border: 2px solid #f97316;
+            box-shadow: 0 0 24px rgba(249, 115, 22, 0.35);
+            padding: 20px 22px;
+            text-align: center;
+            color: #fbbf24;
+            letter-spacing: 0.05em;
+        }
+
+        .cooling-title {
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .cooling-subtitle {
+            font-size: 10px;
+            color: #f97316;
+            margin-bottom: 14px;
+        }
+
+        .cooling-countdown {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 14px;
+        }
+
+        .cooling-bar {
+            position: relative;
+            width: 100%;
+            height: 14px;
+            border: 1px solid #f97316;
+            background: rgba(249, 115, 22, 0.15);
+            overflow: hidden;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.6);
+        }
+
+        .cooling-bar-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #fb923c, #f97316);
+            transition: width linear;
+        }
+
+        /* Boot glitch + malware popup */
+        #boot-glitch-overlay {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 0, 76, 0.08) 0px,
+                rgba(255, 0, 76, 0.08) 2px,
+                rgba(0, 0, 0, 0.2) 4px,
+                rgba(0, 0, 0, 0.2) 6px
+            );
+            mix-blend-mode: screen;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 20;
+            transition: opacity 0.1s ease;
+            animation: glitchPulse 0.08s steps(2) infinite;
+            filter: saturate(1.4) contrast(1.3);
+        }
+
+        #boot-glitch-overlay.active { opacity: 0.9; }
+
+        @keyframes glitchPulse {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-2px, 1px) skewX(-0.6deg); }
+            100% { transform: translate(2px, -1px) skewX(0.6deg); }
+        }
+
+        #boot-glitch-overlay::after,
+        #boot-glitch-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,0,76,0.18) 50%, transparent 100%);
+            mix-blend-mode: screen;
+            opacity: 0.55;
+            animation: glitchSweep 0.4s infinite linear;
+        }
+
+        #boot-glitch-overlay::before { animation-duration: 0.3s; opacity: 0.35; }
+
+        @keyframes glitchSweep {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(50%); }
+        }
+
+        .glitch-bands {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .glitch-band {
+            position: absolute;
+            left: -10%;
+            width: 120%;
+            height: 8%;
+            background: rgba(255, 0, 76, 0.32);
+            filter: blur(1px) contrast(1.6);
+            animation: bandSlide 0.6s infinite ease-in-out;
+        }
+
+        .glitch-band:nth-child(2) { animation-duration: 0.7s; animation-delay: 0.1s; opacity: 0.35; }
+        .glitch-band:nth-child(3) { animation-duration: 0.5s; animation-delay: 0.2s; opacity: 0.5; }
+        .glitch-band:nth-child(4) { animation-duration: 0.8s; animation-delay: 0.05s; opacity: 0.4; }
+        .glitch-band:nth-child(5) { animation-duration: 0.6s; animation-delay: 0.15s; opacity: 0.3; }
+
+        @keyframes bandSlide {
+            0% { transform: translateX(-8%) translateY(0); }
+            50% { transform: translateX(6%) translateY(3%); }
+            100% { transform: translateX(-5%) translateY(0); }
+        }
+
+        #malware-popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 420px;
+            border: 3px solid #ef4444;
+            background: rgba(0, 0, 0, 0.95);
+            color: #fecdd3;
+            font-family: var(--mono);
+            font-size: 12px;
+            padding: 18px;
+            box-shadow: 0 0 28px rgba(239, 68, 68, 0.45), 0 0 6px rgba(239, 68, 68, 0.65);
+            display: none;
+            z-index: 60;
+            animation: popupPulse 0.6s ease-in-out infinite alternate;
+            text-align: center;
+        }
+
+        #malware-popup h4 {
+            margin: 0 0 12px 0;
+            font-size: 12px;
+            letter-spacing: 0.24em;
+            color: #f87171;
+        }
+
+        .popup-row { display: flex; align-items: center; gap: 10px; justify-content: center; }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(248, 113, 113, 0.25);
+            border-top-color: #ef4444;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255,255,255,0.06);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(239,68,68,0.5);
+        }
+
+        .progress-fill {
+            position: absolute;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, rgba(239,68,68,0.25), rgba(239,68,68,0.95));
+            animation: loadPulse 0.7s ease-in-out infinite alternate;
+        }
+
+        @keyframes loadPulse {
+            0% { filter: brightness(0.9); }
+            100% { filter: brightness(1.6); }
+        }
+
+        @keyframes popupPulse {
+            0% { box-shadow: 0 0 18px rgba(239, 68, 68, 0.35), 0 0 6px rgba(239, 68, 68, 0.55); }
+            100% { box-shadow: 0 0 32px rgba(239, 68, 68, 0.6), 0 0 10px rgba(239, 68, 68, 0.85); }
+        }
+
+        /* Boot text / logo glitching */
+        #boot-log.boot-glitching { filter: contrast(1.4) saturate(1.35); }
+        #boot-log.boot-glitching > * { animation: textGlitch 0.12s steps(2) infinite; }
+        #boot-log.boot-glitching pre { animation: logoGlitch 0.16s steps(2) infinite alternate; }
+
+        @keyframes textGlitch {
+            0% { transform: translate(0, 0); text-shadow: -1px 0 rgba(255,0,76,0.35), 1px 0 rgba(0,255,255,0.25); }
+            50% { transform: translate(-1px, 0.5px); text-shadow: 1px 0 rgba(255,0,76,0.6), -1px 0 rgba(0,255,255,0.3); }
+            100% { transform: translate(1px, -0.5px); text-shadow: -2px 0 rgba(255,0,76,0.5), 2px 0 rgba(0,255,255,0.2); }
+        }
+
+        @keyframes logoGlitch {
+            0% { transform: translateX(-1px) skewX(-0.4deg); filter: drop-shadow(0 0 2px rgba(255,0,76,0.6)); }
+            50% { transform: translateX(2px) skewX(0.4deg); filter: drop-shadow(0 0 3px rgba(0,255,255,0.4)); }
+            100% { transform: translateX(-1px) skewX(-0.2deg); filter: drop-shadow(0 0 2px rgba(255,0,76,0.7)); }
+        }
+
+        #intro-overlay.scramble {
+            animation: screenJitter 0.11s steps(2) infinite;
+        }
+
+        @keyframes screenJitter {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-1px, 1px) scale(1.004); }
+            100% { transform: translate(1px, -1px) scale(1.002); }
+        }
     </style>
 </head>
 <body class="crt p-4 md:p-8 flex items-center justify-center">
     <div class="noise"></div>
+    <div id="global-glitch-overlay"></div>
+    <div id="glitch-artifacts"></div>
+    <div id="instability-overlay"></div>
+    <div id="cooling-lock" aria-hidden="true">
+        <div class="cooling-box">
+            <div class="cooling-title">CPU TEMP WARNING // ACTIVE COOLING</div>
+            <div class="cooling-subtitle">SYSTEM LOCKED UNTIL TEMPERATURE NORMALIZES</div>
+            <div id="cooling-countdown" class="cooling-countdown">--</div>
+            <div class="cooling-bar" aria-label="Cooling progress">
+                <div id="cooling-bar-fill" class="cooling-bar-fill"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- INITIAL SYSTEM TRIGGER -->
     <div id="initial-trigger-screen">
@@ -902,6 +1538,27 @@
         <div class="max-w-2xl w-full h-full flex flex-col">
             <!-- Legacy Boot Log Window -->
             <div id="boot-log" class="w-full flex-1 text-[11px] text-[#808080] font-mono leading-tight mb-6 overflow-y-auto scrollbar-hidden"></div>
+
+            <!-- Boot glitch overlay & malware popup -->
+            <div id="boot-glitch-overlay">
+                <div class="glitch-bands">
+                    <div class="glitch-band"></div>
+                    <div class="glitch-band"></div>
+                    <div class="glitch-band"></div>
+                    <div class="glitch-band"></div>
+                    <div class="glitch-band"></div>
+                </div>
+            </div>
+            <div id="malware-popup">
+                <h4>INJECTING CRYPTO_HACK MALWARE</h4>
+                <div class="popup-row mb-2">
+                    <div class="spinner"></div>
+                    <span>FORCING SYSTEM BACKDOOR...</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="malware-progress"></div>
+                </div>
+            </div>
             
             <!-- Login Box -->
             <div id="login-form" class="hidden border-2 border-[var(--panel-light)] p-10 bg-[var(--panel-dark)] w-full max-w-md shadow-2xl relative">
@@ -959,6 +1616,11 @@
     
     <!-- DESKTOP ENVIRONMENT -->
     <div id="desktop" class="hidden">
+        <!-- Desktop Background Logo -->
+        <div id="desktop-logo" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.08; pointer-events: none; z-index: 0; transition: all 0.05s ease;">
+            <img src="assets/images/logo.svg" alt="DAPAUE" style="width: 400px; height: 400px;">
+        </div>
+        
         <!-- Desktop Icons -->
         <div id="desktop-icons">
             <div class="desktop-icon" onclick="openWindow('briefing-window')">
@@ -988,6 +1650,10 @@
             <div class="desktop-icon" onclick="openWindow('tag-wrangle-window'); updateTagWrangleGraph();">
                 <div class="icon-image">🕸</div>
                 <div class="icon-label">TAG WRANGLE</div>
+            </div>
+            <div class="desktop-icon" onclick="simulateInstabilityWarning()">
+                <div class="icon-image">⚠️</div>
+                <div class="icon-label">INSTABILITY_SIM</div>
             </div>
         </div>
         
@@ -1073,11 +1739,10 @@
                     <div id="terminal-output" class="flex-1 overflow-y-auto scrollbar-hidden space-y-2 text-[var(--text-dim)] mb-4">
                         <div class="text-[var(--accent)]">> DAPAUE_SECURITY_OVERRIDE_TERMINAL_v2.1</div>
                         <div class="text-[var(--text-dim)]">> Type 'help' for available commands</div>
-                        <div class="text-[var(--text-dim)]">> Connected users: 3 RESTRICTED</div>
                     </div>
                     <div class="border-t border-[var(--panel-light)] pt-2">
                         <div class="flex gap-2">
-                            <span class="text-[var(--accent)]">></span>
+                            <span id="terminal-prompt" class="text-[var(--accent)]"></span>
                             <input id="terminal-input" type="text" class="flex-1 bg-transparent outline-none text-[var(--text-main)]" placeholder="Enter command..." onkeypress="if(event.key==='Enter') executeCommand()">
                         </div>
                     </div>
@@ -1109,49 +1774,74 @@
                     <div class="space-y-4">
                         <p>OPERATOR,</p>
                         
-                        <p>YOU HAVE BEEN GRANTED EMERGENCY ACCESS TO THE DAPAUE ARCHIVE SYSTEM FOLLOWING RECENT ANOMALOUS ACTIVITY ACROSS MULTIPLE REMOTE NODES. YOUR PRIMARY OBJECTIVE IS TO CONDUCT A COMPREHENSIVE INVESTIGATION INTO ARCHIVED COMMUNICATIONS AND DATA FRAGMENTS.</p>
+                        <p>YOU HAVE BEEN GRANTED EMERGENCY ACCESS TO THE DAPAUE ARCHIVE SYSTEM FOLLOWING RECENT ANOMALOUS ACTIVITY. YOUR PRIMARY OBJECTIVE IS TO CONDUCT A FORENSIC INVESTIGATION INTO ARCHIVED COMMUNICATIONS ACROSS FIVE PRIVILEGE-TIERED SERVERS.</p>
+                        
+                        <div class="border-l-2 border-green-500 pl-3 my-4">
+                            <div class="text-green-500 font-bold mb-2">INITIAL ACCESS GRANTED:</div>
+                            <div>OPS SUCCESSFULLY BRUTEFORCED A PRIVILEGE LEVEL 1 ACCOUNT. YOU NOW HAVE EMAIL ACCESS AS: <span class="text-yellow-400" id="briefing-assigned-user">LOADING...</span></div>
+                            <div class="text-[9px] text-[var(--text-dim)] mt-1">This account has been set as your active user. Access to SYSTEM-V email archive is now enabled.</div>
+                        </div>
                         
                         <div class="border-l-2 border-yellow-500 pl-3 my-4">
-                            <div class="text-yellow-500 font-bold mb-2">PRIMARY OBJECTIVES:</div>
+                            <div class="text-yellow-500 font-bold mb-2">INVESTIGATION PROTOCOL:</div>
                             <div class="space-y-1">
-                                <div>◆ ESTABLISH CONNECTION TO REMOTE ARCHIVE NODES</div>
-                                <div>◆ AUTHENTICATE ACCESS USING PROVIDED CREDENTIALS</div>
-                                <div>◆ REVIEW STAFF COMMUNICATIONS FOR IRREGULARITIES</div>
-                                <div>◆ IDENTIFY PATTERNS, CONNECTIONS, AND ANOMALIES</div>
-                                <div>◆ DOCUMENT FINDINGS USING FORENSICS TOOLS</div>
+                                <div>◆ REVIEW EMAILS FROM YOUR ASSIGNED PRIVILEGE LEVEL 1 ACCOUNT</div>
+                                <div>◆ GAIN ACCESS TO HIGHER PRIVILEGE SERVERS (2-5) VIA PASSWORDS</div>
+                                <div>◆ BRUTEFORCE USER ACCOUNTS TO ACCESS THEIR EMAIL ARCHIVES</div>
+                                <div>◆ BUILD INVESTIGATION BOARD WITH DISCOVERED EVIDENCE</div>
+                                <div>◆ CREATE TAGS AND CONNECTIONS TO MAP PATTERNS</div>
                             </div>
                         </div>
                         
-                        <p>THE ARCHIVE CONTAINS SENSITIVE COMMUNICATIONS FROM MULTIPLE DAPAUE PERSONNEL. SOME DATA MAY BE ENCRYPTED, FRAGMENTED, OR RESTRICTED. YOU ARE AUTHORIZED TO USE THE TERMINAL SYSTEM TO UNLOCK USER ACCOUNTS AND ACCESS THEIR CORRESPONDENCE.</p>
-                        
-                        <p>FIVE REMOTE NODES ARE AVAILABLE. EACH REQUIRES AUTHENTICATION BEFORE DATA ACCESS IS GRANTED. USE THE SERVER MONITOR APPLICATION TO SELECT AND AUTHENTICATE NODES. STAFF CREDENTIALS ARE STORED IN THE SECURITY DATABASE.</p>
+                        <div class="border-l-2 border-orange-500 pl-3 my-4">
+                            <div class="text-orange-500 font-bold mb-2">PRIVILEGE LEVEL SYSTEM:</div>
+                            <div class="space-y-1">
+                                <div>• LEVEL 1 (Operations): 5 users - Basic access tier</div>
+                                <div>• LEVEL 2 (Administration): 9 users - Mid-level clearance</div>
+                                <div>• LEVEL 3 (Management): 14 users - Departmental oversight</div>
+                                <div>• LEVEL 4 (Executive): 6 users - Senior leadership</div>
+                                <div>• LEVEL 5 (Director): 2 users - Highest classification</div>
+                            </div>
+                            <div class="text-[9px] text-[var(--text-dim)] mt-2">Use TERMINAL command 'list' to see users at your current privilege level.</div>
+                        </div>
                         
                         <div class="border-l-2 border-cyan-500 pl-3 my-4">
-                            <div class="text-cyan-500 font-bold mb-2">AVAILABLE TOOLS:</div>
+                            <div class="text-cyan-500 font-bold mb-2">TERMINAL COMMANDS:</div>
                             <div class="space-y-1">
-                                <div>• TERMINAL: Command interface for account access</div>
-                                <div>• SERVERS: Node selection and authentication</div>
-                                <div>• SYSTEM-V: Archive email and file browser</div>
-                                <div>• FORENSICS: Investigation board and timeline</div>
-                                <div>• TAG WRANGLE: Pattern analysis and connections</div>
-                                <div>• NOTEPAD: Personal investigation notes</div>
+                                <div>• active &lt;username&gt; - Switch to another user account for email access</div>
+                                <div>• list - Show all users at your current privilege level</div>
+                                <div>• info &lt;username&gt; - Display user details and status</div>
+                                <div>• help - Display full command reference</div>
                             </div>
                         </div>
                         
-                        <p>TIME IS CRITICAL. IRREGULAR PATTERNS IN THE DATA SUGGEST POTENTIAL SECURITY BREACHES OR COMPROMISED PERSONNEL. YOUR INVESTIGATION MAY REVEAL INFORMATION REGARDING [REDACTED] AND THE CURRENT STATUS OF [REDACTED].</p>
-                        
-                        <p>ALL FINDINGS MUST BE DOCUMENTED. USE THE NOTEPAD FOR PERSONAL ANNOTATIONS. THE FORENSICS BOARD WILL AUTO-POPULATE AS YOU DISCOVER NEW INFORMATION.</p>
-                        
-                        <div class="border-2 border-red-500 p-3 my-4 bg-red-900/10">
-                            <div class="text-red-500 font-bold mb-2">⚠ SECURITY NOTICE:</div>
-                            <div>THIS SESSION IS MONITORED. UNAUTHORIZED DATA EXTRACTION OR TAMPERING WILL RESULT IN IMMEDIATE NEURAL-LINK TERMINATION AND DISCIPLINARY ACTION.</div>
+                        <div class="border-l-2 border-purple-500 pl-3 my-4">
+                            <div class="text-purple-500 font-bold mb-2">FORENSICS TOOLS:</div>
+                            <div class="space-y-1">
+                                <div>• SYSTEM-V: Email archive browser (restricted to accessed accounts)</div>
+                                <div>• FORENSICS: Investigation board with cards auto-created from emails</div>
+                                <div>• TAG WRANGLE: Create and manage custom tags, visualize connections</div>
+                                <div>• ADD NOTE: Create manual evidence cards with your own observations</div>
+                                <div>• CONNECTIONS: Link evidence cards to map relationships</div>
+                            </div>
                         </div>
                         
-                        <p>BEGIN YOUR INVESTIGATION IMMEDIATELY. REPORT ANY CRITICAL DISCOVERIES THROUGH PROPER CHANNELS.</p>
+                        <p>YOUR INVESTIGATION BOARD WILL ONLY DISPLAY EVIDENCE FROM ACCOUNTS YOU'VE ACCESSED. AS YOU BRUTEFORCE OR SWITCH TO NEW USERS, THEIR EMAILS WILL AUTOMATICALLY APPEAR AS CARDS. CREATE YOUR OWN TAGGING SYSTEM TO ORGANIZE EVIDENCE AND IDENTIFY PATTERNS.</p>
+                        
+                        <div class="border-2 border-red-500 p-3 my-4 bg-red-900/10">
+                            <div class="text-red-500 font-bold mb-2">⚠ OPERATIONAL CONSTRAINTS:</div>
+                            <div>• You have TWO total bruteforce attempts for the entire operation</div>
+                            <div>• Each bruteforce increases system instability; use sparingly</div>
+                            <div>• Evidence cards only appear for users you've accessed</div>
+                            <div>• Higher privilege servers require authentication codes</div>
+                            <div>• All investigation activities are logged and monitored</div>
+                        </div>
+                        
+                        <p>YOUR MISSION: UNCOVER THE TRUTH HIDDEN IN THE ARCHIVE. BUILD YOUR INVESTIGATION SYSTEMATICALLY. TRUST NO ONE.</p>
                         
                         <div class="mt-6 pt-4 border-t border-[var(--panel-light)] text-[var(--text-dim)] text-[10px]">
                             <div>DIRECTOR_OVERSIGHT</div>
-                            <div>DAPAUE COMMAND // INVESTIGATION DIVISION</div>
+                            <div>DAPAUE COMMAND // FORENSIC INVESTIGATION DIVISION</div>
                             <div class="mt-2">--- END TRANSMISSION ---</div>
                         </div>
                     </div>
@@ -1281,8 +1971,6 @@
                             <button class="btn-retro px-2 py-1 text-[8px]" onclick="clearForensicsSearch()">[CLEAR]</button>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button id="board-mode-btn" class="btn-retro px-3 py-1 text-[9px] active" onclick="toggleBoardMode('board')">[BOARD]</button>
-                            <button id="timeline-mode-btn" class="btn-retro px-3 py-1 text-[9px]" onclick="toggleBoardMode('timeline')">[TIMELINE]</button>
                             <button class="btn-retro px-2 py-1 text-[8px]" onclick="addNoteToBoard()">[ADD NOTE]</button>
                             <div class="flex items-center gap-1 ml-2">
                                 <button class="btn-retro px-2 py-1 text-[8px]" onclick="zoomOutBoard()">[-]</button>
@@ -1321,12 +2009,6 @@
                                         <!-- Evidence cards placed here -->
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <!-- Timeline Rail (hidden by default) -->
-                            <div id="timeline-rail" class="border-t-2 border-[var(--panel-light)] bg-[var(--panel-dark)] p-2 overflow-x-auto hidden" style="height: 120px;">
-                                <div class="text-[8px] text-[var(--text-dim)] mb-1">CHRONOLOGICAL TIMELINE</div>
-                                <div id="timeline-track" class="relative h-full"></div>
                             </div>
                         </div>
                         
@@ -1613,6 +2295,11 @@
         let activeExplorerFileButton = null;
         let currentUser = null; // Currently logged in user
         let lastOpenedUser = null; // Track last opened user for SYSTEM-V
+        let activeUser = null; // Active user set via "active" command (for forensic access)
+        let accessedUsers = new Set(); // Track which users have been accessed for forensics filtering
+        let bruteforceAllowance = 2; // Total bruteforce attempts available for the entire game
+        let bruteforceUsed = 0; // How many bruteforce attempts have been used
+        let systemInstability = 0; // Increases with each bruteforce use
         
         // SYSMON historical data
         let sysmonHistory = {
@@ -1664,6 +2351,55 @@
         }
 
         // Initialization
+        function initializeGameWithRandomUser() {
+            // Get all server 1 (privilege level 1) users
+            const server1Users = staffUsers.filter(u => u.privilege_level === 1);
+            
+            if (server1Users.length === 0) {
+                console.error('No server 1 users found!');
+                return;
+            }
+            
+            // Randomly select one
+            const randomUser = server1Users[Math.floor(Math.random() * server1Users.length)];
+            
+            // Set as active user
+            activeUser = {
+                username: randomUser.username,
+                name: randomUser.name,
+                privilege_level: randomUser.privilege_level,
+                emails: randomUser.emails
+            };
+            
+            // Add to accessed users for forensics filtering
+            accessedUsers.add(randomUser.username);
+
+            // Consume one bruteforce allowance for the initial cracked account (silent to avoid early warnings)
+            consumeBruteforce(randomUser.username, { suppressNotify: true, suppressEffects: true });
+            
+            // Actually log the player in as this user
+            currentUser = {
+                username: randomUser.username,
+                name: randomUser.name,
+                privilege_level: randomUser.privilege_level,
+                emails: randomUser.emails
+            };
+            
+            // Update the user display at top
+            document.getElementById('current-user-display').innerText = `USER: ${randomUser.name.toUpperCase()}`;
+            document.getElementById('current-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+
+            updateTerminalPrompt();
+            
+            // Update briefing to show assigned user
+            const briefingElement = document.getElementById('briefing-assigned-user');
+            if (briefingElement) {
+                briefingElement.textContent = `${randomUser.name.toUpperCase()} (${randomUser.username})`;
+            }
+            
+            console.log(`[Game] Player logged in as server 1 user: ${randomUser.name}`);
+        }
+        
         window.onload = function() {
             document.getElementById('login-btn').addEventListener('click', handleLogin);
             const flashElInit = document.getElementById('login-flash');
@@ -1713,12 +2449,18 @@
             if (window.dataReady) {
                 window.dataReady.then(() => {
                     console.log('[App] Data source:', window.dataSource || 'unknown');
-                    if (!currentUser) {
-                        currentUser = {
-                            username: 'GUEST',
-                            name: 'GUEST',
-                            emails: (typeof emails !== 'undefined') ? emails : []
-                        };
+                    
+                    // Initialize with random server 1 user AFTER data is loaded
+                    if (typeof staffUsers !== 'undefined' && staffUsers.length > 0) {
+                        initializeGameWithRandomUser();
+                    } else {
+                        if (!currentUser) {
+                            currentUser = {
+                                username: 'GUEST',
+                                name: 'GUEST',
+                                emails: (typeof emails !== 'undefined') ? emails : []
+                            };
+                        }
                     }
                     seedStaticEntities();
                 }).catch(() => {});
@@ -1989,7 +2731,7 @@
             const match = (typeof staffUsers !== 'undefined') ? staffUsers.find(u => u.username.toLowerCase() === user.toLowerCase() && u.accessCode === pass) : null;
             if (match) {
                 // Check security level permissions: user level must be >= node level
-                const nodeLevel = parseInt(id.split('-')[1]); // Extract number from NODE-01, NODE-02, etc.
+                    if (intro) intro.classList.remove('scramble');
                 const userLevel = match.securityLevel || 0;
                 
                 if (userLevel < nodeLevel) {
@@ -2036,10 +2778,21 @@
 
         async function runBootSequence() {
             const log = document.getElementById('boot-log');
+            const glitch = document.getElementById('boot-glitch-overlay');
+            const popup = document.getElementById('malware-popup');
+            const popupFill = document.getElementById('malware-progress');
+            const intro = document.getElementById('intro-overlay');
             if (!log) {
                 console.error('boot-log element not found');
                 return;
             }
+
+            // Start aggressive scramble after a short pause
+            setTimeout(() => {
+                if (glitch) glitch.classList.add('active');
+                if (intro) intro.classList.add('scramble');
+                log.classList.add('boot-glitching');
+            }, 500);
 
             appendBootLogo(log);
             const lines = [
@@ -2060,6 +2813,14 @@
                 "CONNECTING TO DAPAUE ARCHIVE NODE 99...",
                 "AUTHENTICATION DAEMON READY.",
                 " ",
+                "[OPS_SECURITY_DIVISION] INITIATING ACCOUNT ACCESS PROTOCOL...",
+                "RUNNING BRUTEFORCE SEQUENCE ON SERVER 1 NODE...",
+                "ATTEMPTING PASSWORD COMBINATIONS [████████░░░░░░░░░░░░░░░░░░]",
+                "MATCH FOUND - CREDENTIALS CONFIRMED",
+                "CACHED_CREDENTIALS: USER_ACCOUNT_VERIFIED",
+                "DECRYPTING ACCESS TOKEN...",
+                "ACCOUNT_UNLOCK_SUCCESSFUL",
+                " ",
                 "SYSTEM_READY."
             ];
 
@@ -2073,10 +2834,37 @@
                 let delay = 40 + Math.random() * 60;
                 if (line.includes("SPINNING UP")) delay = 1000;
                 if (line.includes("CONNECTING")) delay = 800;
+                if (line.includes("BRUTEFORCE")) {
+                    delay = 600;
+                    if (glitch) glitch.classList.add('active');
+                }
+                if (line.includes("ATTEMPTING")) {
+                    delay = 1200;
+                    if (glitch) glitch.classList.add('active');
+                }
+                if (line.includes("MATCH FOUND")) {
+                    delay = 700;
+                    if (glitch) glitch.classList.remove('active');
+                    if (popup) {
+                        popup.style.display = 'block';
+                        if (popupFill) popupFill.style.width = '0%';
+                        setTimeout(() => { if (popupFill) popupFill.style.width = '35%'; }, 100);
+                        setTimeout(() => { if (popupFill) popupFill.style.width = '68%'; }, 500);
+                        setTimeout(() => { if (popupFill) popupFill.style.width = '100%'; }, 900);
+                    }
+                }
+                if (line.includes("ACCOUNT_UNLOCK_SUCCESSFUL")) {
+                    delay = 500;
+                    if (popup) setTimeout(() => { popup.style.display = 'none'; }, 400);
+                }
                 
                 await new Promise(r => setTimeout(r, delay));
             }
 
+            if (glitch) glitch.classList.remove('active');
+            if (popup) popup.style.display = 'none';
+            log.classList.remove('boot-glitching');
+            if (intro) intro.classList.remove('scramble');
             revealLoginForm();
         }
 
@@ -2101,7 +2889,6 @@
         // ========== INVESTIGATION BOARD SYSTEM ==========
         
         let boardState = {
-            mode: 'board', // 'board' or 'timeline'
             cards: [], // {id, x, y, data, tags:[]}
             connections: [], // {from, to, type, label}
             selectedCard: null,
@@ -2147,6 +2934,23 @@
                     const parsed = JSON.parse(saved);
                     boardState = { ...boardState, ...parsed };
                     if (!boardState.zoom) boardState.zoom = 1;
+                    
+                    // Filter out cards from users not yet accessed
+                    boardState.cards = boardState.cards.filter(card => {
+                        const email = card.data;
+                        return accessedUsers.has(email.receiver) || accessedUsers.has(email.sender);
+                    });
+                    
+                    // Clear all tags from cards
+                    boardState.cards.forEach(card => {
+                        card.tags = [];
+                    });
+                    
+                    // Clean up connections that reference removed cards
+                    const cardIds = new Set(boardState.cards.map(c => c.id));
+                    boardState.connections = boardState.connections.filter(conn => 
+                        cardIds.has(conn.from) && cardIds.has(conn.to)
+                    );
                 } catch(e) {}
             }
             
@@ -2193,20 +2997,25 @@
         function syncCardsWithEmails() {
             const existingIds = new Set(boardState.cards.map(c => c.id));
             
-            // Add new discovered emails as cards
+            // Add new discovered emails as cards (only from accessed users)
             entityDatabase.discoveredEmails.forEach((email, idx) => {
                 if (!existingIds.has(email.id)) {
-                    // Auto-position new cards in a grid
-                    const gridX = 150 + (boardState.cards.length % 8) * 250;
-                    const gridY = 150 + Math.floor(boardState.cards.length / 8) * 200;
+                    // Check if this email belongs to an accessed user
+                    const emailBelongsToAccessedUser = accessedUsers.has(email.receiver) || accessedUsers.has(email.sender);
                     
-                    boardState.cards.push({
-                        id: email.id,
-                        x: gridX,
-                        y: gridY,
-                        data: email,
-                        tags: []
-                    });
+                    if (emailBelongsToAccessedUser) {
+                        // Auto-position new cards in a grid
+                        const gridX = 150 + (boardState.cards.length % 8) * 250;
+                        const gridY = 150 + Math.floor(boardState.cards.length / 8) * 200;
+                        
+                        boardState.cards.push({
+                            id: email.id,
+                            x: gridX,
+                            y: gridY,
+                            data: email,
+                            tags: []
+                        });
+                    }
                 }
             });
         }
@@ -2349,27 +3158,22 @@
             
             const fromId = boardState.tempConnection.fromId;
             
-            // Ask for connection type
-            const connectionType = prompt('Connection type:\n\n1. Related (cyan)\n2. Causal (yellow)\n3. Conflicting (red)\n\nEnter (1-3):');
-            const types = {'1': 'related', '2': 'causal', '3': 'conflicting'};
-            const selectedType = types[connectionType] || 'related';
-            
-            const label = prompt('Connection label (optional):');
-            
-            boardState.connections.push({
-                from: fromId,
-                to: targetCardId,
-                type: selectedType,
-                label: label || ''
+            openConnectionModal(fromId, targetCardId, (type, label) => {
+                boardState.connections.push({
+                    from: fromId,
+                    to: targetCardId,
+                    type: type,
+                    label: label || ''
+                });
+                
+                boardState.tempConnection = null;
+                saveBoardState();
+                renderConnections();
+                
+                const fromCard = boardState.cards.find(c => c.id === fromId);
+                const toCard = boardState.cards.find(c => c.id === targetCardId);
+                showSystemNotification(`✓ Connected "${fromCard.data.subject}" → "${toCard.data.subject}"`);
             });
-            
-            boardState.tempConnection = null;
-            saveBoardState();
-            renderConnections();
-            
-            const fromCard = boardState.cards.find(c => c.id === fromId);
-            const toCard = boardState.cards.find(c => c.id === targetCardId);
-            showSystemNotification(`✓ Connected "${fromCard.data.subject}" → "${toCard.data.subject}"`);
         }
         
         function drawTempConnection() {
@@ -2585,34 +3389,6 @@
             e.stopPropagation();
         }
         
-        function finishConnectionDrag(targetCardId) {
-            if (!boardState.tempConnection) return;
-            
-            const fromId = boardState.tempConnection.fromId;
-            
-            // Ask for connection type
-            const connectionType = prompt('Connection type:\\n\\n1. Related (cyan)\\n2. Causal (yellow)\\n3. Conflicting (red)\\n\\nEnter (1-3):');
-            const types = {'1': 'related', '2': 'causal', '3': 'conflicting'};
-            const selectedType = types[connectionType] || 'related';
-            
-            const label = prompt('Connection label (optional):');
-            
-            boardState.connections.push({
-                from: fromId,
-                to: targetCardId,
-                type: selectedType,
-                label: label || ''
-            });
-            
-            boardState.tempConnection = null;
-            saveBoardState();
-            renderConnections();
-            
-            const fromCard = boardState.cards.find(c => c.id === fromId);
-            const toCard = boardState.cards.find(c => c.id === targetCardId);
-            showSystemNotification(`✓ Connected "${fromCard.data.subject}" → "${toCard.data.subject}"`);
-        }
-        
         function drawTempConnection() {
             if (!boardState.tempConnection) return;
             
@@ -2824,7 +3600,7 @@
                 <div class="mb-3 pb-3 border-b border-[var(--panel-light)]">
                     <div class="text-[8px] font-bold text-[var(--text-dim)] mb-2">TAGS (${card.tags.length})</div>
                     ${card.tags.length > 0 ? 
-                        card.tags.map(tag => `<div class="inline-block px-2 py-1 mr-1 mb-1 bg-[var(--accent)] bg-opacity-20 border border-[var(--accent)] text-[8px]">${tag}</div>`).join('') 
+                        card.tags.map(tag => `<div class="inline-block px-2 py-1 mr-1 mb-1 bg-[rgba(0,255,255,0.1)] border border-[rgba(0,255,255,0.3)] text-[rgba(0,255,255,0.9)] text-[8px]">${tag}</div>`).join('') 
                         : '<div class="text-[8px] text-[var(--text-dim)] italic">No tags</div>'}
                 </div>
                 
@@ -2835,11 +3611,11 @@
                         `
                         ${connectionsFrom.map(c => {
                             const targetCard = boardState.cards.find(card => card.id === c.to);
-                            return `<div class="text-[8px] mb-1 p-1 bg-[var(--panel-light)] bg-opacity-30">→ ${targetCard ? targetCard.data.subject : c.to} ${c.label ? '(' + c.label + ')' : ''}</div>`;
+                            return `<div class="text-[8px] mb-1 p-1 bg-[var(--panel-light)] bg-opacity-30 flex items-center justify-between group">→ ${targetCard ? targetCard.data.subject : c.to} ${c.label ? '(' + c.label + ')' : ''}<span class="ml-2 cursor-pointer text-red-500 opacity-50 hover:opacity-100 transition-opacity" onclick="event.stopPropagation(); removeConnection('${c.from}', '${c.to}')">✕</span></div>`;
                         }).join('')}
                         ${connectionsTo.map(c => {
                             const sourceCard = boardState.cards.find(card => card.id === c.from);
-                            return `<div class="text-[8px] mb-1 p-1 bg-[var(--panel-light)] bg-opacity-30">← ${sourceCard ? sourceCard.data.subject : c.from} ${c.label ? '(' + c.label + ')' : ''}</div>`;
+                            return `<div class="text-[8px] mb-1 p-1 bg-[var(--panel-light)] bg-opacity-30 flex items-center justify-between group">← ${sourceCard ? sourceCard.data.subject : c.from} ${c.label ? '(' + c.label + ')' : ''}<span class="ml-2 cursor-pointer text-red-500 opacity-50 hover:opacity-100 transition-opacity" onclick="event.stopPropagation(); removeConnection('${c.from}', '${c.to}')">✕</span></div>`;
                         }).join('')}
                         `
                     }
@@ -2848,7 +3624,7 @@
                 <div class="mt-4 pt-3 border-t border-[var(--panel-light)] space-y-1">
                     <button class="btn-retro w-full py-1 text-[8px]" onclick="promptAddTagToCard('${cardId}')">[ADD TAG]</button>
                     <button class="btn-retro w-full py-1 text-[8px]" onclick="promptCreateConnection('${cardId}')">[CREATE CONNECTION]</button>
-                    <button class="btn-retro w-full py-1 text-[8px] border-red-500 text-red-500" onclick="deleteCard('${cardId}')">[DELETE CARD]</button>
+                    <button class="btn-retro w-full py-1 text-[8px] border-red-500 text-red-500" onclick="openRemoveCardModal('${cardId}')">[REMOVE CARD]</button>
                 </div>
             `;
         }
@@ -2899,33 +3675,116 @@
             
             const targetCard = otherCards[cardIndex];
             
-            // Ask for connection type
-            const connectionType = prompt('Connection type:\n\n1. Related (cyan) - General relationship\n2. Causal (yellow) - Cause and effect\n3. Conflicting (red) - Contradicting information\n\nEnter (1-3):');
-            const types = {'1': 'related', '2': 'causal', '3': 'conflicting'};
-            const selectedType = types[connectionType] || 'related';
-            
-            const label = prompt('Connection label (optional):\nDescribe the relationship:');
-            
-            boardState.connections.push({
-                from: cardId,
-                to: targetCard.id,
-                type: selectedType,
-                label: label || ''
+            openConnectionModal(cardId, targetCard.id, (type, label) => {
+                boardState.connections.push({
+                    from: cardId,
+                    to: targetCard.id,
+                    type: type,
+                    label: label || ''
+                });
+                
+                saveBoardState();
+                renderConnections();
+                updateCardDetailsPanel(cardId);
+                showSystemNotification(`✓ Connected "${sourceCard.data.subject}" → "${targetCard.data.subject}"`);
             });
-            
-            saveBoardState();
-            renderConnections();
-            updateCardDetailsPanel(cardId);
-            showSystemNotification(`✓ Connected "${sourceCard.data.subject}" → "${targetCard.data.subject}"`);
         }
         
-        function deleteCard(cardId) {
-            if (!confirm('Delete this evidence card?')) return;
+        function openRemoveCardModal(cardId) {
+            const card = boardState.cards.find(c => c.id === cardId);
+            if (!card) return;
             
-            boardState.cards = boardState.cards.filter(c => c.id !== cardId);
+            const cardConnections = boardState.connections.filter(c => c.from === cardId || c.to === cardId);
+            
+            const modal = document.createElement('div');
+            modal.className = 'remove-card-modal';
+            modal.innerHTML = `
+                <div class="remove-card-modal-content">
+                    <div class="modal-header">
+                        <span>[REMOVE CARD]</span>
+                        <button class="close-btn" onclick="this.parentElement.parentElement.remove()">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="remove-context">
+                            <div class="context-label">CARD TO REMOVE:</div>
+                            <div class="context-value">${card.data.subject}</div>
+                        </div>
+                        
+                        ${cardConnections.length > 0 ? `
+                        <div class="connections-info">
+                            <div class="info-label">⚠ CONNECTIONS (${cardConnections.length}):</div>
+                            <div class="connections-list">
+                                ${cardConnections.map(conn => {
+                                    const otherCard = boardState.cards.find(c => 
+                                        c.id === (conn.from === cardId ? conn.to : conn.from)
+                                    );
+                                    const direction = conn.from === cardId ? '→' : '←';
+                                    return `<div class="connection-item">${direction} ${otherCard?.data.subject || 'Unknown'}</div>`;
+                                }).join('')}
+                            </div>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="removal-options">
+                            <label class="option-label">
+                                <input type="radio" name="removal-action" value="card-only" checked>
+                                <span class="option-text">Remove card only (keep connections)</span>
+                            </label>
+                            <label class="option-label">
+                                <input type="radio" name="removal-action" value="with-connections">
+                                <span class="option-text">Remove card and all connections</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-retro" onclick="document.querySelector('.remove-card-modal').remove()">[CANCEL]</button>
+                        <button class="btn-retro" style="color: #ef4444;" onclick="confirmRemoveCard('${cardId}')">[CONFIRM]</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            window.confirmRemoveCard = (cid) => {
+                const action = document.querySelector('input[name="removal-action"]:checked').value;
+                modal.remove();
+                deleteCard(cid, action === 'with-connections');
+                delete window.confirmRemoveCard;
+            };
+            
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.removeEventListener('keydown', handleEscape);
+                    delete window.confirmRemoveCard;
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+        }
+
+        function removeConnection(fromId, toId) {
             boardState.connections = boardState.connections.filter(c => 
-                c.from !== cardId && c.to !== cardId
+                !(c.from === fromId && c.to === toId)
             );
+            
+            saveBoardState();
+            renderInvestigationBoard();
+            
+            // Update the details panel if a card is selected
+            if (boardState.selectedCard) {
+                updateCardDetailsPanel(boardState.selectedCard);
+            }
+        }
+        
+        function deleteCard(cardId, removeConnections = true) {
+            boardState.cards = boardState.cards.filter(c => c.id !== cardId);
+            
+            if (removeConnections) {
+                boardState.connections = boardState.connections.filter(c => 
+                    c.from !== cardId && c.to !== cardId
+                );
+            }
+            
             boardState.selectedCard = null;
             
             saveBoardState();
@@ -3052,6 +3911,102 @@
             openWindow('forensics-window');
         }
 
+        function openConnectionModal(fromId, toId, callback) {
+            const modal = document.createElement('div');
+            modal.className = 'connection-modal';
+            modal.innerHTML = `
+                <div class="connection-modal-content">
+                    <div class="modal-header">
+                        <span>[CREATE CONNECTION]</span>
+                        <button class="close-btn" onclick="this.parentElement.parentElement.remove()">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="connection-context">
+                            <div class="context-label">CONNECTING:</div>
+                            <div id="connection-from" class="context-value"></div>
+                            <div class="arrow">↓</div>
+                            <div id="connection-to" class="context-value"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">CONNECTION TYPE:</label>
+                            <div class="connection-types">
+                                <div class="connection-option" onclick="selectConnectionType(this, 'related')">
+                                    <div class="type-indicator related"></div>
+                                    <div class="type-info">
+                                        <div class="type-name">RELATED</div>
+                                        <div class="type-desc">General relationship or association</div>
+                                    </div>
+                                </div>
+                                <div class="connection-option" onclick="selectConnectionType(this, 'causal')">
+                                    <div class="type-indicator causal"></div>
+                                    <div class="type-info">
+                                        <div class="type-name">CAUSAL</div>
+                                        <div class="type-desc">Cause and effect relationship</div>
+                                    </div>
+                                </div>
+                                <div class="connection-option" onclick="selectConnectionType(this, 'conflicting')">
+                                    <div class="type-indicator conflicting"></div>
+                                    <div class="type-info">
+                                        <div class="type-name">CONFLICTING</div>
+                                        <div class="type-desc">Contradicting or opposing information</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="selected-connection-type" value="related">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">LABEL (OPTIONAL):</label>
+                            <input type="text" id="connection-label-input" class="form-input" placeholder="e.g., 'Mentioned in', 'Verified by', 'Contradicts'" maxlength="100">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-retro" onclick="document.querySelector('.connection-modal').remove()">[CANCEL]</button>
+                        <button class="btn-retro" style="color: #10b981;" onclick="confirmConnectionCreate()">[CONFIRM]</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Populate card names
+            const fromCard = boardState.cards.find(c => c.id === fromId);
+            const toCard = boardState.cards.find(c => c.id === toId);
+            document.getElementById('connection-from').textContent = fromCard?.data.subject || 'Card 1';
+            document.getElementById('connection-to').textContent = toCard?.data.subject || 'Card 2';
+            
+            // Store context for confirmation
+            window.connectionModalContext = { fromId, toId, callback };
+            window.selectConnectionType = (el, type) => {
+                document.querySelectorAll('.connection-option').forEach(opt => opt.classList.remove('selected'));
+                el.classList.add('selected');
+                document.getElementById('selected-connection-type').value = type;
+            };
+            
+            window.confirmConnectionCreate = () => {
+                const type = document.getElementById('selected-connection-type').value;
+                const label = document.getElementById('connection-label-input').value.trim();
+                modal.remove();
+                callback(type, label);
+                delete window.connectionModalContext;
+                delete window.selectConnectionType;
+                delete window.confirmConnectionCreate;
+            };
+            
+            // Close on Escape
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.removeEventListener('keydown', handleEscape);
+                    delete window.connectionModalContext;
+                    delete window.selectConnectionType;
+                    delete window.confirmConnectionCreate;
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+        }
+
         function addNoteToBoard() {
             // Clear filters so the new note is visible
             boardState.activeFilters.clear();
@@ -3062,68 +4017,256 @@
                 return;
             }
 
-            const title = prompt('Note title:');
-            if (title === null) return;
-            const body = prompt('Note body (optional):', '') || '';
-            const noteId = `note-${Date.now()}`;
-            const gridX = 150 + (boardState.cards.length % 8) * 250;
-            const gridY = 150 + Math.floor(boardState.cards.length / 8) * 200;
-            
-            boardState.cards.push({
-                id: noteId,
-                x: gridX,
-                y: gridY,
-                data: {
+            openNoteInputModal((title, body) => {
+                const noteId = `note-${Date.now()}`;
+                const gridX = 150 + (boardState.cards.length % 8) * 250;
+                const gridY = 150 + Math.floor(boardState.cards.length / 8) * 200;
+                
+                boardState.cards.push({
                     id: noteId,
-                    type: 'note',
-                    subject: title || 'UNTITLED NOTE',
-                    sender: 'OPERATOR',
-                    receiver: 'BOARD',
-                    body: body || ' ',
-                    date: new Date().toISOString().split('T')[0]
-                },
-                tags: []
+                    x: gridX,
+                    y: gridY,
+                    data: {
+                        id: noteId,
+                        type: 'note',
+                        subject: title || 'UNTITLED NOTE',
+                        sender: 'OPERATOR',
+                        receiver: 'BOARD',
+                        body: body || ' ',
+                        date: new Date().toISOString().split('T')[0]
+                    },
+                    tags: []
+                });
+                saveBoardState();
+                renderInvestigationBoard();
+                selectCard(noteId);
+                const cardEl = document.getElementById(`card-${noteId}`);
+                if (cardEl) {
+                    cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                showSystemNotification('Note added to board');
             });
-            saveBoardState();
-            renderInvestigationBoard();
-            selectCard(noteId);
-            const cardEl = document.getElementById(`card-${noteId}`);
-            if (cardEl) {
-                cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            showSystemNotification('Note added to board');
+        }
+
+        function openNoteInputModal(callback) {
+            const modal = document.createElement('div');
+            modal.className = 'forensics-note-modal';
+            modal.innerHTML = `
+                <div class="forensics-note-modal-content">
+                    <div class="modal-header">
+                        <span>[NEW NOTE]</span>
+                        <button class="close-btn" onclick="this.parentElement.parentElement.remove()">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">TITLE:</label>
+                            <input type="text" id="note-title-input" class="form-input" placeholder="Enter note title..." maxlength="100">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">CONTENT:</label>
+                            <textarea id="note-body-input" class="form-textarea" placeholder="Enter note content..." maxlength="500"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-retro" onclick="document.querySelector('.forensics-note-modal').remove()">[CANCEL]</button>
+                        <button class="btn-retro" style="color: #10b981;" onclick="saveNote()">[SAVE]</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            document.getElementById('note-title-input').focus();
+            
+            // Save note on Enter key
+            window.saveNote = () => {
+                const title = document.getElementById('note-title-input').value.trim();
+                const body = document.getElementById('note-body-input').value.trim();
+                if (!title) {
+                    showSystemNotification('⚠ Title cannot be empty');
+                    return;
+                }
+                modal.remove();
+                callback(title, body);
+            };
+            
+            // Close on Escape
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.removeEventListener('keydown', handleEscape);
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
         }
 
         function showCardContextMenu(card, event) {
-            const action = prompt(`CARD: ${card.data.subject}\n\n1. Create Connection\n2. Add Tag\n3. Delete Card\n4. View Full Content\n\nEnter option (1-4):`);
+            // Remove any existing context menu
+            const existing = document.querySelector('.card-context-menu');
+            if (existing) existing.remove();
             
-            if (action === '1') {
-                promptCreateConnection(card.id);
-            } else if (action === '2') {
-                addTagToCard(card.id);
-            } else if (action === '3') {
-                deleteCard(card.id);
-            } else if (action === '4') {
-                if (card.data.type === 'file') {
-                    alert('File content:\n\n' + card.data.body);
-                } else {
-                    // For emails, try to open in viewer
-                    const emailData = entityDatabase.discoveredEmails.find(e => e.id === card.id);
-                    if (emailData) {
-                        openWindow('archive-window');
-                        setTimeout(() => {
-                            const emailItems = document.querySelectorAll('.email-item');
-                            emailItems.forEach(item => {
-                                if (item.textContent.includes(card.id)) {
-                                    item.click();
-                                }
-                            });
-                        }, 300);
+            const modal = document.createElement('div');
+            modal.className = 'card-context-menu';
+            modal.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: var(--bg-dark); border: 2px solid var(--accent); padding: 0; width: 500px; box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);">
+                    <div style="background: var(--panel-dark); padding: 12px; border-bottom: 1px solid var(--accent);">
+                        <div style="color: var(--accent); font-size: 10px; font-weight: bold; letter-spacing: 1px;">CARD OPTIONS</div>
+                        <div style="color: var(--text-dim); font-size: 8px; margin-top: 4px;">${card.data.subject}</div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div style="display: grid; gap: 8px;">
+                            <button class="context-option" onclick="window.cardContextAction('connection', '${card.id}')" style="padding: 12px; background: var(--panel-dark); border: 1px solid var(--panel-light); color: var(--text-main); font-size: 9px; cursor: pointer; text-align: left; transition: all 0.2s; display: flex; align-items: start; gap: 12px;">
+                                <span style="color: rgba(6, 182, 212, 0.9); font-weight: bold; min-width: 20px;">→</span>
+                                <div>
+                                    <div style="font-weight: bold; color: var(--text-main); margin-bottom: 2px;">CREATE CONNECTION</div>
+                                    <div style="color: var(--text-dim); font-size: 8px;">Link this card to another card on the board</div>
+                                </div>
+                            </button>
+                            <button class="context-option" onclick="window.cardContextAction('tag', '${card.id}')" style="padding: 12px; background: var(--panel-dark); border: 1px solid var(--panel-light); color: var(--text-main); font-size: 9px; cursor: pointer; text-align: left; transition: all 0.2s; display: flex; align-items: start; gap: 12px;">
+                                <span style="color: rgba(6, 182, 212, 0.9); font-weight: bold; min-width: 20px;">#</span>
+                                <div>
+                                    <div style="font-weight: bold; color: var(--text-main); margin-bottom: 2px;">ADD TAG</div>
+                                    <div style="color: var(--text-dim); font-size: 8px;">Categorize and filter this card with tags</div>
+                                </div>
+                            </button>
+                            <button class="context-option" onclick="window.cardContextAction('delete', '${card.id}')" style="padding: 12px; background: var(--panel-dark); border: 1px solid var(--panel-light); color: var(--text-main); font-size: 9px; cursor: pointer; text-align: left; transition: all 0.2s; display: flex; align-items: start; gap: 12px;">
+                                <span style="color: rgba(239, 68, 68, 0.9); font-weight: bold; min-width: 20px;">✕</span>
+                                <div>
+                                    <div style="font-weight: bold; color: var(--text-main); margin-bottom: 2px;">REMOVE CARD</div>
+                                    <div style="color: var(--text-dim); font-size: 8px;">Remove this card from the investigation board</div>
+                                </div>
+                            </button>
+                            <button class="context-option" onclick="window.cardContextAction('view', '${card.id}')" style="padding: 12px; background: var(--panel-dark); border: 1px solid var(--panel-light); color: var(--text-main); font-size: 9px; cursor: pointer; text-align: left; transition: all 0.2s; display: flex; align-items: start; gap: 12px;">
+                                <span style="color: rgba(6, 182, 212, 0.9); font-weight: bold; min-width: 20px;">📄</span>
+                                <div>
+                                    <div style="font-weight: bold; color: var(--text-main); margin-bottom: 2px;">VIEW FULL CONTENT</div>
+                                    <div style="color: var(--text-dim); font-size: 8px;">Open complete content in archive viewer</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    <div style="padding: 12px; border-top: 1px solid var(--panel-light); display: flex; justify-content: flex-end;">
+                        <button onclick="document.querySelector('.card-context-menu').remove()" style="padding: 8px 16px; background: transparent; border: 1px solid var(--panel-light); color: var(--text-dim); font-size: 8px; cursor: pointer; transition: all 0.2s; font-family: 'Courier New', monospace;">[CANCEL]</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Add hover effects
+            const style = document.createElement('style');
+            style.textContent = `
+                .context-option:hover {
+                    background: var(--panel-light) !important;
+                    border-color: var(--accent) !important;
+                    transform: translateX(4px);
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Handle actions
+            window.cardContextAction = (action, cardId) => {
+                modal.remove();
+                const targetCard = boardState.cards.find(c => c.id === cardId);
+                if (!targetCard) return;
+                
+                if (action === 'connection') {
+                    promptCreateConnection(cardId);
+                } else if (action === 'tag') {
+                    addTagToCard(cardId);
+                } else if (action === 'delete') {
+                    openRemoveCardModal(cardId);
+                } else if (action === 'view') {
+                    if (targetCard.data.type === 'file') {
+                        showContentModal(targetCard.data.subject, targetCard.data.body);
                     } else {
-                        alert('Email content:\n\n' + card.data.body);
+                        // For emails, try to open in viewer
+                        const emailData = entityDatabase.discoveredEmails.find(e => e.id === cardId);
+                        if (emailData) {
+                            openWindow('archive-window');
+                            setTimeout(() => {
+                                const emailItems = document.querySelectorAll('.email-item');
+                                emailItems.forEach(item => {
+                                    if (item.textContent.includes(cardId)) {
+                                        item.click();
+                                    }
+                                });
+                            }, 300);
+                        } else {
+                            showContentModal(targetCard.data.subject, targetCard.data.body);
+                        }
                     }
                 }
-            }
+                delete window.cardContextAction;
+            };
+            
+            // Close on Escape or click outside
+            const handleEscape = (e) => {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.removeEventListener('keydown', handleEscape);
+                    delete window.cardContextAction;
+                }
+            };
+            document.addEventListener('keydown', handleEscape);
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                    document.removeEventListener('keydown', handleEscape);
+                    delete window.cardContextAction;
+                }
+            });
+        }
+        
+        function showContentModal(title, content) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.85);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: var(--bg-dark); border: 2px solid var(--accent); padding: 0; width: 600px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);">
+                    <div style="background: var(--panel-dark); padding: 12px; border-bottom: 1px solid var(--accent);">
+                        <div style="color: var(--accent); font-size: 10px; font-weight: bold; letter-spacing: 1px;">FULL CONTENT</div>
+                        <div style="color: var(--text-dim); font-size: 8px; margin-top: 4px;">${title}</div>
+                    </div>
+                    <div style="padding: 20px; overflow-y: auto; flex: 1; color: var(--text-main); font-size: 9px; line-height: 1.6; white-space: pre-wrap;">${content}</div>
+                    <div style="padding: 12px; border-top: 1px solid var(--panel-light); display: flex; justify-content: flex-end;">
+                        <button onclick="this.closest('div[style*=\"position: fixed\"]').remove()" style="padding: 8px 16px; background: transparent; border: 1px solid var(--accent); color: var(--accent); font-size: 8px; cursor: pointer; transition: all 0.2s; font-family: 'Courier New', monospace;">[CLOSE]</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+            
+            document.addEventListener('keydown', function handleEsc(e) {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.removeEventListener('keydown', handleEsc);
+                }
+            });
         }
 
         function updateForensicsTimeline() {
@@ -4622,9 +5765,13 @@
             await new Promise(r => setTimeout(r, 600));
             document.getElementById('login-title').classList.remove('opacity-30');
             
-            await typeValue('input-opid', 'GUEST');
+            // Type the active user's username if it exists
+            const username = activeUser ? activeUser.username : 'GUEST';
+            const displayName = activeUser ? activeUser.name : 'GUEST';
+            
+            await typeValue('input-opid', username);
             await new Promise(r => setTimeout(r, 400));
-            await typeValue('input-auth', '********');
+            await typeValue('input-auth', '[BRUTEFORCE_SUCCESS]');
             
             const btn = document.getElementById('login-btn');
             btn.classList.remove('opacity-10', 'cursor-default');
@@ -5036,7 +6183,27 @@
         }
 
         function openSystemV() {
-            // Load last opened user or guide account
+            // If an active user is set, use them directly
+            if (activeUser && activeUser.username) {
+                currentUser = {
+                    username: activeUser.username,
+                    name: activeUser.name,
+                    privilege_level: activeUser.privilege_level,
+                    emails: activeUser.emails
+                };
+                
+                document.getElementById('current-user-display').innerText = `USER: ${activeUser.name.toUpperCase()}`;
+                document.getElementById('current-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+                
+                document.getElementById('archive-window-title').innerText = `${activeUser.name.toUpperCase()} // EMAIL_ARCHIVE // DAPAUE`;
+                document.getElementById('taskbar-archive-label').innerText = activeUser.name.toUpperCase();
+                
+                openWindow('archive-window');
+                loadEmailList();
+                return;
+            }
+            
+            // Load last opened user or guide account if no active user
             const savedLastUser = localStorage.getItem('dapaue-last-user');
             if (savedLastUser && unlockedAccounts.has(savedLastUser)) {
                 switchToUser(savedLastUser);
@@ -5128,6 +6295,12 @@ Good luck, Investigator.
         }
         
         function openUserSelector() {
+            // Check if an active user has been set via terminal
+            if (!activeUser) {
+                alert('ERROR: No active user set. Use "active <username>" in terminal first.');
+                return;
+            }
+            
             const modal = document.createElement('div');
             modal.id = 'user-selector-modal';
             modal.style.position = 'fixed';
@@ -5157,50 +6330,60 @@ Good luck, Investigator.
             const title = document.createElement('div');
             title.style.fontSize = '13px';
             title.style.fontWeight = 'bold';
-            title.style.marginBottom = '12px';
+            title.style.marginBottom = '8px';
             title.style.color = 'var(--accent)';
-            title.innerText = 'SELECT USER ACCOUNT';
+            title.innerText = 'EMAIL ACCESS';
             panel.appendChild(title);
             
-            const accounts = Array.from(unlockedAccounts);
-            if (accounts.length === 0) {
-                const msg = document.createElement('div');
-                msg.style.color = 'var(--text-dim)';
-                msg.innerText = 'No accounts unlocked yet';
-                panel.appendChild(msg);
-            } else {
-                accounts.forEach(username => {
-                    const user = (typeof staffUsers !== 'undefined') ? staffUsers.find(u => u.username === username) : null;
-                    const displayName = user ? user.name : username;
-                    
-                    const btn = document.createElement('div');
-                    btn.style.padding = '8px';
-                    btn.style.margin = '4px 0';
-                    btn.style.border = '1px solid var(--panel-light)';
-                    btn.style.borderRadius = '2px';
-                    btn.style.cursor = 'pointer';
-                    btn.style.transition = 'all 0.2s';
-                    btn.style.backgroundColor = currentUser?.username === username ? 'var(--panel-light)' : 'transparent';
-                    btn.innerText = `[${displayName.toUpperCase()}]`;
-                    
-                    btn.onmouseover = () => {
-                        btn.style.backgroundColor = 'var(--panel-light)';
-                    };
-                    btn.onmouseout = () => {
-                        if (currentUser?.username !== username) {
-                            btn.style.backgroundColor = 'transparent';
-                        }
-                    };
-                    
-                    btn.onclick = () => {
-                        switchToUser(username);
-                        document.body.removeChild(modal);
-                    };
-                    
-                    panel.appendChild(btn);
-                });
-            }
+            const subtitle = document.createElement('div');
+            subtitle.style.fontSize = '9px';
+            subtitle.style.color = 'var(--text-dim)';
+            subtitle.style.marginBottom = '12px';
+            subtitle.innerText = `Active User: ${activeUser.name} (Level ${activeUser.privilege_level})`;
+            panel.appendChild(subtitle);
             
+            // Only show the active user's email
+            const btn = document.createElement('div');
+            btn.style.padding = '8px';
+            btn.style.margin = '4px 0';
+            btn.style.border = '1px solid var(--accent)';
+            btn.style.borderRadius = '2px';
+            btn.style.cursor = 'pointer';
+            btn.style.transition = 'all 0.2s';
+            btn.style.backgroundColor = 'var(--panel-light)';
+            btn.innerText = `[${activeUser.name.toUpperCase()}] - EMAIL ONLY`;
+            
+            btn.onmouseover = () => {
+                btn.style.backgroundColor = 'var(--accent)';
+                btn.style.color = 'var(--bg-dark)';
+            };
+            btn.onmouseout = () => {
+                btn.style.backgroundColor = 'var(--panel-light)';
+                btn.style.color = 'var(--light)';
+            };
+            
+            btn.onclick = () => {
+                // Set currentUser to activeUser for email access
+                currentUser = {
+                    username: activeUser.username,
+                    name: activeUser.name,
+                    emails: activeUser.emails,
+                    privilege_level: activeUser.privilege_level
+                };
+                
+                document.getElementById('current-user-display').innerText = `USER: ${activeUser.name.toUpperCase()}`;
+                document.getElementById('current-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+                
+                document.getElementById('archive-window-title').innerText = `${activeUser.name.toUpperCase()} // EMAIL_ARCHIVE // DAPAUE`;
+                document.getElementById('taskbar-archive-label').innerText = activeUser.name.toUpperCase();
+                
+                openWindow('archive-window');
+                loadEmailList();
+                
+                document.body.removeChild(modal);
+            };
+            
+            panel.appendChild(btn);
             panel.onclick = (e) => e.stopPropagation();
             modal.onclick = () => document.body.removeChild(modal);
             modal.appendChild(panel);
@@ -6345,6 +7528,7 @@ Good luck, Investigator.
 
         function confirmLogout() {
             playClickSound();
+            stopGlobalGlitchLoop();
             location.reload();
         }
 
@@ -6521,14 +7705,15 @@ Good luck, Investigator.
         function executeCommand() {
             const input = document.getElementById('terminal-input');
             const output = document.getElementById('terminal-output');
-            const command = input.value.trim().toLowerCase();
+            const raw = input.value.trim();
+            const command = raw.toLowerCase();
             
             if (!command) return;
             
             // Add command to output
             const cmdLine = document.createElement('div');
             cmdLine.className = "text-[var(--accent)]";
-            cmdLine.innerText = `> ${input.value}`;
+            cmdLine.innerText = `${getTerminalPrompt()} ${raw}`;
             output.appendChild(cmdLine);
             
             // Process command
@@ -6550,6 +7735,220 @@ Good luck, Investigator.
             // Clear input
             input.value = '';
             input.focus();
+            updateTerminalPrompt();
+        }
+
+        // Track bruteforce usage with instability feedback (call when you implement bruteforce)
+        function consumeBruteforce(token = 'UNKNOWN_TARGET', options = {}) {
+            const { suppressNotify = false, suppressEffects = false } = options;
+            if (bruteforceUsed >= bruteforceAllowance) {
+                showSystemNotification('BRUTEFORCE_LIMIT_REACHED: No remaining attempts.');
+                return false;
+            }
+            bruteforceUsed += 1;
+            systemInstability = Math.min(100, systemInstability + 20);
+            if (!suppressNotify) {
+                showSystemNotification(`BRUTEFORCE DEPLOYED (${bruteforceUsed}/${bruteforceAllowance}) :: INSTABILITY ${systemInstability}% :: TARGET ${token}`);
+            }
+            if (!suppressEffects) {
+                triggerInstabilityEffects();
+            }
+            return true;
+        }
+
+        let coolingInterval = null;
+        let globalGlitchRunning = false;
+        let globalGlitchTimer = null;
+
+        function triggerInstabilityEffects() {
+            const overlay = document.getElementById('instability-overlay');
+            if (overlay) {
+                overlay.classList.add('active');
+                setTimeout(() => overlay.classList.remove('active'), 1200);
+            }
+            const cooldown = 8 + Math.floor(Math.random() * 6); // 8–13 seconds
+            startCoolingLock(cooldown);
+            startGlobalGlitchLoop();
+        }
+
+        function simulateInstabilityWarning() {
+            showSystemNotification('SIMULATION: Instability warning triggered (no bruteforce consumed).');
+            triggerInstabilityEffects();
+        }
+
+        function startCoolingLock(durationSeconds) {
+            const lock = document.getElementById('cooling-lock');
+            const bar = document.getElementById('cooling-bar-fill');
+            const countdown = document.getElementById('cooling-countdown');
+            if (!lock || !bar || !countdown) return;
+
+            // Reset any existing cycle
+            if (coolingInterval) clearInterval(coolingInterval);
+            bar.style.transition = 'none';
+            bar.style.width = '100%';
+
+            lock.classList.add('active');
+            countdown.textContent = `${durationSeconds}s`;
+
+            // Start countdown display
+            let remaining = durationSeconds;
+            coolingInterval = setInterval(() => {
+                remaining -= 1;
+                if (remaining <= 0) {
+                    countdown.textContent = '0s';
+                    clearInterval(coolingInterval);
+                    coolingInterval = null;
+                } else {
+                    countdown.textContent = `${remaining}s`;
+                }
+            }, 1000);
+
+            // Animate bar shrink
+            requestAnimationFrame(() => {
+                bar.style.transition = `width ${durationSeconds}s linear`;
+                bar.style.width = '0%';
+            });
+
+            // Unlock after duration
+            setTimeout(() => {
+                stopCoolingLock();
+                showSystemNotification('CPU TEMP STABLE: Cooling cycle complete.');
+            }, durationSeconds * 1000);
+        }
+
+        function stopCoolingLock() {
+            const lock = document.getElementById('cooling-lock');
+            const bar = document.getElementById('cooling-bar-fill');
+            if (coolingInterval) {
+                clearInterval(coolingInterval);
+                coolingInterval = null;
+            }
+            if (bar) bar.style.width = '0%';
+            if (lock) lock.classList.remove('active');
+        }
+
+        function startGlobalGlitchLoop() {
+            if (globalGlitchRunning) return;
+            globalGlitchRunning = true;
+            // Delay start so it doesn't hit immediately after trigger
+            const startDelay = 500 + Math.random() * 1500;
+            setTimeout(() => scheduleGlitchBurst(), startDelay);
+        }
+
+        function scheduleGlitchBurst() {
+            if (!globalGlitchRunning) return;
+            const overlay = document.getElementById('global-glitch-overlay');
+            document.body.classList.add('global-glitch-shake');
+            if (overlay) overlay.classList.add('active');
+            
+            // Spawn glitch artifacts
+            spawnGlitchArtifacts();
+            
+            // If all bruteforce exhausted, randomly reposition icons and logo
+            if (bruteforceUsed >= bruteforceAllowance) {
+                scrambleDesktopElements();
+            }
+            
+            // End burst after a chaotic duration
+            const burstDuration = 300 + Math.random() * 600;
+            setTimeout(() => {
+                document.body.classList.remove('global-glitch-shake');
+                if (overlay) overlay.classList.remove('active');
+                clearGlitchArtifacts();
+            }, burstDuration);
+
+            // Schedule next burst with chaotic timing
+            const nextDelay = 400 + Math.random() * 2000;
+            globalGlitchTimer = setTimeout(scheduleGlitchBurst, nextDelay);
+        }
+
+        function stopGlobalGlitchLoop() {
+            globalGlitchRunning = false;
+            if (globalGlitchTimer) {
+                clearTimeout(globalGlitchTimer);
+                globalGlitchTimer = null;
+            }
+            document.body.classList.remove('global-glitch-shake');
+            const overlay = document.getElementById('global-glitch-overlay');
+            if (overlay) overlay.classList.remove('active');
+            clearGlitchArtifacts();
+            resetDesktopElements();
+        }
+
+        function scrambleDesktopElements() {
+            const icons = document.querySelectorAll('.desktop-icon');
+            const logo = document.getElementById('desktop-logo');
+            
+            icons.forEach(icon => {
+                const randomX = (Math.random() - 0.5) * 140;
+                const randomY = (Math.random() - 0.5) * 140;
+                const randomRotate = (Math.random() - 0.5) * 20;
+                icon.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRotate}deg)`;
+            });
+            
+            if (logo) {
+                const offsetX = (Math.random() - 0.5) * 300;
+                const offsetY = (Math.random() - 0.5) * 300;
+                const randomRotate = (Math.random() - 0.5) * 15;
+                const randomScale = 0.95 + Math.random() * 0.1;
+                logo.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px)) rotate(${randomRotate}deg) scale(${randomScale})`;
+            }
+        }
+
+        function resetDesktopElements() {
+            const icons = document.querySelectorAll('.desktop-icon');
+            const logo = document.getElementById('desktop-logo');
+            
+            icons.forEach(icon => {
+                icon.style.transform = '';
+            });
+            
+            if (logo) {
+                logo.style.transform = 'translate(-50%, -50%)';
+            }
+        }
+
+        function spawnGlitchArtifacts() {
+            const container = document.getElementById('glitch-artifacts');
+            if (!container) return;
+            
+            // Spawn 8-15 random blocks
+            const count = 8 + Math.floor(Math.random() * 8);
+            for (let i = 0; i < count; i++) {
+                const block = document.createElement('div');
+                block.className = 'glitch-block';
+                
+                // Random position
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // Random size - mix of squares and rectangles
+                const isWide = Math.random() > 0.5;
+                const width = isWide ? (20 + Math.random() * 120) : (10 + Math.random() * 40);
+                const height = isWide ? (10 + Math.random() * 40) : (20 + Math.random() * 120);
+                
+                block.style.left = `${x}%`;
+                block.style.top = `${y}%`;
+                block.style.width = `${width}px`;
+                block.style.height = `${height}px`;
+                
+                container.appendChild(block);
+            }
+        }
+
+        function clearGlitchArtifacts() {
+            const container = document.getElementById('glitch-artifacts');
+            if (container) container.innerHTML = '';
+        }
+
+        function getTerminalPrompt() {
+            const userLabel = activeUser && activeUser.username ? activeUser.username : 'GUEST';
+            return `${userLabel} >`;
+        }
+
+        function updateTerminalPrompt() {
+            const prompt = document.getElementById('terminal-prompt');
+            if (prompt) prompt.innerText = getTerminalPrompt();
         }
         
         function animateTerminalText(element, htmlContent) {
@@ -6568,6 +7967,7 @@ Good luck, Investigator.
                         className: 'text-[var(--text-dim)] space-y-1',
                         message: `
                             <div>AVAILABLE COMMANDS:</div>
+                            <div>  active &lt;username&gt; - Set active user for forensic access (emails only)</div>
                             <div>  list - Show accessible user accounts</div>
                             <div>  access &lt;username&gt; - Attempt to access user account</div>
                             <div>  info &lt;username&gt; - View user information</div>
@@ -6581,17 +7981,57 @@ Good luck, Investigator.
                         `
                     };
                     
+                case 'active':
+                    const targetActiveUser = staffUsers.find(u => u.username === args);
+                    if (!targetActiveUser) return {
+                        className: 'terminal-error',
+                        message: `ERROR: User '${args}' not found`
+                    };
+                    
+                    activeUser = {
+                        username: targetActiveUser.username,
+                        name: targetActiveUser.name,
+                        privilege_level: targetActiveUser.privilege_level,
+                        emails: targetActiveUser.emails
+                    };
+                    
+                    // Add to accessed users for forensics filtering
+                    accessedUsers.add(targetActiveUser.username);
+                    updateTerminalPrompt();
+                    
+                    return {
+                        className: 'terminal-success',
+                        message: `ACTIVE_USER_SET: <span style="color: #00ff41; font-weight: bold;">${targetActiveUser.name} (${targetActiveUser.username})</span><br>Privilege Level: ${targetActiveUser.privilege_level}<br>Email access enabled. To access files, use server password or bruteforce.`
+                    };
+                    
                 case 'list':
-                    const userList = staffUsers.map(u => 
-                        `  <span style="color: #00ff41; font-weight: bold;">${u.username.padEnd(20)}</span> | ${u.name.padEnd(20)} | Level ${u.securityLevel} | ${u.status}`
+                    // Show users at the same privilege level as the active user
+                    if (!activeUser || !activeUser.privilege_level) {
+                        return {
+                            className: 'terminal-error',
+                            message: `ERROR: No active user set. Use 'active <username>' first.`
+                        };
+                    }
+                    
+                    const levelUsers = staffUsers.filter(u => u.privilege_level === activeUser.privilege_level);
+                    const userList = levelUsers.map(u => 
+                        `  <span style="color: #00ff41; font-weight: bold;">${u.username.padEnd(20)}</span> | ${u.name.padEnd(20)} | Priv Level ${u.privilege_level} | ${u.status}`
                     ).join('<br>');
+                    
+                    if (levelUsers.length === 0) {
+                        return {
+                            className: 'text-[var(--text-dim)]',
+                            message: `PRIVILEGE_LEVEL ${activeUser.privilege_level} USERS:<br>No users found`
+                        };
+                    }
+                    
                     return {
                         className: 'text-[var(--text-dim)]',
-                        message: `RESTRICTED_USER_ACCOUNTS:<br>${userList}`
+                        message: `PRIVILEGE_LEVEL ${activeUser.privilege_level} USERS:<br>${userList}`
                     };
                     
                 case 'info':
-                    const user = staffUsers.find(u => u.username === args);
+                    const user = staffUsers.find(u => u.username.toLowerCase() === (args || '').toLowerCase());
                     if (!user) return {
                         className: 'terminal-error',
                         message: `ERROR: User '${args}' not found`
@@ -6961,6 +8401,13 @@ Good luck, Investigator.
                     document.getElementById('terminal-output').scrollTop = document.getElementById('terminal-output').scrollHeight;
                     
                     return { message: '' };
+                    
+                case 'purge':
+                    stopGlobalGlitchLoop();
+                    return {
+                        className: 'terminal-success',
+                        message: '⚡ SYSTEM PURGE INITIATED<br>Instability effects terminated. System stabilized.'
+                    };
                     
                 case 'exit':
                     closeWindow('user-access-window');

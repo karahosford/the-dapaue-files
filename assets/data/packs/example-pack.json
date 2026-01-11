@@ -8,7 +8,6 @@
       "date": "2099-01-20",
       "encryption": "STANDARD",
       "signal": "84.0%",
-      "tags": ["pack"],
       "body": "Demo email from a content pack.",
       "category": "inbox"
     }
@@ -26,7 +25,6 @@
           "encryption": "STANDARD",
           "signal": "80.0%",
           "category": "inbox",
-          "tags": ["pack"],
           "body": "Additional message merged from content pack."
         }
       ]
@@ -38,7 +36,5 @@
     "events": [],
     "servers": []
   },
-  "tags": [
-    { "name": "pack", "color": "#a855f7" }
-  ]
+  "tags": []
 }
