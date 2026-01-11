@@ -823,6 +823,34 @@
             }
         }
         
+        /* Connection line sway animations for physics weight effect */
+        @keyframes connection-sway-0 {
+            0%, 100% { 
+                transform: translateY(0px); 
+            }
+            50% { 
+                transform: translateY(3px); 
+            }
+        }
+        
+        @keyframes connection-sway-1 {
+            0%, 100% { 
+                transform: translateY(-2px); 
+            }
+            50% { 
+                transform: translateY(2px); 
+            }
+        }
+        
+        @keyframes connection-sway-2 {
+            0%, 100% { 
+                transform: translateY(1px); 
+            }
+            50% { 
+                transform: translateY(-2px); 
+            }
+        }
+        
         .notification-header {
             display: flex;
             justify-content: space-between;
@@ -1861,11 +1889,11 @@
 
         // ===== Server Monitor Logic =====
         let serverNodes = [
-            { id: 'NODE-01', name: 'ARCHIVE_NODE_01', status: 'ONLINE', latency: 12, load: 35, temp: 48, loss: 0.2, uptime: '482d', selected: false },
-            { id: 'NODE-02', name: 'ARCHIVE_NODE_02', status: 'ONLINE', latency: 20, load: 52, temp: 55, loss: 0.5, uptime: '312d', selected: false },
-            { id: 'NODE-03', name: 'ARCHIVE_NODE_03', status: 'WARNING', latency: 55, load: 76, temp: 68, loss: 2.1, uptime: '128d', selected: false },
-            { id: 'NODE-04', name: 'ARCHIVE_NODE_04', status: 'OFFLINE', latency: 0, load: 0, temp: 0, loss: 0, uptime: '0d', selected: false },
-            { id: 'NODE-05', name: 'ARCHIVE_NODE_05', status: 'ONLINE', latency: 18, load: 43, temp: 51, loss: 0.3, uptime: '905d', selected: false }
+            { id: 'NODE-01', name: 'ATLAS', status: 'ONLINE', latency: 12, load: 35, temp: 48, loss: 0.2, uptime: '482d', selected: false },
+            { id: 'NODE-02', name: 'PROMETHEUS', status: 'ONLINE', latency: 20, load: 52, temp: 55, loss: 0.5, uptime: '312d', selected: false },
+            { id: 'NODE-03', name: 'AEGIS', status: 'WARNING', latency: 55, load: 76, temp: 68, loss: 2.1, uptime: '128d', selected: false },
+            { id: 'NODE-04', name: 'ORACLE', status: 'OFFLINE', latency: 0, load: 0, temp: 0, loss: 0, uptime: '0d', selected: false },
+            { id: 'NODE-05', name: 'CHRONOS', status: 'ONLINE', latency: 18, load: 43, temp: 51, loss: 0.3, uptime: '905d', selected: false }
         ];
         let activeServerId = localStorage.getItem('dapaue-active-server') || null;
         let serverAccess = JSON.parse(localStorage.getItem('dapaue-server-access') || '{}');
@@ -1960,10 +1988,29 @@
 
             const match = (typeof staffUsers !== 'undefined') ? staffUsers.find(u => u.username.toLowerCase() === user.toLowerCase() && u.accessCode === pass) : null;
             if (match) {
+                // Check security level permissions: user level must be >= node level
+                const nodeLevel = parseInt(id.split('-')[1]); // Extract number from NODE-01, NODE-02, etc.
+                const userLevel = match.securityLevel || 0;
+                
+                if (userLevel < nodeLevel) {
+                    if (statusEl) statusEl.innerText = `ACCESS_DENIED: Security Level ${userLevel} insufficient for ${id} (requires Level ${nodeLevel}+)`;
+                    showSystemNotification(`⚠ ACCESS DENIED\nSecurity clearance insufficient for ${id}`);
+                    return;
+                }
+                
                 serverAccess[id] = true;
+                activeServerId = id; // Set this node as active
                 saveServerState();
                 if (statusEl) statusEl.innerText = `AUTH_SUCCESS: ${match.name}`;
                 updateServerDetail(id);
+                updateActiveServerDisplay();
+                
+                // Unlock the user account and switch to it in System-V
+                unlockedAccounts.add(match.username);
+                switchToUser(match.username);
+                
+                const nodeName = serverNodes.find(n => n.id === id)?.name || id;
+                showSystemNotification(`✓ ${nodeName} AUTHENTICATED\nActive User: ${match.name}\nSecurity Level: ${userLevel}`);
             } else {
                 if (statusEl) statusEl.innerText = 'AUTH_FAILED: Invalid credentials';
             }
@@ -2452,15 +2499,21 @@
                 
                 // Calculate distance for natural sag amount
                 const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-                const droop = Math.min(distance * 0.25, 80); // Thread sag based on length
+                const droop = distance * 0.3; // Thread sag based on length - no limit!
                 
                 // Add slight randomness for organic look (consistent per connection using index)
                 const wobble = (idx % 3 - 1) * 10; // -10, 0, or 10
                 
-                const curve = `M ${x1} ${y1} Q ${midX + wobble} ${midY + droop} ${x2} ${y2}`;
+                // Add physics weight - longer threads droop more heavily
+                const weight = Math.sqrt(distance) * 0.5;
+                
+                const curve = `M ${x1} ${y1} Q ${midX + wobble} ${midY + droop + weight} ${x2} ${y2}`;
                 line.setAttribute('d', curve);
                 line.setAttribute('class', `connection-line type-${conn.type}`);
                 line.setAttribute('fill', 'none');
+                
+                // Add animated sway for physics feel
+                line.style.animation = `connection-sway-${idx % 3} ${3 + (distance / 200)}s ease-in-out infinite`;
                 
                 svg.appendChild(line);
                 
@@ -2468,7 +2521,7 @@
                 if (conn.label) {
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                     text.setAttribute('x', midX + wobble);
-                    text.setAttribute('y', midY + droop - 10);
+                    text.setAttribute('y', midY + droop + weight - 10);
                     text.setAttribute('fill', 'var(--text-dim)');
                     text.setAttribute('font-size', '9');
                     text.setAttribute('text-anchor', 'middle');
@@ -2577,9 +2630,10 @@
             const midX = (fromX + toX) / 2;
             const midY = (fromY + toY) / 2;
             const distance = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
-            const droop = Math.min(distance * 0.3, 100); // Natural sag
+            const droop = distance * 0.35; // Natural sag - no limit!
+            const weight = Math.sqrt(distance) * 0.5;
             
-            const curve = `M ${fromX} ${fromY} Q ${midX} ${midY + droop} ${toX} ${toY}`;
+            const curve = `M ${fromX} ${fromY} Q ${midX} ${midY + droop + weight} ${toX} ${toY}`;
             line.setAttribute('d', curve);
             line.setAttribute('class', 'temp-connection');
             line.setAttribute('stroke', 'rgba(0, 255, 255, 0.5)');

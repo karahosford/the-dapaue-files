@@ -4,7 +4,7 @@
     "name": "Demo User (Analyst)",
     "department": "Department A",
     "securityLevel": 2,
-    "accessCode": "DEMO-CODE-0001",
+    "accessCode": "guest",
     "status": "ACTIVE",
     "emails": [
       {
@@ -38,7 +38,7 @@
     "name": "Demo User (Command)",
     "department": "Department B",
     "securityLevel": 3,
-    "accessCode": "DEMO-CODE-0002",
+    "accessCode": "guest",
     "status": "ACTIVE",
     "emails": [
       {
@@ -72,7 +72,7 @@
     "name": "Demo User (Security)",
     "department": "Department C",
     "securityLevel": 4,
-    "accessCode": "DEMO-CODE-0003",
+    "accessCode": "guest",
     "status": "ACTIVE",
     "emails": [
       {
