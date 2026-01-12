@@ -1093,18 +1093,30 @@
 
         /* System Notification */
         .system-notification {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+            position: relative;
             max-width: 400px;
             background: var(--panel-dark);
             border: 2px solid var(--panel-light);
             padding: 16px;
-            z-index: 9999;
             opacity: 0;
             transform: translateY(20px);
             animation: slideInNotification 0.5s forwards;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        
+        .notification-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        
+        .notification-container .system-notification {
+            pointer-events: auto;
         }
         
         @keyframes slideInNotification {
@@ -1115,10 +1127,14 @@
         }
         
         .system-notification.hiding {
-            animation: slideOutNotification 0.5s forwards;
+            animation: slideOutNotification 0.5s forwards !important;
         }
         
         @keyframes slideOutNotification {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
             to {
                 opacity: 0;
                 transform: translateY(20px);
@@ -1184,6 +1200,33 @@
             font-size: 9px;
             line-height: 1.6;
             color: var(--text-main);
+        }
+        
+        .notification-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+        
+        .notification-progress-bar {
+            height: 100%;
+            background: var(--accent);
+            width: 100%;
+            transform-origin: left;
+            animation: notificationProgress 15s linear forwards;
+        }
+        
+        @keyframes notificationProgress {
+            from {
+                transform: scaleX(1);
+            }
+            to {
+                transform: scaleX(0);
+            }
         }
 
         /* Instability overlay (mild glitch) */
@@ -1584,34 +1627,33 @@
     </div>
 
     <!-- Intro / Login Overlay -->
-    <div id="intro-overlay" class="absolute inset-0 z-[2000] bg-[var(--bg-dark)] flex flex-col items-center justify-center p-8" style="display: none;">
-        <div class="max-w-2xl w-full h-full flex flex-col">
-            <!-- Legacy Boot Log Window -->
-            <div id="boot-log" class="w-full flex-1 text-[11px] text-[#808080] font-mono leading-tight mb-6 overflow-y-auto scrollbar-hidden"></div>
+    <div id="intro-overlay" class="absolute inset-0 z-[2000] bg-[var(--bg-dark)]" style="display: none;">
+        <!-- Legacy Boot Log Window -->
+        <div id="boot-log" class="w-full h-full text-[11px] text-[#808080] font-mono leading-tight overflow-y-auto scrollbar-hidden p-8"></div>
 
-            <!-- Boot glitch overlay & malware popup -->
-            <div id="boot-glitch-overlay">
-                <div class="glitch-bands">
-                    <div class="glitch-band"></div>
-                    <div class="glitch-band"></div>
-                    <div class="glitch-band"></div>
-                    <div class="glitch-band"></div>
-                    <div class="glitch-band"></div>
-                </div>
+        <!-- Boot glitch overlay & malware popup -->
+        <div id="boot-glitch-overlay">
+            <div class="glitch-bands">
+                <div class="glitch-band"></div>
+                <div class="glitch-band"></div>
+                <div class="glitch-band"></div>
+                <div class="glitch-band"></div>
+                <div class="glitch-band"></div>
             </div>
-            <div id="malware-popup">
-                <h4>INJECTING CRYPTO_HACK MALWARE</h4>
-                <div class="popup-row mb-2">
-                    <div class="spinner"></div>
-                    <span>FORCING SYSTEM BACKDOOR...</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="malware-progress"></div>
-                </div>
+        </div>
+        <div id="malware-popup">
+            <h4>INJECTING CRYPTO_HACK MALWARE</h4>
+            <div class="popup-row mb-2">
+                <div class="spinner"></div>
+                <span>FORCING SYSTEM BACKDOOR...</span>
             </div>
-            
-            <!-- Login Box -->
-            <div id="login-form" class="hidden border-2 border-[var(--panel-light)] p-10 bg-[var(--panel-dark)] w-full max-w-md shadow-2xl relative">
+            <div class="progress-bar">
+                <div class="progress-fill" id="malware-progress"></div>
+            </div>
+        </div>
+        
+        <!-- Login Box -->
+        <div id="login-form" class="hidden border-2 border-[var(--panel-light)] p-10 bg-[var(--panel-dark)] max-w-md shadow-2xl absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                 <h1 id="login-title" class="text-sm font-bold mb-10 text-center tracking-[0.6em] uppercase opacity-30">DAPAUE Access Terminal</h1>
                 <div id="login-fields" class="space-y-6">
                     <div class="flex flex-col">
@@ -1780,23 +1822,6 @@
                                     </div>
                                     <label class="relative inline-block w-12 h-6">
                                         <input type="checkbox" id="sound-toggle" onchange="toggleSound()" checked class="opacity-0 w-0 h-0">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Retro Settings -->
-                        <div class="border-b border-[var(--panel-light)] pb-4">
-                            <div class="text-xs font-bold text-[var(--accent)] mb-3">RETRO MODE</div>
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-[10px]">RETRO MONITOR</div>
-                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">4:3 display with monitor bezel</div>
-                                    </div>
-                                    <label class="relative inline-block w-12 h-6">
-                                        <input type="checkbox" id="retro-mode-toggle" onchange="toggleRetroMode()" class="opacity-0 w-0 h-0">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
@@ -2688,6 +2713,9 @@
             
             // Show welcome notification
             showSystemNotification();
+            
+            // Show BETA warning
+            setTimeout(() => showBetaWarning(), 1000);
 
             // Enable admin mode: unlock all servers and bypass locks
             if (typeof serverNodes !== 'undefined') {
@@ -2742,7 +2770,21 @@
 
         let systemNotificationShown = false;
         
-        function showSystemNotification(message) {
+        // Notification tracking for deduplication
+        const notificationHistory = [];
+        
+        function getOrCreateNotificationContainer() {
+            let container = document.getElementById('notification-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'notification-container';
+                container.className = 'notification-container';
+                document.body.appendChild(container);
+            }
+            return container;
+        }
+        
+        function showSystemNotification(message, progressColor = 'var(--accent)') {
             // If no message provided, it's the welcome notification - only show once
             if (!message && systemNotificationShown) {
                 return;
@@ -2750,6 +2792,22 @@
             
             if (!message) {
                 systemNotificationShown = true;
+            }
+            
+            // Check if this notification message already exists
+            if (message) {
+                const existingIndex = notificationHistory.findIndex(n => n === message);
+                if (existingIndex !== -1) {
+                    // Remove the oldest duplicate
+                    const container = document.getElementById('notification-container');
+                    if (container && container.children[existingIndex]) {
+                        const oldNotif = container.children[existingIndex];
+                        oldNotif.classList.add('hiding');
+                        setTimeout(() => oldNotif.remove(), 500);
+                        notificationHistory.splice(existingIndex, 1);
+                    }
+                }
+                notificationHistory.push(message);
             }
             
             const notification = document.createElement('div');
@@ -2760,10 +2818,13 @@
                 notification.innerHTML = `
                     <div class="notification-header">
                         <div class="notification-title">⚡ SYSTEM NOTICE</div>
-                        <div class="notification-close" onclick="this.parentElement.parentElement.classList.add('hiding'); setTimeout(() => this.parentElement.parentElement.remove(), 500)">✕</div>
+                        <div class="notification-close" onclick="this.parentElement.parentElement.parentElement.classList.add('hiding'); setTimeout(() => { this.parentElement.parentElement.parentElement.remove(); const msg = '${message.replace(/'/g, "\\'")}'; const idx = notificationHistory.indexOf(msg); if (idx !== -1) notificationHistory.splice(idx, 1); }, 500)">✕</div>
                     </div>
                     <div class="notification-body">
                         <p style="margin-bottom: 6px; color: var(--accent);">${message}</p>
+                    </div>
+                    <div class="notification-progress">
+                        <div class="notification-progress-bar" style="background: ${progressColor};"></div>
                     </div>
                 `;
             } else {
@@ -2771,7 +2832,7 @@
                 notification.innerHTML = `
                     <div class="notification-header">
                         <div class="notification-title">⚡ SYSTEM NOTICE // NEURAL-LINK STATUS</div>
-                        <div class="notification-close" onclick="this.parentElement.parentElement.classList.add('hiding'); setTimeout(() => this.parentElement.parentElement.remove(), 500)">✕</div>
+                        <div class="notification-close" onclick="this.parentElement.parentElement.parentElement.classList.add('hiding'); setTimeout(() => this.parentElement.parentElement.parentElement.remove(), 500)">✕</div>
                     </div>
                     <div class="notification-body">
                         <p style="margin-bottom: 8px; color: var(--accent);">WELCOME, OPERATOR.</p>
@@ -2779,18 +2840,101 @@
                         <p style="margin-bottom: 6px; font-size: 8px; color: var(--text-dim);">⚠ IMPORTANT: All progress, notes, and unlocked accounts are stored in your LOCAL BROWSER CACHE. Clearing your browser data will result in COMPLETE MEMORY WIPE.</p>
                         <p style="font-size: 8px; color: var(--text-dim); font-style: italic;">TIP: Regular backups recommended via NOTEPAD export.</p>
                     </div>
+                    <div class="notification-progress">
+                        <div class="notification-progress-bar"></div>
+                    </div>
                 `;
             }
             
-            document.body.appendChild(notification);
+            const container = getOrCreateNotificationContainer();
+            container.appendChild(notification);
             
-            // Auto-hide after 8 seconds for custom messages
-            if (message) {
-                setTimeout(() => {
-                    notification.classList.add('hiding');
-                    setTimeout(() => notification.remove(), 500);
-                }, 8000);
-            }
+            // Start fade-out at 14.5 seconds for smooth transition
+            setTimeout(() => {
+                notification.classList.add('hiding');
+            }, 14500);
+            
+            // Remove after full 15 seconds
+            setTimeout(() => {
+                notification.remove();
+                if (message) {
+                    const index = notificationHistory.indexOf(message);
+                    if (index !== -1) notificationHistory.splice(index, 1);
+                }
+            }, 15000);
+        }
+        
+        let betaWarningShown = false;
+        function showBetaWarning() {
+            if (betaWarningShown) return;
+            betaWarningShown = true;
+            
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.top = '0';
+            modal.style.left = '0';
+            modal.style.right = '0';
+            modal.style.bottom = '0';
+            modal.style.background = 'rgba(0, 0, 0, 0.9)';
+            modal.style.zIndex = '9000';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            
+            const panel = document.createElement('div');
+            panel.style.background = 'var(--panel-dark)';
+            panel.style.border = '3px solid var(--accent)';
+            panel.style.padding = '32px';
+            panel.style.maxWidth = '600px';
+            panel.style.cursor = 'default';
+            panel.style.color = 'var(--light)';
+            panel.style.fontFamily = 'monospace';
+            panel.style.fontSize = '12px';
+            panel.style.boxShadow = '0 0 40px rgba(255, 102, 0, 0.3)';
+            
+            const title = document.createElement('div');
+            title.style.fontSize = '18px';
+            title.style.fontWeight = 'bold';
+            title.style.marginBottom = '20px';
+            title.style.color = 'var(--accent)';
+            title.style.textAlign = 'center';
+            title.style.letterSpacing = '0.2em';
+            title.innerText = '⚠ BETA TESTING NOTICE ⚠';
+            panel.appendChild(title);
+            
+            const message = document.createElement('div');
+            message.style.marginBottom = '24px';
+            message.style.lineHeight = '1.8';
+            message.innerHTML = `
+                <div style="margin-bottom: 16px; text-align: center; color: var(--text-dim); font-size: 11px;">
+                    DAPAUE_OS_V4.5 // NEURAL-LINK PROTOCOL
+                </div>
+                <div style="margin-bottom: 12px;">
+                    This is a <span style="color: var(--accent); font-weight: bold;">BETA BUILD</span> for testing purposes.
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <span style="color: #ff6b6b; font-weight: bold;">⚠ IMPORTANT:</span> Save game functionality is currently <span style="color: #ff6b6b;">DISABLED</span> during this testing phase.
+                </div>
+                <div style="color: var(--text-dim); font-size: 10px; padding: 12px; background: rgba(0,0,0,0.3); border-left: 2px solid var(--accent);">
+                    Your progress will not persist between sessions. Please report any bugs or issues you encounter. Thank you for participating in testing!
+                </div>
+            `;
+            panel.appendChild(message);
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'btn-retro';
+            closeBtn.style.width = '100%';
+            closeBtn.style.padding = '12px';
+            closeBtn.style.fontSize = '12px';
+            closeBtn.style.borderColor = 'var(--accent)';
+            closeBtn.style.color = 'var(--accent)';
+            closeBtn.innerText = '[ACKNOWLEDGED]';
+            closeBtn.onclick = () => document.body.removeChild(modal);
+            panel.appendChild(closeBtn);
+            
+            panel.onclick = (e) => e.stopPropagation();
+            modal.appendChild(panel);
+            document.body.appendChild(modal);
         }
 
         // ===== Server Monitor Logic =====
@@ -6001,6 +6145,9 @@
                 
                 // Show welcome notification
                 showSystemNotification();
+                
+                // Show BETA warning
+                setTimeout(() => showBetaWarning(), 1000);
             }, 500);
         }
         
@@ -6349,11 +6496,15 @@
         function openSystemV() {
             // If an active user is set, use them directly
             if (activeUser && activeUser.username) {
+                // Look up the full user data from staffUsers to get complete email list
+                const fullUserData = (typeof staffUsers !== 'undefined') ? staffUsers.find(u => u.username === activeUser.username) : null;
+                const userEmails = fullUserData ? fullUserData.emails : (activeUser.emails || []);
+                
                 currentUser = {
                     username: activeUser.username,
                     name: activeUser.name,
                     privilege_level: activeUser.privilege_level,
-                    emails: activeUser.emails
+                    emails: userEmails
                 };
                 
                 document.getElementById('current-user-display').innerText = `USER: ${activeUser.name.toUpperCase()}`;
@@ -6679,9 +6830,15 @@ Good luck, Investigator.
                 timestamp: new Date().toISOString(),
                 unlockedCodes: Array.from(unlockedCodes),
                 unlockedAccounts: Array.from(unlockedAccounts),
+                activeUser: activeUser,
                 currentUser: currentUser,
                 lastOpenedUser: lastOpenedUser,
                 userFiles: userFiles,
+                boardState: {
+                    cards: boardState.cards,
+                    connections: boardState.connections,
+                    zoom: boardState.zoom
+                },
                 entityDatabase: {
                     people: Array.from(entityDatabase.people),
                     locations: Array.from(entityDatabase.locations),
@@ -6708,9 +6865,17 @@ Good luck, Investigator.
                 // Restore state
                 unlockedCodes = new Set(gameState.unlockedCodes || []);
                 unlockedAccounts = new Set(gameState.unlockedAccounts || []);
+                activeUser = gameState.activeUser;
                 currentUser = gameState.currentUser;
                 lastOpenedUser = gameState.lastOpenedUser;
                 userFiles = gameState.userFiles || {};
+                
+                // Restore board state
+                if (gameState.boardState) {
+                    boardState.cards = gameState.boardState.cards || [];
+                    boardState.connections = gameState.boardState.connections || [];
+                    boardState.zoom = gameState.boardState.zoom || 1;
+                }
                 
                 // Restore entity database
                 entityDatabase.people = new Set(gameState.entityDatabase.people || []);
@@ -6752,8 +6917,10 @@ Good luck, Investigator.
             
             try {
                 const gameState = JSON.parse(savedData);
+                const activeUserName = gameState.activeUser && gameState.activeUser.username ? gameState.activeUser.username : 'GUEST';
                 return {
                     timestamp: gameState.timestamp,
+                    activeUser: activeUserName,
                     accounts: gameState.unlockedAccounts?.length || 0,
                     emails: gameState.entityDatabase?.discoveredEmails?.length || 0,
                     tags: gameState.entityDatabase?.tags?.length || 0
@@ -6798,8 +6965,33 @@ Good luck, Investigator.
             title.style.color = 'var(--accent)';
             title.style.borderBottom = '1px solid var(--panel-light)';
             title.style.paddingBottom = '8px';
-            title.innerText = '[ SAVE GAME ]';
+            title.innerText = '[ BURN MEMORY CACHE ]';
             panel.appendChild(title);
+            
+            // Show current session info
+            const sessionInfo = document.createElement('div');
+            sessionInfo.style.marginBottom = '16px';
+            sessionInfo.style.padding = '12px';
+            sessionInfo.style.background = 'rgba(0, 255, 65, 0.05)';
+            sessionInfo.style.border = '1px solid var(--accent)';
+            sessionInfo.style.fontSize = '10px';
+            sessionInfo.style.lineHeight = '1.6';
+            
+            const currentUserName = activeUser && activeUser.username ? activeUser.username : 'GUEST';
+            const accountsCount = unlockedAccounts.size;
+            const emailsCount = entityDatabase.discoveredEmails.length;
+            const tagsCount = entityDatabase.tags.size;
+            const entitiesCount = entityDatabase.people.size + entityDatabase.locations.size + entityDatabase.events.size + entityDatabase.codes.size;
+            
+            sessionInfo.innerHTML = `
+                <div style="margin-bottom: 8px; color: var(--accent); font-weight: bold;">CURRENT SESSION</div>
+                <div style="color: var(--text-dim);">Active User: <span style="color: var(--accent);">${currentUserName}</span></div>
+                <div style="color: var(--text-dim);">Unlocked Accounts: <span style="color: var(--accent);">${accountsCount}</span></div>
+                <div style="color: var(--text-dim);">Discovered Emails: <span style="color: var(--accent);">${emailsCount}</span></div>
+                <div style="color: var(--text-dim);">Investigation Tags: <span style="color: var(--accent);">${tagsCount}</span></div>
+                <div style="color: var(--text-dim);">Entities Catalogued: <span style="color: var(--accent);">${entitiesCount}</span></div>
+            `;
+            panel.appendChild(sessionInfo);
             
             // Create save slots
             for (let i = 1; i <= 4; i++) {
@@ -6861,7 +7053,7 @@ Good luck, Investigator.
                 saveBtn.onclick = () => {
                     saveGameState(i);
                     document.body.removeChild(modal);
-                    showNotification(`Game saved to Slot ${i}!`, 'success');
+                    showSystemNotification(`✓ MEMORY CACHE BURNED TO SLOT ${i}`, '#00ff41');
                 };
                 
                 btnContainer.appendChild(saveBtn);
@@ -6987,20 +7179,102 @@ Good luck, Investigator.
                 slotData.style.color = 'var(--text-dim)';
                 slotData.innerHTML = `
                     <div style="margin-bottom: 4px;">${date.toLocaleString()}</div>
+                    <div style="margin-bottom: 4px;">Active User: <span style="color: var(--accent);">${slotInfo.activeUser}</span></div>
                     <div>Accounts: ${slotInfo.accounts} | Emails: ${slotInfo.emails} | Tags: ${slotInfo.tags}</div>
                 `;
                 slotDiv.appendChild(slotData);
                 
                 slotDiv.onclick = () => {
-                    if (confirm(`Load save from Slot ${i}? Current progress will be lost if not saved.`)) {
+                    // Create themed confirmation modal
+                    const confirmModal = document.createElement('div');
+                    confirmModal.style.position = 'fixed';
+                    confirmModal.style.top = '0';
+                    confirmModal.style.left = '0';
+                    confirmModal.style.right = '0';
+                    confirmModal.style.bottom = '0';
+                    confirmModal.style.background = 'rgba(0, 0, 0, 0.9)';
+                    confirmModal.style.zIndex = '6100';
+                    confirmModal.style.display = 'flex';
+                    confirmModal.style.alignItems = 'center';
+                    confirmModal.style.justifyContent = 'center';
+                    
+                    const confirmPanel = document.createElement('div');
+                    confirmPanel.style.background = 'var(--panel-dark)';
+                    confirmPanel.style.border = '2px solid var(--accent)';
+                    confirmPanel.style.padding = '24px';
+                    confirmPanel.style.minWidth = '400px';
+                    confirmPanel.style.maxWidth = '500px';
+                    confirmPanel.style.cursor = 'default';
+                    confirmPanel.style.color = 'var(--light)';
+                    confirmPanel.style.fontFamily = 'monospace';
+                    confirmPanel.style.fontSize = '11px';
+                    
+                    const confirmTitle = document.createElement('div');
+                    confirmTitle.style.fontSize = '14px';
+                    confirmTitle.style.fontWeight = 'bold';
+                    confirmTitle.style.marginBottom = '16px';
+                    confirmTitle.style.color = 'var(--accent)';
+                    confirmTitle.style.borderBottom = '1px solid var(--panel-light)';
+                    confirmTitle.style.paddingBottom = '8px';
+                    confirmTitle.innerText = '[ RESTORE FROM CACHE ]';
+                    confirmPanel.appendChild(confirmTitle);
+                    
+                    const confirmMessage = document.createElement('div');
+                    confirmMessage.style.marginBottom = '16px';
+                    confirmMessage.style.lineHeight = '1.6';
+                    confirmMessage.innerHTML = `
+                        <div style="margin-bottom: 12px;">Loading save from <span style="color: var(--accent);">SLOT ${i}</span></div>
+                        <div style="color: var(--text-dim); font-size: 10px;">⚠ WARNING: Current session will be overwritten. Unsaved progress will be PERMANENTLY LOST.</div>
+                    `;
+                    confirmPanel.appendChild(confirmMessage);
+                    
+                    const buttonContainer = document.createElement('div');
+                    buttonContainer.style.display = 'flex';
+                    buttonContainer.style.gap = '12px';
+                    
+                    const confirmBtn = document.createElement('button');
+                    confirmBtn.className = 'btn-retro';
+                    confirmBtn.style.flex = '1';
+                    confirmBtn.style.padding = '8px 16px';
+                    confirmBtn.style.fontSize = '10px';
+                    confirmBtn.style.borderColor = 'var(--accent)';
+                    confirmBtn.style.color = 'var(--accent)';
+                    confirmBtn.innerText = '[RESTORE]';
+                    confirmBtn.onclick = () => {
+                        document.body.removeChild(confirmModal);
                         const loaded = loadGameState(i);
                         if (loaded) {
                             document.body.removeChild(modal);
-                            showNotification(`Game loaded from Slot ${i}!`, 'success');
+                            // Navigate to desktop immediately
+                            const desktop = document.getElementById('desktop');
+                            if (desktop) desktop.classList.remove('hidden');
+                            const initialTrigger = document.getElementById('initial-trigger-screen');
+                            if (initialTrigger) initialTrigger.style.display = 'none';
+                            const bootScreen = document.getElementById('intro-overlay');
+                            if (bootScreen) bootScreen.style.display = 'none';
+                            showSystemNotification(`✓ MEMORY RESTORED FROM SLOT ${i}`);
                         } else {
-                            alert('Failed to load save file.');
+                            showSystemNotification('⚠ RESTORE FAILED: Corrupted save data', '#ff6b6b');
                         }
-                    }
+                    };
+                    buttonContainer.appendChild(confirmBtn);
+                    
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.className = 'btn-retro';
+                    cancelBtn.style.flex = '1';
+                    cancelBtn.style.padding = '8px 16px';
+                    cancelBtn.style.fontSize = '10px';
+                    cancelBtn.style.borderColor = 'var(--text-dim)';
+                    cancelBtn.style.color = 'var(--text-dim)';
+                    cancelBtn.innerText = '[CANCEL]';
+                    cancelBtn.onclick = () => document.body.removeChild(confirmModal);
+                    buttonContainer.appendChild(cancelBtn);
+                    
+                    confirmPanel.appendChild(buttonContainer);
+                    confirmPanel.onclick = (e) => e.stopPropagation();
+                    confirmModal.appendChild(confirmPanel);
+                    confirmModal.onclick = () => document.body.removeChild(confirmModal);
+                    document.body.appendChild(confirmModal);
                 };
                 
                 panel.appendChild(slotDiv);
@@ -8126,9 +8400,6 @@ Good luck, Investigator.
 
             const themeToggle = document.getElementById('theme-toggle-setting');
             if (themeToggle) themeToggle.checked = document.body.classList.contains('light-mode');
-
-            const retroToggle = document.getElementById('retro-mode-toggle');
-            if (retroToggle) retroToggle.checked = retroModeEnabled;
 
             updateZoomDisplay();
         }
