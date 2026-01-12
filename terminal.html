@@ -2939,11 +2939,11 @@
 
         // ===== Server Monitor Logic =====
         let serverNodes = [
-            { id: 'NODE-01', name: 'ATLAS', status: 'ONLINE', latency: 12, load: 35, temp: 48, loss: 0.2, uptime: '482d', selected: false },
-            { id: 'NODE-02', name: 'PROMETHEUS', status: 'ONLINE', latency: 20, load: 52, temp: 55, loss: 0.5, uptime: '312d', selected: false },
-            { id: 'NODE-03', name: 'AEGIS', status: 'WARNING', latency: 55, load: 76, temp: 68, loss: 2.1, uptime: '128d', selected: false },
-            { id: 'NODE-04', name: 'ORACLE', status: 'OFFLINE', latency: 0, load: 0, temp: 0, loss: 0, uptime: '0d', selected: false },
-            { id: 'NODE-05', name: 'CHRONOS', status: 'ONLINE', latency: 18, load: 43, temp: 51, loss: 0.3, uptime: '905d', selected: false }
+            { id: 'NODE-01', name: 'ATLAS', status: 'ONLINE', latency: 12, load: 35, temp: 48, loss: 0.2, uptime: '482d', selected: false, securityLevel: 1 },
+            { id: 'NODE-02', name: 'PROMETHEUS', status: 'ONLINE', latency: 20, load: 52, temp: 55, loss: 0.5, uptime: '312d', selected: false, securityLevel: 1 },
+            { id: 'NODE-03', name: 'AEGIS', status: 'WARNING', latency: 55, load: 76, temp: 68, loss: 2.1, uptime: '128d', selected: false, securityLevel: 2 },
+            { id: 'NODE-04', name: 'ORACLE', status: 'OFFLINE', latency: 0, load: 0, temp: 0, loss: 0, uptime: '0d', selected: false, securityLevel: 3 },
+            { id: 'NODE-05', name: 'CHRONOS', status: 'ONLINE', latency: 18, load: 43, temp: 51, loss: 0.3, uptime: '905d', selected: false, securityLevel: 1 }
         ];
         let activeServerId = localStorage.getItem('dapaue-active-server') || null;
         let serverAccess = JSON.parse(localStorage.getItem('dapaue-server-access') || '{}');
@@ -3039,7 +3039,8 @@
             const match = (typeof staffUsers !== 'undefined') ? staffUsers.find(u => u.username.toLowerCase() === user.toLowerCase() && u.accessCode === pass) : null;
             if (match) {
                 // Check security level permissions: user level must be >= node level
-                    if (intro) intro.classList.remove('scramble');
+                const node = serverNodes.find(n => n.id === id);
+                const nodeLevel = node ? (node.securityLevel || 1) : 1;
                 const userLevel = match.securityLevel || 0;
                 
                 if (userLevel < nodeLevel) {
@@ -6165,6 +6166,14 @@
             // Initialize investigation board when forensics opens
             if (windowId === 'forensics-window') {
                 initializeInvestigationBoard();
+            }
+            
+            // Focus terminal input when user access window opens
+            if (windowId === 'user-access-window') {
+                setTimeout(() => {
+                    const terminalInput = document.getElementById('terminal-input');
+                    if (terminalInput) terminalInput.focus();
+                }, 100);
             }
             
             // Show in taskbar
