@@ -8523,7 +8523,7 @@ Good luck, Investigator.
                     };
                     
                 case 'active':
-                    const targetActiveUser = staffUsers.find(u => u.username === args);
+                    const targetActiveUser = staffUsers.find(u => u.username.toLowerCase() === args.toLowerCase());
                     if (!targetActiveUser) return {
                         className: 'terminal-error',
                         message: `ERROR: User '${args}' not found`
@@ -8589,7 +8589,7 @@ Good luck, Investigator.
                     };
                     
                 case 'access':
-                    const targetUser = staffUsers.find(u => u.username === args);
+                    const targetUser = staffUsers.find(u => u.username.toLowerCase() === args.toLowerCase());
                     if (!targetUser) return {
                         className: 'terminal-error',
                         message: `ERROR: User '${args}' not found`
@@ -8642,7 +8642,7 @@ Good luck, Investigator.
                     
                 case 'unlock':
                     const unlockParts = args.split(' ');
-                    const unlockUser = staffUsers.find(u => u.username === unlockParts[0]);
+                    const unlockUser = staffUsers.find(u => u.username.toLowerCase() === unlockParts[0].toLowerCase());
                     const password = unlockParts.slice(1).join(' ').toUpperCase();
                     
                     if (!unlockUser) return {
@@ -8710,35 +8710,35 @@ Good luck, Investigator.
                     
                 case 'file':
                     {
-                        const fileUser = staffUsers.find(u => u.username === args);
+                        const fileUser = staffUsers.find(u => u.username.toLowerCase() === args.toLowerCase());
                         if (!fileUser) {
                             return {
                                 className: 'terminal-error',
                                 message: `ERROR: User '${args}' not found`
                             };
                         }
-                        if (!unlockedAccounts.has(args)) {
+                        if (!unlockedAccounts.has(fileUser.username)) {
                             return {
                                 className: 'terminal-error',
-                                message: `ERROR: Account '${args}' not unlocked. Use 'unlock ${args} [password]' first.`
+                                message: `ERROR: Account '${fileUser.username}' not unlocked. Use 'unlock ${fileUser.username} [password]' first.`
                             };
                         }
                         
                         // Initialize files for this user
-                        initializeUserFiles(args);
-                        const files = userFiles[args] || [];
+                        initializeUserFiles(fileUser.username);
+                        const files = userFiles[fileUser.username] || [];
                         
                         const fileList = files.map(f => `  ${f.name}`).join('<br>');
                         
                         // Switch to FILE EXPLORER tab and load user
                         try {
                             switchTab('explorer');
-                            setTimeout(() => loadUserFiles(args), 100);
+                            setTimeout(() => loadUserFiles(fileUser.username), 100);
                         } catch (e) {}
                         
                         return {
                             className: 'text-[var(--text-dim)]',
-                            message: `FILES_FOR_${args.toUpperCase()}:<br>${fileList}<br><br>Opening FILE EXPLORER...`
+                            message: `FILES_FOR_${fileUser.username}:<br>${fileList}<br><br>Opening FILE EXPLORER...`
                         };
                     }
                     
