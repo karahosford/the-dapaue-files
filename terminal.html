@@ -18,6 +18,7 @@
             --crt-opacity: 0.25;
             --noise-opacity: 0.05;
             --blur-strength: 8px;
+            --fisheye-intensity: 0.5;
         }
 
         body.light-mode {
@@ -84,6 +85,62 @@
             opacity: var(--noise-opacity);
             z-index: 999;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* CRT Glow and Haze Effect */
+        body.crt-glow {
+            filter: blur(0.6px) drop-shadow(0 0 8px rgba(255, 255, 255, 0.1)) sepia(0.08) saturate(1.1);
+            animation: crtFlicker 0.2s infinite alternate;
+        }
+
+        @keyframes crtFlicker {
+            0% { opacity: 0.98; }
+            50% { opacity: 1; }
+            100% { opacity: 0.99; }
+        }
+
+        body.crt-glow::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 99998;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            background: 
+                radial-gradient(ellipse at center, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at center, rgba(180, 255, 200, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 15% 15%, rgba(255, 0, 0, 0.04) 0%, transparent 40%),
+                radial-gradient(ellipse at 85% 15%, rgba(0, 255, 255, 0.04) 0%, transparent 40%),
+                radial-gradient(ellipse at 15% 85%, rgba(0, 255, 0, 0.04) 0%, transparent 40%),
+                radial-gradient(ellipse at 85% 85%, rgba(0, 100, 255, 0.04) 0%, transparent 40%);
+        }
+
+        body.crt-glow::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 99999;
+            pointer-events: none;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0, 0, 0, 0.05),
+                    rgba(0, 0, 0, 0.05) 2px,
+                    transparent 2px,
+                    transparent 4px
+                ),
+                linear-gradient(to right, rgba(0, 0, 0, 0.35) 0%, transparent 5%, transparent 95%, rgba(0, 0, 0, 0.35) 100%),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, transparent 5%, transparent 95%, rgba(0, 0, 0, 0.35) 100%);
+            backdrop-filter: blur(0.6px);
+            box-shadow: 
+                inset 0 0 60px 4px rgba(255, 50, 0, 0.08),
+                inset 0 0 50px 25px rgba(0, 255, 100, 0.05);
         }
 
         /* --- LAYOUT COMPONENTS --- */
@@ -1694,7 +1751,7 @@
         }
     </style>
 </head>
-<body class="crt p-4 md:p-8 flex items-center justify-center">
+<body class="crt crt-glow p-4 md:p-8 flex items-center justify-center">
     <div id="retro-monitor-bezel" aria-hidden="true">
         <div class="monitor-frame"></div>
     </div>
@@ -1938,6 +1995,16 @@
                                 <div class="flex items-center justify-between">
                                     <span class="text-[10px]">FULLSCREEN MODE</span>
                                     <button onclick="toggleFullscreenSetting()" id="fullscreen-toggle" class="btn-retro px-3 py-1 text-[9px]">[TOGGLE]</button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-[10px]">CRT GLOW & HAZE</div>
+                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Green cathode ray glow effect</div>
+                                    </div>
+                                    <label class="relative inline-block w-12 h-6">
+                                        <input type="checkbox" id="crt-glow-toggle" onchange="toggleCRTGlow()" class="opacity-0 w-0 h-0">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <div>
@@ -3004,6 +3071,16 @@
             const savedNotes = localStorage.getItem('dapaue-notepad-content');
             if (savedNotes) {
                 document.getElementById('notepad-textarea').value = savedNotes;
+            }
+            
+            // Load CRT glow setting (enabled by default)
+            const crtGlowEnabled = localStorage.getItem('dapaue-crt-glow') !== 'false';
+            const crtGlowToggle = document.getElementById('crt-glow-toggle');
+            if (crtGlowToggle) {
+                crtGlowToggle.checked = crtGlowEnabled;
+                if (crtGlowEnabled) {
+                    document.body.classList.add('crt-glow');
+                }
             }
             
             // Auto-save notepad content
@@ -7401,12 +7478,16 @@
             const windowWidth = rect.width;
             const windowHeight = rect.height;
             
+            // Prevent window from going above the screen
+            if (y < 0) {
+                y = 0;
+            }
+            
             // Check if window is going too far off screen (more than 80% hidden)
             const visibleThreshold = 0.2; // At least 20% must be visible
             
             if (x + windowWidth * visibleThreshold < 0 || 
                 x > window.innerWidth - windowWidth * visibleThreshold ||
-                y + windowHeight * visibleThreshold < 0 || 
                 y > window.innerHeight - windowHeight * visibleThreshold - 40) { // -40 for taskbar
                 
                 // Center the window smoothly
@@ -10069,6 +10150,26 @@ Good luck, Investigator.
                 document.body.classList.remove('light-mode');
                 showSystemNotification('Dark mode enabled');
             }
+        }
+
+        function toggleCRTGlow() {
+            const toggle = document.getElementById('crt-glow-toggle');
+            if (toggle.checked) {
+                document.body.classList.add('crt-glow');
+                localStorage.setItem('dapaue-crt-glow', 'true');
+                showSystemNotification('CRT glow enabled');
+            } else {
+                document.body.classList.remove('crt-glow');
+                localStorage.setItem('dapaue-crt-glow', 'false');
+                showSystemNotification('CRT glow disabled');
+            }
+        }
+
+        function adjustFisheyeIntensity(value) {
+            const intensity = value / 100; // Convert 0-100 to 0-1
+            document.documentElement.style.setProperty('--fisheye-intensity', intensity);
+            document.getElementById('fisheye-display').textContent = value + '%';
+            localStorage.setItem('dapaue-fisheye-intensity', value);
         }
 
         function toggleRetroMode() {
