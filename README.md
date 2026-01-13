@@ -175,7 +175,7 @@ Use this terminal to tell stories about:
 [SYSTEM_MESSAGE]
 The archive awaits. What secrets will you uncover?
 
-- Press [INITIATE_SYSTEM] to begin -
+- Press [BREACH_SYSTEM] to begin -
 ```
 
 ## LICENSE

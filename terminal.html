@@ -115,6 +115,18 @@
             to { opacity: 1; }
         }
 
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            50% { box-shadow: 0 0 8px 2px rgba(34, 197, 94, 0.4); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        .server-active {
+            background-color: rgba(34, 197, 94, 0.1) !important;
+            border-color: #22c55e !important;
+            animation: pulseGreen 2s infinite;
+        }
+
         .forensics-note-modal-content {
             background: var(--bg-dark);
             border: 2px solid var(--accent);
@@ -434,12 +446,14 @@
             right: 20px;
             bottom: 20px;
             display: flex;
+            flex-direction: column;
             flex-wrap: wrap;
+            align-items: center;
             align-content: flex-start;
-            gap: 20px;
+            gap: 15px;
             z-index: 10;
-            max-width: calc(100% - 40px);
-            overflow-y: auto;
+            height: calc(7 * 106px + 6 * 15px);
+            overflow: auto;
             padding-right: 10px;
         }
         
@@ -487,9 +501,10 @@
         }
 
         .icon-label {
-            font-size: 12px;
+            font-size: 11px;
             text-align: center;
             word-wrap: break-word;
+            width: 80px;
         }
 
         /* Window System */
@@ -540,19 +555,25 @@
         }
 
         .window-btn {
-            width: 16px;
-            height: 16px;
-            border: 1px solid currentColor;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--panel-light);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             transition: all 0.2s;
+            background: transparent;
+            color: var(--text-main);
+            font-weight: bold;
+            border-radius: 2px;
+            margin-left: 4px;
         }
 
         .window-btn:hover {
-            background: var(--text-main);
+            background: var(--accent);
+            border-color: var(--accent);
             color: var(--bg-dark);
         }
 
@@ -884,6 +905,66 @@
             white-space: nowrap;
         }
 
+        #email-vault-sidebar.collapsed {
+            width: 48px;
+        }
+
+        #email-vault-sidebar.collapsed .sidebar-label {
+            display: none;
+        }
+
+        #email-vault-sidebar.collapsed button {
+            width: 32px;
+            padding: 4px !important;
+            font-size: 8px !important;
+            white-space: nowrap;
+        }
+
+        #file-vault-sidebar.collapsed {
+            width: 48px;
+        }
+
+        #file-vault-sidebar.collapsed .sidebar-label {
+            display: none;
+        }
+
+        #file-vault-sidebar.collapsed button {
+            width: 32px;
+            padding: 4px !important;
+            font-size: 8px !important;
+            white-space: nowrap;
+        }
+
+        #email-vault-metadata.collapsed {
+            width: 48px;
+        }
+
+        #email-vault-metadata.collapsed #email-vault-metadata-content {
+            display: none;
+        }
+
+        #email-vault-metadata.collapsed #email-vault-metadata-header {
+            flex-direction: column;
+            padding: 0.5rem;
+            height: 100%;
+            justify-content: flex-start;
+        }
+
+        #file-vault-metadata.collapsed {
+            width: 48px;
+        }
+
+        #file-vault-metadata.collapsed #file-vault-metadata-content {
+            display: none;
+        }
+
+        #file-vault-metadata.collapsed #file-vault-metadata-header {
+            flex-direction: column;
+            padding: 0.5rem;
+            height: 100%;
+            justify-content: flex-start;
+        }
+
         .metadata-label { color: var(--text-dim); font-size: 11px; margin-bottom: 2px; }
         .metadata-value {
             color: var(--text-main);
@@ -1106,12 +1187,12 @@
         
         .notification-container {
             position: fixed;
-            bottom: 20px;
+            bottom: 60px;
             right: 20px;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            z-index: 9999;
+            z-index: 1001;
             pointer-events: none;
         }
         
@@ -1619,11 +1700,10 @@
 
     <!-- INITIAL SYSTEM TRIGGER -->
     <div id="initial-trigger-screen">
-        <button id="system-trigger-btn" class="btn-initiate blink" onclick="startSystemSequence()">[INITIATE_SYSTEM]</button>
+        <button id="system-trigger-btn" class="btn-initiate blink" onclick="startSystemSequence()">[BREACH_SYSTEM]</button>
         <p class="text-[8px] mt-6 opacity-30 tracking-[1em]">DAPAUE_SYNAPTIC_BOOT_V4.5</p>
         <button onclick="toggleFullscreen()" class="absolute bottom-4 left-4 text-[8px] px-3 py-1 border border-green-500 text-green-500 hover:border-green-400 hover:text-green-400 hover:bg-green-900/20 font-mono transition-colors opacity-60 hover:opacity-100">[FULLSCREEN]</button>
         <button onclick="openLoadGameMenu()" class="absolute bottom-4 right-24 text-[8px] px-3 py-1 border border-cyan-500 text-cyan-500 hover:border-cyan-400 hover:text-cyan-400 hover:bg-cyan-900/20 font-mono transition-colors opacity-60 hover:opacity-100">[RECOVER RAM]</button>
-        <button onclick="adminBypass()" class="absolute bottom-4 right-4 text-[8px] px-3 py-1 border border-red-500 text-red-500 hover:border-red-400 hover:text-red-400 hover:bg-red-900/20 font-mono transition-colors opacity-60 hover:opacity-100">[ADMIN]</button>
     </div>
 
     <!-- Intro / Login Overlay -->
@@ -1719,6 +1799,10 @@
                 <div class="icon-image">📄</div>
                 <div class="icon-label">BRIEFING</div>
             </div>
+            <div class="desktop-icon" onclick="openWindow('todo-window')">
+                <div class="icon-image">✓</div>
+                <div class="icon-label">TODO LIST</div>
+            </div>
             <div class="desktop-icon" onclick="openWindow('user-access-window')">
                 <div class="icon-image">⌘</div>
                 <div class="icon-label">TERMINAL</div>
@@ -1743,13 +1827,78 @@
                 <div class="icon-image">🕸</div>
                 <div class="icon-label">TAG WRANGLE</div>
             </div>
+            <div class="desktop-icon" id="system-v-icon" onclick="openSystemV()" style="display: none;">
+                <div class="icon-image">📧</div>
+                <div class="icon-label">SYSTEM-V</div>
+            </div>
+            <div class="desktop-icon" onclick="openEmailVault()">
+                <div class="icon-image">📬</div>
+                <div class="icon-label">Email</div>
+            </div>
+            <div class="desktop-icon" onclick="openFileVault()">
+                <div class="icon-image">📁</div>
+                <div class="icon-label">FILES</div>
+            </div>
+            <div class="desktop-icon" id="user-select-icon" onclick="openUserSelectWindow()" style="display: none;">
+                <div class="icon-image">👤</div>
+                <div class="icon-label">USER_SELECT</div>
+            </div>
             <div class="desktop-icon" onclick="openWindow('settings-window')">
                 <div class="icon-image">⚙️</div>
                 <div class="icon-label">SETTINGS</div>
             </div>
-            <div class="desktop-icon" onclick="simulateInstabilityWarning()">
+            <div class="desktop-icon" id="instability-sim-icon" onclick="simulateInstabilityWarning()" style="display: none;">
                 <div class="icon-image">⚠️</div>
                 <div class="icon-label">INSTABILITY_SIM</div>
+            </div>
+        </div>
+        
+        <!-- USER_SELECT Window -->
+        <div id="user-select-window" class="window" style="width: 600px; height: 500px; left: 25%; top: 15%; display: none; border: 2px solid #eab308;">
+            <div class="window-titlebar" style="background: #eab308; border-bottom: 2px solid #eab308;" onmousedown="startDrag(event, 'user-select-window')">
+                <span class="window-title" style="color: #1a1a1a;">USER_SELECT // ADMIN_TOOLS</span>
+                <div class="window-controls">
+                    <div class="window-btn" onclick="minimizeWindow('user-select-window')">_</div>
+                    <div class="window-btn" onclick="closeWindow('user-select-window')">X</div>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="w-full h-full bg-[var(--bg-dark)] p-6 overflow-y-auto">
+                    <div class="space-y-6">
+                        <!-- Server Selection -->
+                        <div class="border-b border-[var(--panel-light)] pb-4">
+                            <div class="text-xs font-bold text-[var(--accent)] mb-3">SELECT ACTIVE SERVER</div>
+                            <select id="admin-server-select" onchange="filterUsersByServer()" class="w-full bg-[var(--panel-dark)] border border-[var(--panel-light)] text-[var(--text-main)] p-2 text-[10px] font-mono">
+                                <option value="">-- SELECT SERVER --</option>
+                            </select>
+                            <button onclick="setAdminActiveServer()" class="btn-retro px-4 py-2 text-[9px] mt-3 w-full">SET ACTIVE SERVER</button>
+                        </div>
+
+                        <!-- User Selection -->
+                        <div class="border-b border-[var(--panel-light)] pb-4">
+                            <div class="text-xs font-bold text-[var(--accent)] mb-3">SELECT ACTIVE USER</div>
+                            <select id="admin-user-select" onchange="autoSelectServerForUser()" class="w-full bg-[var(--panel-dark)] border border-[var(--panel-light)] text-[var(--text-main)] p-2 text-[10px] font-mono">
+                                <option value="">-- SELECT USER --</option>
+                            </select>
+                            <button onclick="setAdminActiveUser()" class="btn-retro px-4 py-2 text-[9px] mt-3 w-full">SET ACTIVE USER</button>
+                        </div>
+
+                        <!-- Current Status -->
+                        <div class="border-t border-[var(--panel-light)] pt-4">
+                            <div class="text-xs font-bold text-[var(--accent)] mb-3">CURRENT STATUS</div>
+                            <div class="text-[9px] space-y-2">
+                                <div>
+                                    <span class="text-[var(--text-dim)]">ACTIVE SERVER:</span>
+                                    <span id="admin-current-server" class="text-[var(--text-main)] ml-2">(none)</span>
+                                </div>
+                                <div>
+                                    <span class="text-[var(--text-dim)]">ACTIVE USER:</span>
+                                    <span id="admin-current-user" class="text-[var(--text-main)] ml-2">(none)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -1952,24 +2101,24 @@
                     </div>
                     
                     <div class="space-y-4">
-                        <p>OPERATOR,</p>
+                        <p>INVESTIGATOR,</p>
                         
-                        <p>YOU HAVE BEEN GRANTED EMERGENCY ACCESS TO THE DAPAUE ARCHIVE SYSTEM FOLLOWING RECENT ANOMALOUS ACTIVITY. YOUR PRIMARY OBJECTIVE IS TO CONDUCT A FORENSIC INVESTIGATION INTO ARCHIVED COMMUNICATIONS ACROSS FIVE PRIVILEGE-TIERED SERVERS.</p>
+                        <p>YOU ARE AN INVESTIGATIVE JOURNALIST. AFTER MONTHS OF DIGGING INTO CORPORATE CORRUPTION AND COVER-UPS, YOU SUCCESSFULLY BREACHED THE DAPAUE ARCHIVE SYSTEM. YOUR MISSION: UNCOVER THE FULL SCOPE OF TRUTH HIDDEN ACROSS FIVE PRIVILEGE-TIERED SERVERS AND EXPOSE THE CONSPIRACY AT THE HEART OF THIS ORGANIZATION.</p>
                         
                         <div class="border-l-2 border-green-500 pl-3 my-4">
-                            <div class="text-green-500 font-bold mb-2">INITIAL ACCESS GRANTED:</div>
-                            <div>OPS SUCCESSFULLY BRUTEFORCED A PRIVILEGE LEVEL 1 ACCOUNT. YOU NOW HAVE EMAIL ACCESS AS: <span class="text-yellow-400" id="briefing-assigned-user">LOADING...</span></div>
-                            <div class="text-[9px] text-[var(--text-dim)] mt-1">This account has been set as your active user. Access to SYSTEM-V email archive is now enabled.</div>
+                            <div class="text-green-500 font-bold mb-2">INITIAL ACCESS ACQUIRED:</div>
+                            <div>YOUR HACK GRANTED YOU ACCESS TO A PRIVILEGE LEVEL 1 ACCOUNT. YOU NOW HAVE EMAIL ACCESS AS: <span class="text-yellow-400" id="briefing-assigned-user">LOADING...</span></div>
+                            <div class="text-[9px] text-[var(--text-dim)] mt-1">This account is your entry point. Access to SYSTEM-V email archive is now enabled. Use it to gather evidence.</div>
                         </div>
                         
                         <div class="border-l-2 border-yellow-500 pl-3 my-4">
-                            <div class="text-yellow-500 font-bold mb-2">INVESTIGATION PROTOCOL:</div>
+                            <div class="text-yellow-500 font-bold mb-2">INVESTIGATION STRATEGY:</div>
                             <div class="space-y-1">
-                                <div>◆ REVIEW EMAILS FROM YOUR ASSIGNED PRIVILEGE LEVEL 1 ACCOUNT</div>
-                                <div>◆ GAIN ACCESS TO HIGHER PRIVILEGE SERVERS (2-5) VIA PASSWORDS</div>
-                                <div>◆ BRUTEFORCE USER ACCOUNTS TO ACCESS THEIR EMAIL ARCHIVES</div>
-                                <div>◆ BUILD INVESTIGATION BOARD WITH DISCOVERED EVIDENCE</div>
-                                <div>◆ CREATE TAGS AND CONNECTIONS TO MAP PATTERNS</div>
+                                <div>◆ REVIEW EMAILS FROM YOUR ENTRY-POINT PRIVILEGE LEVEL 1 ACCOUNT</div>
+                                <div>◆ ESCALATE PRIVILEGES BY ACCESSING HIGHER SERVERS (2-5)</div>
+                                <div>◆ EXPLOIT USER ACCOUNTS TO INFILTRATE THEIR EMAIL ARCHIVES</div>
+                                <div>◆ COMPILE EVIDENCE ON YOUR INVESTIGATION BOARD</div>
+                                <div>◆ IDENTIFY PATTERNS AND CONNECTIONS IN THE DATA</div>
                             </div>
                         </div>
                         
@@ -2009,21 +2158,73 @@
                         <p>YOUR INVESTIGATION BOARD WILL ONLY DISPLAY EVIDENCE FROM ACCOUNTS YOU'VE ACCESSED. AS YOU BRUTEFORCE OR SWITCH TO NEW USERS, THEIR EMAILS WILL AUTOMATICALLY APPEAR AS CARDS. CREATE YOUR OWN TAGGING SYSTEM TO ORGANIZE EVIDENCE AND IDENTIFY PATTERNS.</p>
                         
                         <div class="border-2 border-red-500 p-3 my-4 bg-red-900/10">
-                            <div class="text-red-500 font-bold mb-2">⚠ OPERATIONAL CONSTRAINTS:</div>
-                            <div>• You have TWO total bruteforce attempts for the entire operation</div>
-                            <div>• Each bruteforce increases system instability; use sparingly</div>
-                            <div>• Evidence cards only appear for users you've accessed</div>
-                            <div>• Higher privilege servers require authentication codes</div>
-                            <div>• All investigation activities are logged and monitored</div>
+                            <div class="text-red-500 font-bold mb-2">⚠ CRITICAL WARNINGS:</div>
+                            <div>• You have TWO total bruteforce attempts before detection increases risk</div>
+                            <div>• Each breach destabilizes system security; use strategically</div>
+                            <div>• Evidence only appears for accounts you've successfully accessed</div>
+                            <div>• Higher privilege servers require authentication codes or exploitation</div>
+                            <div>• All activity is logged; your presence may be discovered</div>
                         </div>
                         
-                        <p>YOUR MISSION: UNCOVER THE TRUTH HIDDEN IN THE ARCHIVE. BUILD YOUR INVESTIGATION SYSTEMATICALLY. TRUST NO ONE.</p>
+                        <p>THE TRUTH IS IN THE ARCHIVE. EXPOSE THE CONSPIRACY. YOUR STORY DEPENDS ON IT.</p>
                         
                         <div class="mt-6 pt-4 border-t border-[var(--panel-light)] text-[var(--text-dim)] text-[10px]">
                             <div>DIRECTOR_OVERSIGHT</div>
                             <div>DAPAUE COMMAND // FORENSIC INVESTIGATION DIVISION</div>
-                            <div class="mt-2">--- END TRANSMISSION ---</div>
+                            <div class="mt-2">--- TRANSMISSION ENDED ---</div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TODO List Window -->
+        <div id="todo-window" class="window" style="width: 650px; height: 500px; left: 30%; top: 15%;">
+            <div class="window-titlebar" onmousedown="startDrag(event, 'todo-window')">
+                <span class="window-title">DEVELOPMENT_NOTES.TODO // OPTIMIZATION_AGENDA</span>
+                <div class="window-buttons">
+                    <button class="window-btn" onclick="minimizeWindow('todo-window')">_</button>
+                    <button class="window-btn" onclick="closeWindow('todo-window')">✕</button>
+                </div>
+            </div>
+            <div class="window-content">
+                <div class="p-4 space-y-4 font-mono text-xs overflow-y-auto" style="height: calc(100% - 35px);">
+                    <div class="text-red-500 font-bold mb-3">⚠ INTERNAL DEVELOPMENT NOTES ⚠</div>
+                    <div class="text-[var(--text-dim)]">Code optimization suggestions discovered during forensic analysis:</div>
+                    
+                    <div class="border-l-2 border-cyan-500 pl-3 py-2 bg-cyan-900/10">
+                        <div class="flex items-start gap-2">
+                            <span class="text-cyan-400 mt-0.5">☐</span>
+                            <div>
+                                <div class="text-cyan-400 font-bold">Terminal Command History Navigation</div>
+                                <div class="text-[var(--text-dim)] text-[10px] mt-1">Add keyboard navigation (UP/DOWN arrow keys) to cycle through command history in terminal input. Similar to bash shell behavior. Would improve usability for repeated commands.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-l-2 border-green-500 pl-3 py-2 bg-green-900/10">
+                        <div class="flex items-start gap-2">
+                            <span class="text-green-400 mt-0.5">☐</span>
+                            <div>
+                                <div class="text-green-400 font-bold">Consolidate User State Management</div>
+                                <div class="text-[var(--text-dim)] text-[10px] mt-1">Currently tracking activeUser and currentUser separately across the application. Consolidate into single GameState object to reduce bugs and inconsistencies. Would require refactoring all user-switching logic but would improve stability.</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-l-2 border-yellow-500 pl-3 py-2 bg-yellow-900/10">
+                        <div class="flex items-start gap-2">
+                            <span class="text-yellow-400 mt-0.5">☐</span>
+                            <div>
+                                <div class="text-yellow-400 font-bold">Email Search Performance Optimization</div>
+                                <div class="text-[var(--text-dim)] text-[10px] mt-1">Add debouncing (300-500ms delay) to email search input to reduce filtering calls on every keystroke. Currently filters entire email list for each character typed, which causes lag with large datasets.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-3 border-t border-[var(--panel-light)] text-[var(--text-dim)] text-[9px]">
+                        <div>These optimizations noted for post-investigation refactoring</div>
+                        <div class="mt-2">--- END OF NOTES ---</div>
                     </div>
                 </div>
             </div>
@@ -2267,7 +2468,7 @@
             <div class="flex items-center gap-4">
                 <span class="font-bold">SYSTEM-V // ARCHIVE_99 // DAPAUE</span>
 
-                <span id="current-user-display" class="text-[9px] text-green-500 border border-green-900/40 px-2 py-0.5 cursor-pointer hover:border-green-500 hover:bg-green-900/20 transition-all" onclick="openUserSelector()">USER: GUEST</span>
+                <span id="current-user-display" class="text-[9px] text-green-500 border border-green-900/40 px-2 py-0.5 cursor-pointer hover:border-green-500 hover:bg-green-900/20 transition-all" onclick="openUserSelector()">USER: ---</span>
             </div>
             <div class="flex items-center gap-3 text-[9px]">
                 <span class="text-[var(--text-dim)]">ACTIVE_NODE:</span>
@@ -2382,10 +2583,173 @@
         </div>
         <!-- End of Archive Window -->
 
+        <!-- EMAIL-VAULT Window (Emails Only) -->
+        <div id="email-vault-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 5%; display: none;">
+            <div class="window-titlebar" onmousedown="startDrag(event, 'email-vault-window')">
+                <span class="window-title" id="email-vault-title">Email // DAPAUE</span>
+                <div class="window-controls">
+                    <div class="window-btn" onclick="minimizeWindow('email-vault-window')">_</div>
+                    <div class="window-btn" onclick="closeWindow('email-vault-window')">X</div>
+                </div>
+            </div>
+            <div class="window-content">
+                <div id="email-vault-terminal" class="w-full h-full terminal-border bg-[var(--bg-dark)] overflow-hidden flex flex-col relative">
+                    <div id="email-vault-login-flash" class="absolute inset-0 z-[600] pointer-events-none"></div>
+
+                    <!-- Header -->
+                    <div id="email-vault-header" class="h-12 border-b-2 border-[var(--panel-light)] flex items-center justify-between px-4 bg-[var(--panel-dark)] reveal-node">
+                        <div class="flex items-center gap-4">
+                            <span class="font-bold">Email // DAPAUE</span>
+                            <span id="email-vault-node-display" class="text-[9px] text-cyan-500 border border-cyan-900/40 px-2 py-0.5">NODE: ---</span>
+                            <span id="email-vault-user-display" class="text-[9px] text-green-500 border border-green-900/40 px-2 py-0.5">USER: ---</span>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex overflow-hidden">
+                        <!-- Sidebar -->
+                        <div id="email-vault-sidebar" class="w-20 md:w-48 border-r-2 border-[var(--panel-light)] flex flex-col p-2 gap-2 bg-[var(--panel-dark)] reveal-node">
+                            <button onclick="toggleEmailVaultSidebar()" class="btn-retro p-2 text-xs text-center mb-2 opacity-70 hover:opacity-100" title="Toggle sidebar">[◄►]</button>
+                            <button id="email-vault-tab-inbox" class="btn-retro active p-2 text-xs text-left" onclick="switchEmailVaultTab('inbox')"><span class="sidebar-label">[01] INBOX</span></button>
+                            <button id="email-vault-tab-sent" class="btn-retro p-2 text-xs text-left" onclick="switchEmailVaultTab('sent')"><span class="sidebar-label">[02] SENT</span></button>
+                            <button id="email-vault-tab-trash" class="btn-retro p-2 text-xs text-left" onclick="switchEmailVaultTab('trash')"><span class="sidebar-label">[03] TRASH</span></button>
+                        </div>
+
+                        <!-- Email List -->
+                        <div class="flex flex-col border-r-2 border-[var(--panel-light)] bg-[var(--bg-dark)]">
+                            <div class="p-2 bg-[var(--panel-dark)] border-b-2 border-[var(--panel-light)]">
+                                <input id="email-vault-search" type="text" class="w-full bg-[var(--bg-dark)] border border-[var(--panel-light)] px-2 py-1 font-mono text-xs outline-none" placeholder="SEARCH_EMAILS">
+                            </div>
+                            <div id="email-vault-list" class="w-64 md:w-80 overflow-y-auto scrollbar-hidden opacity-90 reveal-node flex-1"></div>
+                        </div>
+
+                        <!-- Detail View -->
+                        <div id="email-vault-detail" class="flex-1 flex flex-col bg-[var(--bg-dark)] overflow-hidden relative reveal-node">
+                            <div id="email-vault-no-selection" class="flex-1 flex items-center justify-center flex-col opacity-20" style="display: flex;"><p class="text-sm">SELECT EMAIL</p></div>
+                            <div id="email-vault-content" class="flex-1 flex flex-col p-6 md:p-12 overflow-y-auto relative" style="display: none;">
+                                <div class="border-b-2 border-[var(--panel-light)] pb-6 mb-6">
+                                    <div class="flex justify-between items-start mb-2"><h2 id="email-vault-subject" class="text-xl font-bold">---</h2></div>
+                                </div>
+                                <div class="flex items-center gap-2 mb-4 text-[9px]">
+                                    <button class="btn-retro px-2 py-1 ml-auto" onclick="sendEmailVaultToBoard()" title="Add to Investigation Board">📌 [SEND TO BOARD]</button>
+                                </div>
+                                <div id="email-vault-body" class="whitespace-pre-wrap leading-relaxed text-sm opacity-90 select-text"></div>
+                                <div id="email-vault-cross-ref" class="hidden mt-6 p-4 border-2 border-[var(--panel-light)] bg-[var(--panel-dark)]">
+                                    <div class="text-[9px] font-bold mb-3 text-[var(--text-dim)]">CROSS-REFERENCES DETECTED:</div>
+                                    <div id="email-vault-cross-ref-list" class="space-y-2 text-xs"></div>
+                                </div>
+                                <div id="email-vault-attachments" class="mt-8 space-y-6"></div>
+                                <div class="mt-12 pt-6 border-t border-[var(--panel-light)] opacity-30 text-[9px]">*** END OF TRANSMISSION ***</div>
+                            </div>
+                        </div>
+
+                        <!-- Metadata Board -->
+                        <div id="email-vault-metadata" class="border-l-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col reveal-node">
+                            <div id="email-vault-metadata-header" class="p-3 border-b-2 border-[var(--panel-light)] bg-[var(--panel-light)] flex justify-between items-center text-[var(--bg-dark)]">
+                                <button onclick="toggleEmailVaultMetadata()" class="text-xs cursor-pointer hover:opacity-80 font-bold" title="Toggle metadata">[◄►]</button>
+                            </div>
+                            <div id="email-vault-metadata-content" class="flex-1 overflow-y-auto p-4 scrollbar-hidden">
+                                <div class="text-[10px] text-[var(--text-dim)] text-center mt-10 italic">WAITING_FOR_DATA...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div id="email-vault-footer" class="h-8 border-t-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex items-center px-4 text-[10px] reveal-node">
+                        <span class="text-[var(--text-dim)] mr-2">CPU_LOAD:</span>
+                        <div class="w-16 h-2 bg-[var(--panel-light)] mr-4"><div class="bg-[var(--accent)] h-full" style="width: 42%"></div></div>
+                        <span class="ml-auto animate-pulse">EMAIL-VAULT_ACTIVE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILES Window (File Explorer Only) -->
+        <div id="file-vault-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 5%; display: none;">
+            <div class="window-titlebar" onmousedown="startDrag(event, 'file-vault-window')">
+                <span class="window-title" id="file-vault-title">FILES // DAPAUE</span>
+                <div class="window-controls">
+                    <div class="window-btn" onclick="minimizeWindow('file-vault-window')">_</div>
+                    <div class="window-btn" onclick="closeWindow('file-vault-window')">X</div>
+                </div>
+            </div>
+            <div class="window-content">
+                <div id="file-vault-terminal" class="w-full h-full terminal-border bg-[var(--bg-dark)] overflow-hidden flex flex-col relative">
+                    <div id="file-vault-login-flash" class="absolute inset-0 z-[600] pointer-events-none"></div>
+
+                    <!-- Header -->
+                    <div id="file-vault-header" class="h-12 border-b-2 border-[var(--panel-light)] flex items-center justify-between px-4 bg-[var(--panel-dark)] reveal-node">
+                        <div class="flex items-center gap-4">
+                            <span class="font-bold">FILES // EXPLORER // DAPAUE</span>
+                            <span id="file-vault-user-display" class="text-[9px] text-green-500 border border-green-900/40 px-2 py-0.5 cursor-pointer hover:border-green-500 hover:bg-green-900/20 transition-all" onclick="openFileVaultUserSelector()">USER: ---</span>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex overflow-hidden">
+                        <!-- Sidebar -->
+                        <div id="file-vault-sidebar" class="w-20 md:w-48 border-r-2 border-[var(--panel-light)] flex flex-col p-2 gap-2 bg-[var(--panel-dark)] reveal-node">
+                            <button onclick="toggleFileVaultSidebar()" class="btn-retro p-2 text-xs text-center mb-2 opacity-70 hover:opacity-100" title="Toggle sidebar">[◄►]</button>
+                            <button id="file-vault-tab-explorer" class="btn-retro active p-2 text-xs text-left" onclick="switchFileVaultTab('explorer')"><span class="sidebar-label">[01] FILES</span></button>
+                        </div>
+
+                        <!-- User List -->
+                        <div id="file-vault-list" class="w-64 md:w-80 border-r-2 border-[var(--panel-light)] overflow-y-auto scrollbar-hidden bg-[var(--bg-dark)] opacity-90 reveal-node">
+                        </div>
+
+                        <!-- File Preview -->
+                        <div id="file-vault-detail" class="flex-1 flex flex-col bg-[var(--bg-dark)] overflow-hidden relative reveal-node">
+                            <div id="file-vault-placeholder" class="flex-1 flex items-center justify-center flex-col text-xs tracking-widest opacity-40" style="display: flex;">
+                                <p>SELECT FILE TO PREVIEW</p>
+                            </div>
+
+                            <div id="file-vault-pane" class="flex-1 flex flex-col overflow-hidden" style="display: none;">
+                                <div class="border-b-2 border-[var(--panel-light)] p-4 bg-[var(--panel-dark)]">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div>
+                                            <div id="file-vault-name" class="font-bold text-sm">---</div>
+                                            <div id="file-vault-meta" class="text-[9px] text-[var(--text-dim)] mt-1">---</div>
+                                        </div>
+                                        <div id="file-vault-user" class="text-[10px] text-[var(--accent)] font-mono"></div>
+                                    </div>
+                                </div>
+                                <div id="file-vault-tagging" class="p-3 border-b-2 border-[var(--panel-light)] text-[9px] flex items-center gap-2">
+                                    <input id="file-vault-tag-input" type="text" class="bg-[var(--panel-dark)] border border-[var(--panel-light)] px-2 py-1 font-mono outline-none" placeholder="ADD_TAG">
+                                    <button class="btn-retro px-2 py-1" onclick="submitFileVaultTag()">[TAG]</button>
+                                    <button class="btn-retro px-2 py-1 ml-auto" onclick="sendFileVaultToBoard()" title="Add to Investigation Board">📌 [SEND TO BOARD]</button>
+                                </div>
+                                <div id="file-vault-content" class="flex-1 overflow-y-auto p-6 md:p-10 font-mono text-xs whitespace-pre-wrap break-words"></div>
+                            </div>
+                        </div>
+
+                        <!-- Metadata Board -->
+                        <div id="file-vault-metadata" class="border-l-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col reveal-node">
+                            <div id="file-vault-metadata-header" class="p-3 border-b-2 border-[var(--panel-light)] bg-[var(--panel-light)] flex justify-between items-center text-[var(--bg-dark)]">
+                                <span class="text-xs font-bold uppercase tracking-wider">FILE_METADATA</span>
+                                <button onclick="toggleFileVaultMetadata()" class="text-xs cursor-pointer hover:opacity-80 font-bold" title="Toggle metadata">[◄►]</button>
+                            </div>
+                            <div id="file-vault-metadata-content" class="flex-1 overflow-y-auto p-4 scrollbar-hidden">
+                                <div class="text-[10px] text-[var(--text-dim)] text-center mt-10 italic">WAITING_FOR_DATA...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div id="file-vault-footer" class="h-8 border-t-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex items-center px-4 text-[10px] reveal-node">
+                        <span class="text-[var(--text-dim)] mr-2">CPU_LOAD:</span>
+                        <div class="w-16 h-2 bg-[var(--panel-light)] mr-4"><div class="bg-[var(--accent)] h-full" style="width: 42%"></div></div>
+                        <span class="ml-auto animate-pulse">FILES_ACTIVE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of Vault Windows -->
+
         <!-- Taskbar -->
         <div id="taskbar">
-            <div class="taskbar-item active" id="taskbar-system-v" onclick="openSystemV()" style="display: block;">
-                ⚙ SYSTEM-V
+            <div class="taskbar-item active" id="taskbar-briefing" onclick="focusWindow('briefing-window')" style="display: none;">
+                📄 BRIEFING
+            </div>
+            <div class="taskbar-item active" id="taskbar-todo" onclick="focusWindow('todo-window')" style="display: none;">
+                ✓ TODO LIST
             </div>
             <div class="taskbar-item active" id="taskbar-user-access" onclick="focusWindow('user-access-window')" style="display: none;">
                 ⌘ TERMINAL
@@ -2396,11 +2760,17 @@
             <div class="taskbar-item active" id="taskbar-sysmon" onclick="focusWindow('sysmon-window')" style="display: none;">
                 📊 SYSMON
             </div>
+            <div class="taskbar-item active" id="taskbar-server-monitor" onclick="focusWindow('server-monitor-window')" style="display: none;">
+                🖥️ SERVERS
+            </div>
             <div class="taskbar-item active" id="taskbar-forensics" onclick="focusWindow('forensics-window')" style="display: none;">
                 🔍 FORENSICS
             </div>
             <div class="taskbar-item active" id="taskbar-tag-wrangle" onclick="focusWindow('tag-wrangle-window')" style="display: none;">
                 🕸 TAG WRANGLE
+            </div>
+            <div class="taskbar-item active" id="taskbar-user-select" onclick="focusWindow('user-select-window')" style="display: none;">
+                👤 USER_SELECT
             </div>
             <div class="taskbar-item active" id="taskbar-settings" onclick="focusWindow('settings-window')" style="display: none;">
                 ⚙️ SETTINGS
@@ -2408,19 +2778,27 @@
             <div class="taskbar-item active" id="taskbar-archive" onclick="focusWindow('archive-window')" style="display: none;">
                 📧 <span id="taskbar-archive-label">ARCHIVE_99</span>
             </div>
+            <div class="taskbar-item active" id="taskbar-email-vault" onclick="focusWindow('email-vault-window')" style="display: none;">
+                📬 Email
+            </div>
+            <div class="taskbar-item active" id="taskbar-file-vault" onclick="focusWindow('file-vault-window')" style="display: none;">
+                📁 FILES
+            </div>
             <div id="system-info">
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 bg-[var(--accent)] animate-pulse"></div>
                     <span id="timestamp">2099-04-12 23:41:04</span>
                 </div>
                 <button onclick="openSaveGameMenu()" class="text-[9px] px-2 py-1 border border-green-500 text-green-500 hover:border-green-400 hover:text-green-400 hover:bg-green-900/20 font-mono transition-colors ml-2" title="Save Game">[SAVE]</button>
+                <button onclick="unlockAllTestContent()" class="text-[9px] px-2 py-1 border border-yellow-500 text-yellow-500 hover:border-yellow-400 hover:text-yellow-400 hover:bg-yellow-900/20 font-mono transition-colors ml-2" title="Admin Unlock">[ADMIN]</button>
+                <button onclick="resetTestContent()" class="text-[9px] px-2 py-1 border border-red-500 text-red-500 hover:border-red-400 hover:text-red-400 hover:bg-red-900/20 font-mono transition-colors ml-2" title="Reset All">[RESET]</button>
                 <button onclick="toggleLightMode()" id="theme-toggle" class="flex items-center justify-center w-6 h-6 transition-all cursor-pointer ml-2" title="Toggle theme">
                     <div class="w-3 h-3 rounded-full bg-[var(--text-dim)] transition-colors"></div>
                 </button>
                 <button onclick="toggleFullscreenSetting()" id="fullscreen-taskbar-toggle" class="flex items-center justify-center w-6 h-6 transition-all cursor-pointer ml-2" title="Toggle fullscreen">
                     <div class="text-sm">⛶</div>
                 </button>
-                <span class="flex items-center">DAPAUE_OS_V4.5</span>
+                <span id="taskbar-username-display" class="flex items-center ml-2 cursor-pointer hover:text-green-400 transition-colors" onclick="openTaskbarUserSelector()" title="Click to switch user">---</span>
             </div>
         </div>
     </div>
@@ -2481,8 +2859,11 @@
         let activeExplorerFileButton = null;
         let currentUser = null; // Currently logged in user
         let lastOpenedUser = null; // Track last opened user for SYSTEM-V
+        let currentEmailVaultEmail = null; // Track currently selected email in email vault
+        let currentFileVaultUser = null; // Track currently selected file vault user
         let activeUser = null; // Active user set via "active" command (for forensic access)
         let accessedUsers = new Set(); // Track which users have been accessed for forensics filtering
+        let emailVaultSearchQuery = ''; // Track search query for email vault filtering
         let bruteforceAllowance = 2; // Total bruteforce attempts available for the entire game
         let bruteforceUsed = 0; // How many bruteforce attempts have been used
         let systemInstability = 0; // Increases with each bruteforce use
@@ -2643,13 +3024,13 @@
                     if (typeof staffUsers !== 'undefined' && staffUsers.length > 0) {
                         initializeGameWithRandomUser();
                     } else {
-                        if (!currentUser) {
-                            currentUser = {
-                                username: 'GUEST',
-                                name: 'GUEST',
-                                emails: (typeof emails !== 'undefined') ? emails : []
-                            };
-                        }
+                        // Fallback if data fails to load - set a placeholder activeUser so login form can render
+                        activeUser = {
+                            username: 'archivist_001',
+                            name: 'System Archivist',
+                            privilege_level: 1,
+                            emails: []
+                        };
                     }
                     seedStaticEntities();
                 }).catch(() => {});
@@ -2666,11 +3047,63 @@
                 return;
             }
             
-            triggerScreen.style.display = 'none';
-            overlay.style.display = 'flex';
+            // Reset game state for a fresh start
+            serverAccess = {};
+            activeServerId = null;
+            unlockedAccounts.clear();
+            entityDatabase.discoveredEmails = [];
+            adminMode = false;
+            activeUser = null;
+            currentUser = null;
+            localStorage.removeItem('dapaue-server-access');
+            localStorage.removeItem('dapaue-active-server');
+            localStorage.removeItem('dapaue-last-user');
             
-            console.log('Screen switched, running boot sequence');
-            runBootSequence();
+            // Wait for data to be ready before selecting a user
+            const initializeGameStart = async () => {
+                if (window.dataReady) { 
+                    try { 
+                        await window.dataReady; 
+                    } catch (e) { 
+                        console.warn('Data load failed, using fallback if available'); 
+                    } 
+                }
+                
+                // Select a random level 1 user
+                if (typeof staffUsers !== 'undefined' && staffUsers.length > 0) {
+                    const level1Users = staffUsers.filter(u => u.privilege_level === 1);
+                    if (level1Users.length > 0) {
+                        const randomUser = level1Users[Math.floor(Math.random() * level1Users.length)];
+                        
+                        // Grant access to NODE-01
+                        serverAccess['NODE-01'] = true;
+                        activeServerId = 'NODE-01';
+                        
+                        // Add user to unlocked accounts
+                        unlockedAccounts.add(randomUser.username);
+                        
+                        // Set as active user (for login form)
+                        activeUser = {
+                            username: randomUser.username,
+                            name: randomUser.name,
+                            privilege_level: randomUser.privilege_level,
+                            emails: randomUser.emails
+                        };
+                        
+                        // Don't set currentUser yet - it will be set when handleLogin() is called
+                        
+                        console.log('Selected user:', randomUser.username, 'with access to NODE-01');
+                    }
+                }
+                
+                // Continue with boot sequence
+                triggerScreen.style.display = 'none';
+                overlay.style.display = 'flex';
+                console.log('Screen switched, running boot sequence');
+                runBootSequence();
+            };
+            
+            initializeGameStart();
         }
 
         async function adminBypass() {
@@ -2679,6 +3112,26 @@
             const desktop = document.getElementById('desktop');
             if (window.dataReady) { try { await window.dataReady; } catch (e) { console.warn('Data load failed, using fallback if available'); } }
             seedStaticEntities();
+            
+            // Select a random level 1 user for admin bypass
+            if (typeof staffUsers !== 'undefined' && staffUsers.length > 0) {
+                const level1Users = staffUsers.filter(u => u.privilege_level === 1);
+                if (level1Users.length > 0) {
+                    const randomUser = level1Users[Math.floor(Math.random() * level1Users.length)];
+                    activeUser = {
+                        username: randomUser.username,
+                        name: randomUser.name,
+                        privilege_level: randomUser.privilege_level,
+                        emails: randomUser.emails
+                    };
+                    currentUser = {
+                        username: randomUser.username,
+                        name: randomUser.name,
+                        privilege_level: randomUser.privilege_level,
+                        emails: randomUser.emails
+                    };
+                }
+            }
             
             // Unlock all accounts
             if (typeof staffUsers !== 'undefined') {
@@ -2711,6 +3164,15 @@
             const noiseEl = document.querySelector('.noise');
             if (noiseEl) noiseEl.style.display = 'none';
             
+            // Play desktop welcome sound
+            try {
+                const desktopAudio = new Audio('assets/audio/desktop.mp3');
+                desktopAudio.volume = 0.5;
+                desktopAudio.play().catch(e => console.log('Desktop audio autoplay blocked:', e));
+            } catch (e) {
+                console.log('Desktop audio error:', e);
+            }
+            
             // Show welcome notification
             showSystemNotification();
             
@@ -2733,14 +3195,6 @@
             }
             
             // Load default state
-            // Ensure default user exists
-            if (!currentUser) {
-                currentUser = {
-                    username: 'GUEST',
-                    name: 'GUEST',
-                    emails: (typeof emails !== 'undefined') ? emails : []
-                };
-            }
             revealTerminal();
             loadEmailList();
             
@@ -2768,6 +3222,376 @@
             sidebarNode.classList.toggle('collapsed');
         }
 
+        window.unlockAllTestContent = async function() {
+            try {
+                console.log('🔓 ADMIN UNLOCK: Starting...');
+                
+                // Wait for data to load if dataReady promise exists
+                if (window.dataReady) {
+                    console.log('⏳ Waiting for data to load...');
+                    try {
+                        await window.dataReady;
+                    } catch (e) {
+                        console.warn('Data loading failed, continuing anyway:', e);
+                    }
+                }
+                
+                // Wait a bit more to ensure data is available
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Check if data is available
+                if (!window.staffUsers) {
+                    console.error('❌ staffUsers not available after waiting');
+                    showSystemNotification('ERROR: Data not loaded. Try RESET first.', '#ff6b6b');
+                    return;
+                }
+
+                console.log('📊 serverNodes available:', !!serverNodes, 'count:', serverNodes?.length);
+                console.log('📊 window.staffUsers available:', !!window.staffUsers, 'count:', window.staffUsers?.length);
+                console.log('📊 window.emails available:', !!window.emails, 'count:', window.emails?.length);
+
+                // Unlock all servers
+                if (serverNodes && Array.isArray(serverNodes)) {
+                    serverNodes.forEach(n => { 
+                        serverAccess[n.id] = true;
+                        window.serverAccess[n.id] = true;
+                        console.log('  ✓ Unlocked server:', n.name);
+                    });
+                }
+
+                // Unlock all accounts
+                if (window.staffUsers && Array.isArray(window.staffUsers)) {
+                    console.log('📋 Unlocking', window.staffUsers.length, 'accounts...');
+                    window.staffUsers.forEach(user => {
+                        unlockedAccounts.add(user.username);
+                    });
+                    console.log('  ✓ Unlocked accounts:', Array.from(unlockedAccounts).length);
+                }
+
+                // Add all emails to forensics (from emails.json)
+                if (window.emails && Array.isArray(window.emails)) {
+                    console.log('📧 Loading', window.emails.length, 'emails into forensics...');
+                    window.emails.forEach(email => {
+                        if (!entityDatabase.discoveredEmails.find(e => e.id === email.id)) {
+                            entityDatabase.discoveredEmails.push(email);
+                        }
+                    });
+                }
+
+                // Add all emails from staff users
+                if (window.staffUsers && Array.isArray(window.staffUsers)) {
+                    window.staffUsers.forEach(user => {
+                        if (user.emails && Array.isArray(user.emails)) {
+                            user.emails.forEach(email => {
+                                if (!entityDatabase.discoveredEmails.find(e => e.id === email.id)) {
+                                    entityDatabase.discoveredEmails.push(email);
+                                }
+                            });
+                        }
+                    });
+                    console.log('  ✓ Total forensics emails:', entityDatabase.discoveredEmails.length);
+                }
+
+                // Add all user files
+                if (window.staffUsers && Array.isArray(window.staffUsers)) {
+                    window.staffUsers.forEach(user => {
+                        if (!userFiles[user.username]) {
+                            userFiles[user.username] = [];
+                        }
+                    });
+                }
+
+                // Save server access
+                if (typeof saveServerState === 'function') {
+                    saveServerState();
+                    console.log('💾 Server state saved');
+                }
+
+                // Refresh UI elements
+                if (typeof updateActiveServerDisplay === 'function') { 
+                    updateActiveServerDisplay();
+                    console.log('🖥️  Updated server display');
+                }
+                if (typeof renderServerMonitor === 'function') { 
+                    renderServerMonitor();
+                    console.log('🖥️  Rendered server monitor');
+                }
+                if (typeof loadEmailList === 'function') { 
+                    loadEmailList();
+                    console.log('📬 Loaded email list');
+                }
+
+                showSystemNotification('✓ ALL TEST CONTENT UNLOCKED - SERVERS, ACCOUNTS & EMAILS AVAILABLE', '#fbbf24');
+                console.log('🔓 ADMIN UNLOCK: Complete! All systems ready for testing.');
+                
+                // Show USER_SELECT, SYSTEM-V, and INSTABILITY_SIM desktop icons and open USER_SELECT window
+                const userSelectIcon = document.getElementById('user-select-icon');
+                if (userSelectIcon) {
+                    userSelectIcon.style.display = 'block';
+                }
+                const systemVIcon = document.getElementById('system-v-icon');
+                if (systemVIcon) {
+                    systemVIcon.style.display = 'none'; // SYSTEM-V disabled
+                }
+                const instabilitySimIcon = document.getElementById('instability-sim-icon');
+                if (instabilitySimIcon) {
+                    instabilitySimIcon.style.display = 'block';
+                }
+                openUserSelectWindow();
+            } catch (error) {
+                console.error('❌ ADMIN UNLOCK ERROR:', error);
+                console.error(error.stack);
+                showSystemNotification('✗ UNLOCK FAILED - CHECK CONSOLE', '#ff6b6b');
+            }
+        };
+
+        function openUserSelectWindow() {
+            // Populate server dropdown
+            const serverSelect = document.getElementById('admin-server-select');
+            if (!serverSelect) {
+                console.warn('admin-server-select element not found, opening window anyway');
+                openWindow('user-select-window');
+                return;
+            }
+            
+            serverSelect.innerHTML = '<option value="">-- SELECT SERVER --</option>';
+            if (serverNodes && Array.isArray(serverNodes)) {
+                serverNodes.forEach(node => {
+                    const option = document.createElement('option');
+                    option.value = node.id;
+                    option.textContent = `${node.name} (${node.id}) - Security Level ${node.securityLevel}`;
+                    option.dataset.securityLevel = node.securityLevel; // Store security level as data attribute
+                    serverSelect.appendChild(option);
+                });
+            }
+
+            // Populate user dropdown (all users initially)
+            populateUserDropdown();
+
+            // Update current status
+            updateAdminStatus();
+
+            // Open the window
+            openWindow('user-select-window');
+        }
+
+        function populateUserDropdown(filterSecurityLevel = null) {
+            const userSelect = document.getElementById('admin-user-select');
+            if (!userSelect) {
+                console.warn('admin-user-select element not found');
+                return;
+            }
+            
+            userSelect.innerHTML = '<option value="">-- SELECT USER --</option>';
+            if (window.staffUsers && Array.isArray(window.staffUsers)) {
+                window.staffUsers.forEach(user => {
+                    // Filter by security level if specified
+                    if (filterSecurityLevel === null || user.securityLevel === filterSecurityLevel) {
+                        const option = document.createElement('option');
+                        option.value = user.username;
+                        option.textContent = `${user.username} - ${user.name} [Sec Lvl ${user.securityLevel}]`;
+                        option.dataset.securityLevel = user.securityLevel; // Store security level as data attribute
+                        userSelect.appendChild(option);
+                    }
+                });
+            }
+        }
+
+        function filterUsersByServer() {
+            const serverSelect = document.getElementById('admin-server-select');
+            const selectedOption = serverSelect.options[serverSelect.selectedIndex];
+            
+            if (!selectedOption || !selectedOption.value) {
+                // If no server selected, show all users
+                populateUserDropdown();
+                return;
+            }
+
+            const securityLevel = parseInt(selectedOption.dataset.securityLevel);
+            populateUserDropdown(securityLevel);
+        }
+
+        function autoSelectServerForUser() {
+            const userSelect = document.getElementById('admin-user-select');
+            const selectedOption = userSelect.options[userSelect.selectedIndex];
+            
+            if (!selectedOption || !selectedOption.value) {
+                return;
+            }
+
+            const userSecurityLevel = parseInt(selectedOption.dataset.securityLevel);
+            
+            // Find and select the first server with matching security level
+            const serverSelect = document.getElementById('admin-server-select');
+            for (let i = 0; i < serverSelect.options.length; i++) {
+                const option = serverSelect.options[i];
+                if (option.dataset.securityLevel && parseInt(option.dataset.securityLevel) === userSecurityLevel) {
+                    serverSelect.selectedIndex = i;
+                    break;
+                }
+            }
+        }
+
+        function setAdminActiveServer() {
+            const serverSelect = document.getElementById('admin-server-select');
+            const selectedServerId = serverSelect.value;
+            
+            if (!selectedServerId) {
+                showSystemNotification('✗ Please select a server first', '#ff6b6b');
+                return;
+            }
+
+            activeServerId = selectedServerId;
+            saveServerState();
+            
+            if (typeof updateActiveServerDisplay === 'function') {
+                updateActiveServerDisplay();
+            }
+            if (typeof renderServerMonitor === 'function') {
+                renderServerMonitor();
+            }
+
+            updateAdminStatus();
+            showSystemNotification('✓ Active server set successfully', '#22c55e');
+        }
+
+        function setAdminActiveUser() {
+            const userSelect = document.getElementById('admin-user-select');
+            const selectedUsername = userSelect.value;
+            
+            if (!selectedUsername) {
+                showSystemNotification('✗ Please select a user first', '#ff6b6b');
+                return;
+            }
+
+            const targetUser = window.staffUsers.find(u => u.username === selectedUsername);
+            if (!targetUser) {
+                showSystemNotification('✗ User not found', '#ff6b6b');
+                return;
+            }
+
+            // Set as active user
+            activeUser = {
+                username: targetUser.username,
+                name: targetUser.name,
+                privilege_level: targetUser.privilege_level,
+                emails: targetUser.emails
+            };
+
+            accessedUsers.add(targetUser.username);
+            updateTerminalPrompt();
+
+            updateAdminStatus();
+            showSystemNotification('✓ Active user set successfully', '#22c55e');
+        }
+
+        function updateAdminStatus() {
+            // Update server status
+            const serverStatusEl = document.getElementById('admin-current-server');
+            if (serverStatusEl) {
+                if (activeServerId) {
+                    const node = serverNodes.find(n => n.id === activeServerId);
+                    serverStatusEl.textContent = node ? `${node.name} (${node.id})` : activeServerId;
+                } else {
+                    serverStatusEl.textContent = '(none)';
+                }
+            }
+
+            // Update user status
+            const userStatusEl = document.getElementById('admin-current-user');
+            if (userStatusEl) {
+                if (activeUser && activeUser.username) {
+                    userStatusEl.textContent = `${activeUser.name} (${activeUser.username})`;
+                } else {
+                    userStatusEl.textContent = '(none)';
+                }
+            }
+        }
+
+        window.resetTestContent = function() {
+            try {
+                console.log('🔄 RESET: Starting...');
+
+                // Clear all server access
+                window.serverAccess = {};
+                localStorage.removeItem('dapaue-server-access');
+                localStorage.removeItem('dapaue-active-server');
+                activeServerId = null;
+                console.log('  ✓ Cleared server access');
+
+                // Clear all unlocked accounts
+                unlockedAccounts.clear();
+                console.log('  ✓ Cleared unlocked accounts');
+
+                // Clear forensics emails
+                entityDatabase.discoveredEmails = [];
+                console.log('  ✓ Cleared forensics emails');
+
+                // Close USER_SELECT, SYSTEM-V, and INSTABILITY_SIM windows and hide desktop icons
+                closeWindow('user-select-window');
+                closeWindow('archive-window');
+                const userSelectIcon = document.getElementById('user-select-icon');
+                if (userSelectIcon) {
+                    userSelectIcon.style.display = 'none';
+                }
+                const systemVIcon = document.getElementById('system-v-icon');
+                if (systemVIcon) {
+                    systemVIcon.style.display = 'none';
+                }
+                const instabilitySimIcon = document.getElementById('instability-sim-icon');
+                if (instabilitySimIcon) {
+                    instabilitySimIcon.style.display = 'none';
+                }
+
+                // Select server node 1 (first server) and random level 1 user
+                if (serverNodes && serverNodes.length > 0) {
+                    activeServerId = serverNodes[0].id;
+                    console.log('  ✓ Selected server:', activeServerId);
+                }
+
+                // Find all level 1 users and pick one randomly
+                if (window.staffUsers && Array.isArray(window.staffUsers)) {
+                    const level1Users = window.staffUsers.filter(u => u.securityLevel === 1);
+                    if (level1Users.length > 0) {
+                        const randomUser = level1Users[Math.floor(Math.random() * level1Users.length)];
+                        activeUser = {
+                            username: randomUser.username,
+                            name: randomUser.name,
+                            privilege_level: randomUser.privilege_level,
+                            emails: randomUser.emails
+                        };
+                        accessedUsers.add(randomUser.username);
+                        updateTerminalPrompt();
+                        console.log('  ✓ Selected random Level 1 user:', randomUser.username);
+                    }
+                }
+
+                // Save cleared state
+                if (typeof saveServerState === 'function') {
+                    saveServerState();
+                    console.log('💾 Cleared state saved');
+                }
+
+                // Refresh UI elements
+                if (typeof updateActiveServerDisplay === 'function') { 
+                    updateActiveServerDisplay();
+                }
+                if (typeof renderServerMonitor === 'function') { 
+                    renderServerMonitor();
+                }
+                if (typeof loadEmailList === 'function') { 
+                    loadEmailList();
+                }
+
+                showSystemNotification('✓ ALL TEST CONTENT RESET - SERVERS & ACCOUNTS LOCKED', '#ff6b6b');
+                console.log('🔄 RESET: Complete! All systems locked.');
+            } catch (error) {
+                console.error('❌ RESET ERROR:', error);
+                console.error(error.stack);
+                showSystemNotification('✗ RESET FAILED - CHECK CONSOLE', '#ff6b6b');
+            }
+        };
+
         let systemNotificationShown = false;
         
         // Notification tracking for deduplication
@@ -2792,6 +3616,27 @@
             
             if (!message) {
                 systemNotificationShown = true;
+            }
+            
+            // Play error sound for error notifications, regular notification sound for others
+            if (message) {
+                if (progressColor === '#ff6b6b' || message.includes('✗') || message.includes('ERROR') || message.includes('FAILED')) {
+                    try {
+                        const errorAudio = new Audio('assets/audio/error.mp3');
+                        errorAudio.volume = 0.5;
+                        errorAudio.play().catch(e => console.log('Error audio playback failed:', e));
+                    } catch (e) {
+                        console.log('Error audio error:', e);
+                    }
+                } else {
+                    try {
+                        const notifAudio = new Audio('assets/audio/notification.mp3');
+                        notifAudio.volume = 0.5;
+                        notifAudio.play().catch(e => console.log('Notification audio playback failed:', e));
+                    } catch (e) {
+                        console.log('Notification audio error:', e);
+                    }
+                }
             }
             
             // Check if this notification message already exists
@@ -2869,81 +3714,119 @@
             if (betaWarningShown) return;
             betaWarningShown = true;
             
-            const modal = document.createElement('div');
-            modal.style.position = 'fixed';
-            modal.style.top = '0';
-            modal.style.left = '0';
-            modal.style.right = '0';
-            modal.style.bottom = '0';
-            modal.style.background = 'rgba(0, 0, 0, 0.9)';
-            modal.style.zIndex = '9000';
-            modal.style.display = 'flex';
-            modal.style.alignItems = 'center';
-            modal.style.justifyContent = 'center';
+            const container = getOrCreateNotificationContainer();
             
-            const panel = document.createElement('div');
-            panel.style.background = 'var(--panel-dark)';
-            panel.style.border = '3px solid var(--accent)';
-            panel.style.padding = '32px';
-            panel.style.maxWidth = '600px';
-            panel.style.cursor = 'default';
-            panel.style.color = 'var(--light)';
-            panel.style.fontFamily = 'monospace';
-            panel.style.fontSize = '12px';
-            panel.style.boxShadow = '0 0 40px rgba(255, 102, 0, 0.3)';
+            const notification = document.createElement('div');
+            notification.id = 'beta-warning-notification';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                width: 420px;
+                background: linear-gradient(135deg, var(--panel-dark) 0%, rgba(234, 179, 8, 0.1) 100%);
+                border: 2px solid #eab308;
+                border-radius: 4px;
+                padding: 20px;
+                font-family: monospace;
+                font-size: 11px;
+                color: var(--text-main);
+                z-index: 1001;
+                box-shadow: 0 0 30px rgba(234, 179, 8, 0.3), inset 0 0 20px rgba(234, 179, 8, 0.05);
+                animation: betaFadeIn 0.6s ease-out;
+                max-height: 300px;
+                overflow-y: auto;
+                line-height: 1.6;
+                pointer-events: auto;
+            `;
             
-            const title = document.createElement('div');
-            title.style.fontSize = '18px';
-            title.style.fontWeight = 'bold';
-            title.style.marginBottom = '20px';
-            title.style.color = 'var(--accent)';
-            title.style.textAlign = 'center';
-            title.style.letterSpacing = '0.2em';
-            title.innerText = '⚠ BETA TESTING NOTICE ⚠';
-            panel.appendChild(title);
-            
-            const message = document.createElement('div');
-            message.style.marginBottom = '24px';
-            message.style.lineHeight = '1.8';
-            message.innerHTML = `
-                <div style="margin-bottom: 16px; text-align: center; color: var(--text-dim); font-size: 11px;">
+            notification.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                    <div style="color: #eab308; font-weight: bold; font-size: 12px;">⚠ BETA TESTING NOTICE</div>
+                </div>
+                <div style="margin-bottom: 12px; font-size: 10px; color: var(--text-dim);">
                     DAPAUE_OS_V4.5 // NEURAL-LINK PROTOCOL
                 </div>
-                <div style="margin-bottom: 12px;">
-                    This is a <span style="color: var(--accent); font-weight: bold;">BETA BUILD</span> for testing purposes.
+                <div style="margin-bottom: 10px; color: var(--text-main);">
+                    This is a <span style="color: #eab308; font-weight: bold;">BETA BUILD</span> for testing purposes.
                 </div>
-                <div style="margin-bottom: 12px;">
-                    <span style="color: #ff6b6b; font-weight: bold;">⚠ IMPORTANT:</span> Save game functionality is currently <span style="color: #ff6b6b;">DISABLED</span> during this testing phase.
+                <div style="margin-bottom: 10px;">
+                    <span style="color: #ff6b6b; font-weight: bold;">⚠ IMPORTANT:</span> Save game functionality is currently <span style="color: #ff6b6b; font-weight: bold;">DISABLED</span> during this testing phase.
                 </div>
-                <div style="color: var(--text-dim); font-size: 10px; padding: 12px; background: rgba(0,0,0,0.3); border-left: 2px solid var(--accent);">
+                <div style="font-size: 10px; color: var(--text-dim); margin-bottom: 14px;">
                     Your progress will not persist between sessions. Please report any bugs or issues you encounter. Thank you for participating in testing!
                 </div>
+                <button id="beta-acknowledge-btn" style="
+                    width: 100%;
+                    padding: 10px;
+                    background: rgba(234, 179, 8, 0.1);
+                    border: 1px solid #eab308;
+                    color: #eab308;
+                    font-family: monospace;
+                    font-size: 11px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    border-radius: 2px;
+                    pointer-events: auto;
+                ">[ACKNOWLEDGED]</button>
             `;
-            panel.appendChild(message);
             
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'btn-retro';
-            closeBtn.style.width = '100%';
-            closeBtn.style.padding = '12px';
-            closeBtn.style.fontSize = '12px';
-            closeBtn.style.borderColor = 'var(--accent)';
-            closeBtn.style.color = 'var(--accent)';
-            closeBtn.innerText = '[ACKNOWLEDGED]';
-            closeBtn.onclick = () => document.body.removeChild(modal);
-            panel.appendChild(closeBtn);
+            container.appendChild(notification);
             
-            panel.onclick = (e) => e.stopPropagation();
-            modal.appendChild(panel);
-            document.body.appendChild(modal);
+            // Attach click handler after DOM insertion
+            setTimeout(() => {
+                const acknowledgBtn = document.getElementById('beta-acknowledge-btn');
+                if (acknowledgBtn) {
+                    acknowledgBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        notification.style.animation = 'betaFadeOut 0.4s ease-out forwards';
+                        setTimeout(() => {
+                            if (notification.parentNode) {
+                                notification.parentNode.removeChild(notification);
+                            }
+                        }, 400);
+                    };
+                }
+            }, 0);
+            
+            // Add animations if not already in stylesheet
+            if (!document.getElementById('beta-notification-styles')) {
+                const style = document.createElement('style');
+                style.id = 'beta-notification-styles';
+                style.textContent = `
+                    @keyframes betaFadeIn {
+                        from {
+                            opacity: 0;
+                            transform: translateX(420px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+                    @keyframes betaFadeOut {
+                        from {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                        to {
+                            opacity: 0;
+                            transform: translateX(420px);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
         }
 
         // ===== Server Monitor Logic =====
         let serverNodes = [
             { id: 'NODE-01', name: 'ATLAS', status: 'ONLINE', latency: 12, load: 35, temp: 48, loss: 0.2, uptime: '482d', selected: false, securityLevel: 1 },
-            { id: 'NODE-02', name: 'PROMETHEUS', status: 'ONLINE', latency: 20, load: 52, temp: 55, loss: 0.5, uptime: '312d', selected: false, securityLevel: 1 },
-            { id: 'NODE-03', name: 'AEGIS', status: 'WARNING', latency: 55, load: 76, temp: 68, loss: 2.1, uptime: '128d', selected: false, securityLevel: 2 },
-            { id: 'NODE-04', name: 'ORACLE', status: 'OFFLINE', latency: 0, load: 0, temp: 0, loss: 0, uptime: '0d', selected: false, securityLevel: 3 },
-            { id: 'NODE-05', name: 'CHRONOS', status: 'ONLINE', latency: 18, load: 43, temp: 51, loss: 0.3, uptime: '905d', selected: false, securityLevel: 1 }
+            { id: 'NODE-02', name: 'PROMETHEUS', status: 'ONLINE', latency: 20, load: 52, temp: 55, loss: 0.5, uptime: '312d', selected: false, securityLevel: 2 },
+            { id: 'NODE-03', name: 'AEGIS', status: 'WARNING', latency: 55, load: 76, temp: 68, loss: 2.1, uptime: '128d', selected: false, securityLevel: 3 },
+            { id: 'NODE-04', name: 'ORACLE', status: 'OFFLINE', latency: 0, load: 0, temp: 0, loss: 0, uptime: '0d', selected: false, securityLevel: 4 },
+            { id: 'NODE-05', name: 'CHRONOS', status: 'ONLINE', latency: 18, load: 43, temp: 51, loss: 0.3, uptime: '905d', selected: false, securityLevel: 5 }
         ];
         let activeServerId = localStorage.getItem('dapaue-active-server') || null;
         let serverAccess = JSON.parse(localStorage.getItem('dapaue-server-access') || '{}');
@@ -2960,20 +3843,25 @@
             list.innerHTML = '';
             serverNodes.forEach(n => {
                 const row = document.createElement('div');
-                row.className = 'p-2 border border-[var(--panel-light)] hover:bg-[var(--panel-dark)] cursor-pointer flex items-center justify-between';
-
+                const isActive = n.id === activeServerId;
+                const isAuthed = !!serverAccess[n.id];
+                
                 let indicatorClass = 'warning';
                 if (n.status === 'ONLINE') indicatorClass = 'online';
                 if (n.status === 'OFFLINE') indicatorClass = 'offline';
-                const isActive = n.id === activeServerId;
-                const isAuthed = !!serverAccess[n.id];
+                
+                let rowClasses = 'p-2 border border-[var(--panel-light)] hover:bg-[var(--panel-dark)] cursor-pointer flex items-center justify-between';
+                if (isActive) {
+                    rowClasses += ' server-active';
+                }
+                row.className = rowClasses;
 
                 row.innerHTML = `
                     <div class="flex items-center gap-2">
                         <span class="status-indicator ${indicatorClass}"></span>
                         <div>
                             <div class="font-bold text-[10px]">${n.name}</div>
-                            <div class="text-[8px] text-[var(--text-dim)]">${n.id} • ${n.status}</div>
+                            <div class="text-[8px] text-[var(--text-dim)]">${n.id} • ${n.status} ${isAuthed ? '• <span style="color: #22c55e;">UNLOCKED</span>' : '• <span style="color: #dc2626;">LOCKED</span>'}</div>
                         </div>
                     </div>
                     <div class="text-[8px] text-right">
@@ -3013,7 +3901,15 @@
         function setActiveServer() {
             const win = document.getElementById('server-monitor-window');
             if (!win || !win.dataset.currentNode) return;
-            activeServerId = win.dataset.currentNode;
+            const nodeId = win.dataset.currentNode;
+            
+            // Check if server is unlocked before setting as active
+            if (!serverAccess[nodeId]) {
+                showSystemNotification('✗ ACCESS DENIED - SERVER MUST BE UNLOCKED FIRST', '#ff6b6b');
+                return;
+            }
+            
+            activeServerId = nodeId;
             saveServerState();
             updateActiveServerDisplay();
             renderServerMonitor();
@@ -6067,6 +6963,7 @@
 
         async function revealLoginForm() {
             const form = document.getElementById('login-form');
+            
             form.classList.remove('hidden');
             form.style.display = 'block';
             form.classList.add('form-glitch-in');
@@ -6074,9 +6971,9 @@
             await new Promise(r => setTimeout(r, 600));
             document.getElementById('login-title').classList.remove('opacity-30');
             
-            // Type the active user's username if it exists
-            const username = activeUser ? activeUser.username : 'GUEST';
-            const displayName = activeUser ? activeUser.name : 'GUEST';
+            // Type the active user's username (activeUser should always exist at this point)
+            const username = activeUser?.username || 'archivist_001';
+            const displayName = activeUser?.name || 'System Archivist';
             
             await typeValue('input-opid', username);
             await new Promise(r => setTimeout(r, 400));
@@ -6132,15 +7029,43 @@
                 document.body.classList.remove('crt');
                 const noiseEl = document.querySelector('.noise');
                 if (noiseEl) noiseEl.style.display = 'none';
+                
+                // Set currentUser from activeUser
+                if (activeUser) {
+                    currentUser = {
+                        username: activeUser.username,
+                        name: activeUser.name,
+                        privilege_level: activeUser.privilege_level,
+                        emails: activeUser.emails
+                    };
+
+                    // Sync UI to the logged-in user
+                    const userDisplay = document.getElementById('current-user-display');
+                    if (userDisplay) {
+                        userDisplay.innerText = `USER: ${activeUser.name.toUpperCase()}`;
+                        userDisplay.className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+                    }
+                    updateTerminalPrompt();
+                    updateTaskbarUsername();
+                }
+                
+                // Play desktop welcome sound
+                try {
+                    const desktopAudio = new Audio('assets/audio/desktop.mp3');
+                    desktopAudio.volume = 0.5;
+                    desktopAudio.play().catch(e => console.log('Desktop audio autoplay blocked:', e));
+                } catch (e) {
+                    console.log('Desktop audio error:', e);
+                }
                 if (window.dataReady) { try { await window.dataReady; } catch (e) { console.warn('Data load failed, using fallback if available'); } }
                 seedStaticEntities();
-                if (!currentUser) {
-                    currentUser = {
-                        username: 'GUEST',
-                        name: 'GUEST',
-                        emails: (typeof emails !== 'undefined') ? emails : []
-                    };
+                
+                // Update briefing to show assigned user
+                const briefingElement = document.getElementById('briefing-assigned-user');
+                if (briefingElement && currentUser) {
+                    briefingElement.textContent = `${currentUser.name.toUpperCase()} (${currentUser.username})`;
                 }
+                
                 revealTerminal();
                 loadEmailList();
                 
@@ -6186,6 +7111,19 @@
             playClickSound();
             const win = document.getElementById(windowId);
             win.style.display = 'none';
+            
+            // Clear terminal cache when closing user-access-window
+            if (windowId === 'user-access-window') {
+                const terminalOutput = document.getElementById('terminal-output');
+                if (terminalOutput) {
+                    terminalOutput.innerHTML = '';
+                }
+                // Clear terminal input
+                const terminalInput = document.getElementById('terminal-input');
+                if (terminalInput) {
+                    terminalInput.value = '';
+                }
+            }
             
             // Hide from taskbar
             const taskbarId = 'taskbar-' + windowId.replace('-window', '');
@@ -6255,16 +7193,6 @@
             
             // Only show current user's files
             const username = currentUser.username;
-            
-            // Check if this is the default archivist (no personal files)
-            if (username === 'GUEST') {
-                const msg = document.createElement('div');
-                msg.className = 'p-4 text-xs opacity-60 text-center';
-                msg.textContent = 'UNLOCK USER ACCOUNT TO ACCESS FILES';
-                listNode.appendChild(msg);
-                showFilePlaceholder();
-                return;
-            }
             
             // Check if account is unlocked
             if (!unlockedAccounts.has(username)) {
@@ -6614,8 +7542,68 @@ Good luck, Investigator.
             
             document.getElementById('taskbar-archive').style.display = 'block';
             document.getElementById('taskbar-archive-label').innerText = user.name.toUpperCase();
-            openWindow('archive-window');
+            updateTaskbarUsername();
+            updateTerminalPrompt();
             loadEmailList('inbox');
+            
+            // Update email vault if it's open
+            const emailVaultWindow = document.getElementById('email-vault-window');
+            if (emailVaultWindow && emailVaultWindow.style.display !== 'none') {
+                document.getElementById('email-vault-user-display').innerText = `USER: ${user.name.toUpperCase()}`;
+                document.getElementById('email-vault-title').innerText = `${user.name.toUpperCase()} // EMAIL-VAULT // DAPAUE`;
+                loadEmailVaultList('inbox');
+            }
+        }
+
+        function openTaskbarUserSelector() {
+            if (unlockedAccounts.size === 0) {
+                showSystemNotification('No unlocked accounts available', '#ff6b6b');
+                return;
+            }
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); z-index: 5000; display: flex; align-items: center; justify-content: center; cursor: pointer;';
+            
+            const panel = document.createElement('div');
+            panel.style.cssText = 'background: var(--panel-dark); border: 2px solid var(--panel-light); padding: 20px; min-width: 300px; max-height: 400px; overflow: auto; cursor: default; color: var(--light); font-family: monospace; font-size: 11px;';
+            
+            const title = document.createElement('div');
+            title.style.cssText = 'font-size: 13px; font-weight: bold; margin-bottom: 15px; color: var(--accent);';
+            title.innerText = 'SWITCH USER';
+            panel.appendChild(title);
+            
+            Array.from(unlockedAccounts).forEach(username => {
+                const userData = typeof staffUsers !== 'undefined' ? staffUsers.find(u => u.username === username) : null;
+                const displayName = userData ? userData.name : username;
+                const btn = document.createElement('div');
+                btn.style.cssText = 'padding: 8px; margin: 5px 0; border: 1px solid var(--panel-light); cursor: pointer; transition: all 0.2s;';
+                btn.onmouseover = () => btn.style.background = 'rgba(16, 185, 129, 0.1)';
+                btn.onmouseout = () => btn.style.background = 'transparent';
+                btn.innerText = `${displayName} (${username})`;
+                btn.onclick = () => {
+                    switchToUser(username);
+                    document.body.removeChild(modal);
+                };
+                panel.appendChild(btn);
+            });
+            
+            panel.onclick = (e) => e.stopPropagation();
+            modal.onclick = () => document.body.removeChild(modal);
+            modal.appendChild(panel);
+            document.body.appendChild(modal);
+        }
+
+        function updateTaskbarUsername() {
+            const display = document.getElementById('taskbar-username-display');
+            if (display) {
+                if (currentUser && currentUser.name) {
+                    display.innerText = currentUser.name.toUpperCase();
+                } else if (activeUser && activeUser.name) {
+                    display.innerText = activeUser.name.toUpperCase();
+                } else {
+                    display.innerText = '---';
+                }
+            }
         }
         
         function openUserSelector() {
@@ -6708,6 +7696,592 @@ Good luck, Investigator.
             };
             
             panel.appendChild(btn);
+            panel.onclick = (e) => e.stopPropagation();
+            modal.onclick = () => document.body.removeChild(modal);
+            modal.appendChild(panel);
+            document.body.appendChild(modal);
+        }
+
+        function revealEmailVault() {
+            const ids = ['email-vault-header', 'email-vault-sidebar', 'email-vault-list', 'email-vault-detail', 'email-vault-metadata', 'email-vault-footer'];
+            ids.forEach((id, idx) => {
+                setTimeout(() => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('visible');
+                }, idx * 120);
+            });
+            
+            // Set up search functionality
+            const searchInput = document.getElementById('email-vault-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    emailVaultSearchQuery = e.target.value;
+                    // Get current tab
+                    const activeTab = document.getElementById('email-vault-tab-inbox').classList.contains('active') ? 'inbox' :
+                                     document.getElementById('email-vault-tab-sent').classList.contains('active') ? 'sent' : 'trash';
+                    loadEmailVaultList(activeTab);
+                });
+            }
+        }
+
+        function revealFileVault() {
+            const ids = ['file-vault-header', 'file-vault-sidebar', 'file-vault-list', 'file-vault-detail', 'file-vault-metadata', 'file-vault-footer'];
+            ids.forEach((id, idx) => {
+                setTimeout(() => {
+                    const el = document.getElementById(id);
+                    if (el) el.classList.add('visible');
+                }, idx * 120);
+            });
+        }
+
+        // ===== EMAIL-VAULT Functions (Works exactly like SYSTEM-V for emails) =====
+        function openEmailVault() {
+            // Try to use currentUser first (set by switchToUser from taskbar), then fall back to activeUser
+            const userToUse = currentUser || activeUser;
+            
+            if (userToUse && userToUse.username) {
+                const fullUserData = (typeof staffUsers !== 'undefined') ? staffUsers.find(u => u.username === userToUse.username) : null;
+                const userEmails = fullUserData ? fullUserData.emails : (userToUse.emails || []);
+                
+                currentUser = {
+                    username: userToUse.username,
+                    name: userToUse.name,
+                    privilege_level: userToUse.privilege_level,
+                    emails: userEmails
+                };
+                
+                // Update active node display
+                const activeNode = serverNodes.find(n => n.id === activeServerId);
+                const nodeDisplay = activeNode ? activeNode.name : 'UNKNOWN';
+                document.getElementById('email-vault-node-display').innerText = `NODE: ${nodeDisplay}`;
+                
+                document.getElementById('email-vault-user-display').innerText = `USER: ${userToUse.name.toUpperCase()}`;
+                document.getElementById('email-vault-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+                
+                document.getElementById('email-vault-title').innerText = `${userToUse.name.toUpperCase()} // EMAIL-VAULT // DAPAUE`;
+                
+                openWindow('email-vault-window');
+                loadEmailVaultList();
+                revealEmailVault();
+                return;
+            }
+            
+            const savedLastUser = localStorage.getItem('dapaue-last-user');
+            if (savedLastUser && unlockedAccounts.has(savedLastUser)) {
+                switchEmailVaultToUser(savedLastUser);
+            } else if (currentUser && currentUser.username) {
+                // Use current user if available
+                // Update active node display
+                const activeNode = serverNodes.find(n => n.id === activeServerId);
+                const nodeDisplay = activeNode ? activeNode.name : 'UNKNOWN';
+                document.getElementById('email-vault-node-display').innerText = `NODE: ${nodeDisplay}`;
+                
+                document.getElementById('email-vault-user-display').innerText = `USER: ${currentUser.name.toUpperCase()}`;
+                document.getElementById('email-vault-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+                document.getElementById('email-vault-title').innerText = `${currentUser.name.toUpperCase()} // Email // DAPAUE`;
+                openWindow('email-vault-window');
+                loadEmailVaultList();
+                revealEmailVault();
+            } else {
+                console.error('No user available for Email vault');
+                return;
+            }
+        }
+
+        function switchEmailVaultToUser(username) {
+            const user = (typeof staffUsers !== 'undefined') ? staffUsers.find(u => u.username === username) : null;
+            if (!user || !unlockedAccounts.has(username)) return;
+            
+            currentUser = {
+                username: user.username,
+                name: user.name,
+                emails: user.emails
+            };
+            
+            lastOpenedUser = username;
+            localStorage.setItem('dapaue-last-user', username);
+            
+            // Update active node display
+            const activeNode = serverNodes.find(n => n.id === activeServerId);
+            const nodeDisplay = activeNode ? activeNode.name : 'UNKNOWN';
+            document.getElementById('email-vault-node-display').innerText = `NODE: ${nodeDisplay}`;
+            
+            document.getElementById('email-vault-user-display').innerText = `USER: ${user.name.toUpperCase()}`;
+            document.getElementById('email-vault-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+            
+            document.getElementById('email-vault-title').innerText = `${user.name.toUpperCase()} // EMAIL-VAULT // DAPAUE`;
+            openWindow('email-vault-window');
+            loadEmailVaultList('inbox');
+            revealEmailVault();
+        }
+
+        function loadEmailVaultList(tab = 'inbox') {
+            const listNode = document.getElementById('email-vault-list');
+            if (!listNode) return;
+            listNode.innerHTML = '';
+            
+            const allEmails = currentUser && currentUser.emails ? currentUser.emails : [];
+            
+            // Filter by category/tab
+            let emailsToShow = allEmails.filter(email => {
+                const category = email.category || 'inbox';
+                return category === tab;
+            });
+            
+            // Filter by search query
+            if (emailVaultSearchQuery.trim()) {
+                const query = emailVaultSearchQuery.toLowerCase();
+                emailsToShow = emailsToShow.filter(email => {
+                    return (email.subject && email.subject.toLowerCase().includes(query)) ||
+                           (email.sender && email.sender.toLowerCase().includes(query)) ||
+                           (email.receiver && email.receiver.toLowerCase().includes(query)) ||
+                           (email.body && email.body.toLowerCase().includes(query));
+                });
+            }
+            
+            if (emailsToShow.length === 0) {
+                listNode.innerHTML = `<div style="padding: 10px; text-align: center; color: var(--text-dim); font-size: 9px;">NO_EMAILS_IN_${tab.toUpperCase()}</div>`;
+                return;
+            }
+            
+            emailsToShow.forEach(email => {
+                const item = document.createElement('div');
+                item.style.cssText = 'padding: 10px; border-bottom: 1px solid var(--panel-light); cursor: pointer; transition: all 0.2s;';
+                item.onmouseover = () => item.style.background = 'rgba(16, 185, 129, 0.05)';
+                item.onmouseout = () => item.style.background = 'transparent';
+                item.onclick = () => showEmailVaultContent(email);
+                
+                item.innerHTML = `
+                    <div style="font-size: 10px; font-weight: bold; color: var(--accent);">${email.subject || '(no subject)'}</div>
+                    <div style="font-size: 9px; color: var(--text-dim); margin-top: 2px;">From: ${email.sender || 'Unknown'}</div>
+                    <div style="font-size: 8px; color: var(--text-dim);">${email.date || ''}</div>
+                `;
+                listNode.appendChild(item);
+            });
+        }
+
+        function showEmailVaultContent(email) {
+            currentEmailVaultEmail = email; // Track selected email
+            const content = document.getElementById('email-vault-content');
+            const noSelection = document.getElementById('email-vault-no-selection');
+            const subject = document.getElementById('email-vault-subject');
+            const body = document.getElementById('email-vault-body');
+            
+            if (content && noSelection && subject && body) {
+                noSelection.style.display = 'none';
+                content.style.display = 'flex';
+                subject.innerText = email.subject || '(no subject)';
+                body.innerText = email.body || '';
+                
+                updateEmailVaultMetadata(email);
+            }
+        }
+
+        function updateEmailVaultMetadata(email) {
+            const metadataContent = document.getElementById('email-vault-metadata-content');
+            if (!metadataContent) return;
+            
+            metadataContent.innerHTML = `
+                <div class="space-y-3">
+                    <div><p class="metadata-label">UID</p><p class="metadata-value">${email.id || '---'}</p></div>
+                    <div><p class="metadata-label">ORIGIN</p><p class="metadata-value">${email.sender || '---'}</p></div>
+                    <div><p class="metadata-label">RECIPIENT</p><p class="metadata-value">${email.receiver || '---'}</p></div>
+                    <div><p class="metadata-label">DATE_STAMP</p><p class="metadata-value">${email.date || '---'}</p></div>
+                    <div><p class="metadata-label">ENCRYPTION</p><p class="metadata-value">${email.encryption || '---'}</p></div>
+                    <div><p class="metadata-label">SIGNAL</p><p class="metadata-value">${email.signal || '---'}</p></div>
+                </div>
+            `;
+        }
+
+        function switchEmailVaultTab(tab) {
+            document.getElementById('email-vault-tab-inbox').classList.toggle('active', tab === 'inbox');
+            document.getElementById('email-vault-tab-sent').classList.toggle('active', tab === 'sent');
+            document.getElementById('email-vault-tab-trash').classList.toggle('active', tab === 'trash');
+            // Clear search when switching tabs
+            emailVaultSearchQuery = '';
+            const searchInput = document.getElementById('email-vault-search');
+            if (searchInput) searchInput.value = '';
+            loadEmailVaultList(tab);
+        }
+
+        function toggleEmailVaultSidebar() {
+            const sidebar = document.getElementById('email-vault-sidebar');
+            if (sidebar) sidebar.classList.toggle('collapsed');
+        }
+
+        function toggleEmailVaultMetadata() {
+            const metadata = document.getElementById('email-vault-metadata');
+            if (metadata) metadata.classList.toggle('collapsed');
+        }
+
+        function sendEmailVaultToBoard() {
+            if (!currentEmailVaultEmail) {
+                showSystemNotification('No email selected', '#ff6b6b');
+                return;
+            }
+            
+            const email = currentEmailVaultEmail;
+            const cardId = email.id || `email-${Date.now()}`;
+            
+            // Check if card already exists on board
+            const existingCard = boardState.cards.find(c => c.id === cardId);
+            if (existingCard) {
+                showSystemNotification(`"${email.subject}" already on investigation board`, '#fbbf24');
+                // Open forensics window to show it
+                openWindow('forensics-window');
+                // Highlight the existing card
+                setTimeout(() => {
+                    selectCard(existingCard.id);
+                    // Scroll to card
+                    const cardEl = document.getElementById(`card-${existingCard.id}`);
+                    if (cardEl) {
+                        cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }, 300);
+                return;
+            }
+            
+            // Add to discovered emails if not already there
+            if (!entityDatabase.discoveredEmails.find(e => e.id === cardId || e.id === email.id)) {
+                entityDatabase.discoveredEmails.push({ ...email, id: cardId });
+            }
+            
+            // Create new card at a smart position
+            const gridX = 150 + (boardState.cards.length % 8) * 250;
+            const gridY = 150 + Math.floor(boardState.cards.length / 8) * 200;
+            
+            // Prepare card tags: include email tags and add automatic 'email' tag
+            const cardTags = email.tags && Array.isArray(email.tags) ? [...email.tags] : [];
+            if (!cardTags.includes('email')) {
+                cardTags.push('email');
+            }
+            
+            boardState.cards.push({
+                id: cardId,
+                x: gridX,
+                y: gridY,
+                data: { ...email, id: cardId, type: email.type || 'email' },
+                tags: cardTags
+            });
+            
+            // Ensure filters do not hide the new card
+            if (boardState.activeFilters && boardState.activeFilters.size > 0) {
+                clearBoardFilters();
+            }
+
+            saveBoardState();
+            
+            // Add email participants to accessedUsers so loadBoardState() doesn't filter them out
+            if (email.sender) accessedUsers.add(email.sender);
+            if (email.receiver) accessedUsers.add(email.receiver);
+            
+            renderInvestigationBoard();
+            openWindow('forensics-window');
+            // Focus the new card after render
+            setTimeout(() => {
+                selectCard(cardId);
+                const cardEl = document.getElementById(`card-${cardId}`);
+                if (cardEl) {
+                    cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 150);
+            showSystemNotification(`📌 "${email.subject}" sent to investigation board`, '#22c55e');
+        }
+
+        function openEmailVaultUserSelector() {
+            if (typeof unlockedAccounts === 'undefined' || unlockedAccounts.size === 0) {
+                showSystemNotification('No unlocked accounts available', '#ff6b6b');
+                return;
+            }
+            
+            // Get the active node's security level
+            const activeNode = serverNodes.find(n => n.id === activeServerId);
+            const nodeSecurityLevel = activeNode ? activeNode.securityLevel : 999;
+            
+            // Filter users to only those with matching or higher privilege for this node
+            const eligibleUsers = Array.from(unlockedAccounts).filter(username => {
+                const userData = typeof staffUsers !== 'undefined' ? staffUsers.find(u => u.username === username) : null;
+                return userData && userData.privilege_level <= nodeSecurityLevel;
+            });
+            
+            if (eligibleUsers.length === 0) {
+                showSystemNotification('No users available for this node', '#ff6b6b');
+                return;
+            }
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); z-index: 5000; display: flex; align-items: center; justify-content: center; cursor: pointer;';
+            
+            const panel = document.createElement('div');
+            panel.style.cssText = 'background: var(--panel-dark); border: 2px solid var(--panel-light); padding: 20px; min-width: 300px; max-height: 400px; overflow: auto; cursor: default; color: var(--light); font-family: monospace; font-size: 11px;';
+            
+            const title = document.createElement('div');
+            title.style.cssText = 'font-size: 13px; font-weight: bold; margin-bottom: 15px; color: var(--accent);';
+            title.innerText = 'SELECT USER';
+            panel.appendChild(title);
+            
+            eligibleUsers.forEach(username => {
+                const btn = document.createElement('div');
+                btn.style.cssText = 'padding: 8px; margin: 5px 0; border: 1px solid var(--panel-light); cursor: pointer; transition: all 0.2s;';
+                btn.onmouseover = () => btn.style.background = 'rgba(16, 185, 129, 0.1)';
+                btn.onmouseout = () => btn.style.background = 'transparent';
+                btn.innerText = username;
+                btn.onclick = () => {
+                    switchEmailVaultToUser(username);
+                    document.body.removeChild(modal);
+                };
+                panel.appendChild(btn);
+            });
+            
+            panel.onclick = (e) => e.stopPropagation();
+            modal.onclick = () => document.body.removeChild(modal);
+            modal.appendChild(panel);
+            document.body.appendChild(modal);
+        }
+
+        // ===== FILES Functions (Works exactly like SYSTEM-V for files) =====
+        function openFileVault() {
+            if (activeUser && activeUser.username) {
+                currentUser = {
+                    username: activeUser.username,
+                    name: activeUser.name,
+                    privilege_level: activeUser.privilege_level
+                };
+                
+                document.getElementById('file-vault-user-display').innerText = `USER: ${activeUser.name.toUpperCase()}`;
+                document.getElementById('file-vault-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+                
+                document.getElementById('file-vault-title').innerText = `${activeUser.name.toUpperCase()} // FILES // DAPAUE`;
+                
+                openWindow('file-vault-window');
+                loadFileVaultList();
+                revealFileVault();
+                return;
+            }
+            
+            const savedLastUser = localStorage.getItem('dapaue-last-user');
+            if (savedLastUser && unlockedAccounts.has(savedLastUser)) {
+                switchFileVaultToUser(savedLastUser);
+            } else if (currentUser && currentUser.username) {
+                // Use current user if available
+                document.getElementById('file-vault-user-display').innerText = `USER: ${currentUser.name.toUpperCase()}`;
+                document.getElementById('file-vault-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+                document.getElementById('file-vault-title').innerText = `${currentUser.name.toUpperCase()} // FILE-VAULT // DAPAUE`;
+                openWindow('file-vault-window');
+                loadFileVaultList();
+                revealFileVault();
+            } else {
+                console.error('No user available for File vault');
+                return;
+            }
+        }
+
+        function switchFileVaultToUser(username) {
+            const user = (typeof staffUsers !== 'undefined') ? staffUsers.find(u => u.username === username) : null;
+            if (!user || !unlockedAccounts.has(username)) return;
+            
+            currentUser = {
+                username: user.username,
+                name: user.name
+            };
+            
+            lastOpenedUser = username;
+            localStorage.setItem('dapaue-last-user', username);
+            
+            document.getElementById('file-vault-user-display').innerText = `USER: ${user.name.toUpperCase()}`;
+            document.getElementById('file-vault-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+            
+            document.getElementById('file-vault-title').innerText = `${user.name.toUpperCase()} // FILE-VAULT // DAPAUE`;
+            openWindow('file-vault-window');
+            loadFileVaultList();
+            revealFileVault();
+        }
+
+        function loadFileVaultList() {
+            const listNode = document.getElementById('file-vault-list');
+            if (!listNode) return;
+            listNode.innerHTML = '';
+            
+            if (typeof staffUsers === 'undefined') return;
+            
+            staffUsers.forEach(user => {
+                if (!unlockedAccounts.has(user.username)) return;
+                
+                const item = document.createElement('div');
+                item.style.cssText = 'padding: 10px; border-bottom: 1px solid var(--panel-light); cursor: pointer; transition: all 0.2s;';
+                item.onmouseover = () => item.style.background = 'rgba(16, 185, 129, 0.05)';
+                item.onmouseout = () => item.style.background = 'transparent';
+                item.onclick = () => loadFileVaultForUser(user.username, user.name);
+                
+                item.innerHTML = `
+                    <div style="font-size: 10px; font-weight: bold; color: var(--accent);">${user.name}</div>
+                    <div style="font-size: 9px; color: var(--text-dim);">@${user.username}</div>
+                `;
+                listNode.appendChild(item);
+            });
+        }
+
+        function loadFileVaultForUser(username, name) {
+            const placeholder = document.getElementById('file-vault-placeholder');
+            const pane = document.getElementById('file-vault-pane');
+            
+            if (placeholder && pane) {
+                placeholder.style.display = 'none';
+                pane.style.display = 'flex';
+
+                // Track selection for SEND TO BOARD
+                currentFileVaultUser = { username, name };
+                
+                document.getElementById('file-vault-name').innerText = `${name}_FILES`;
+                document.getElementById('file-vault-meta').innerText = `User: ${username}`;
+                document.getElementById('file-vault-user').innerText = username.toUpperCase();
+                
+                // Find user and display their files
+                const user = window.staffUsers.find(u => u.username === username);
+                let fileContent = '';
+                
+                if (user && user.files && Array.isArray(user.files)) {
+                    fileContent = user.files.map(file => {
+                        const sizeKB = (file.size / 1024).toFixed(1);
+                        return `[${file.id}] ${file.name} (${sizeKB}KB) - ${file.type} - ${file.date}`;
+                    }).join('\n');
+                } else {
+                    fileContent = `No files for ${name}`;
+                }
+                
+                document.getElementById('file-vault-content').innerText = fileContent;
+                
+                updateFileVaultMetadata(username, name);
+            }
+        }
+
+        function updateFileVaultMetadata(username, name) {
+            const metadataContent = document.getElementById('file-vault-metadata-content');
+            if (!metadataContent) return;
+            
+            metadataContent.innerHTML = `
+                <div class="space-y-3">
+                    <div><p class="metadata-label">OWNER</p><p class="metadata-value">${name}</p></div>
+                    <div><p class="metadata-label">USERNAME</p><p class="metadata-value">${username}</p></div>
+                    <div><p class="metadata-label">ACCESS</p><p class="metadata-value">AVAILABLE</p></div>
+                </div>
+            `;
+        }
+
+        function switchFileVaultTab(tab) {
+            if (tab === 'explorer') {
+                document.getElementById('file-vault-tab-explorer').classList.add('active');
+            }
+        }
+
+        function toggleFileVaultSidebar() {
+            const sidebar = document.getElementById('file-vault-sidebar');
+            if (sidebar) sidebar.classList.toggle('collapsed');
+        }
+
+        function toggleFileVaultMetadata() {
+            const metadata = document.getElementById('file-vault-metadata');
+            if (metadata) metadata.classList.toggle('collapsed');
+        }
+
+        function submitFileVaultTag() {
+            const input = document.getElementById('file-vault-tag-input');
+            if (input && input.value) {
+                showSystemNotification(`Tag added: ${input.value}`, '#22c55e');
+                input.value = '';
+            }
+        }
+
+        function sendFileVaultToBoard() {
+            if (!currentFileVaultUser) {
+                showSystemNotification('No file selection', '#ff6b6b');
+                return;
+            }
+            const { username, name } = currentFileVaultUser;
+            const cardId = `files-${username}`;
+
+            const existingCard = boardState.cards.find(c => c.id === cardId);
+            if (existingCard) {
+                showSystemNotification(`"${name} FILES" already on investigation board`, '#fbbf24');
+                openWindow('forensics-window');
+                setTimeout(() => {
+                    selectCard(existingCard.id);
+                    const cardEl = document.getElementById(`card-${existingCard.id}`);
+                    if (cardEl) cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+                return;
+            }
+
+            const cardData = {
+                id: cardId,
+                sender: username,
+                receiver: username,
+                subject: `${name} FILES`,
+                date: '',
+                body: `File set for ${name} (${username}).`,
+                type: 'file'
+            };
+
+            const gridX = 150 + (boardState.cards.length % 8) * 250;
+            const gridY = 150 + Math.floor(boardState.cards.length / 8) * 200;
+            boardState.cards.push({
+                id: cardId,
+                x: gridX,
+                y: gridY,
+                data: cardData,
+                tags: []
+            });
+
+            // Ensure filters do not hide the new card
+            if (boardState.activeFilters && boardState.activeFilters.size > 0) {
+                clearBoardFilters();
+            }
+
+            saveBoardState();
+            
+            // Add file owner to accessedUsers so loadBoardState() doesn't filter them out
+            if (username) accessedUsers.add(username);
+            
+            renderInvestigationBoard();
+            openWindow('forensics-window');
+            setTimeout(() => {
+                selectCard(cardId);
+                const cardEl = document.getElementById(`card-${cardId}`);
+                if (cardEl) cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 150);
+            showSystemNotification(`📌 "${name} FILES" sent to investigation board`, '#22c55e');
+        }
+
+        function openFileVaultUserSelector() {
+            if (typeof unlockedAccounts === 'undefined' || unlockedAccounts.size === 0) {
+                showSystemNotification('No unlocked accounts available', '#ff6b6b');
+                return;
+            }
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); z-index: 5000; display: flex; align-items: center; justify-content: center; cursor: pointer;';
+            
+            const panel = document.createElement('div');
+            panel.style.cssText = 'background: var(--panel-dark); border: 2px solid var(--panel-light); padding: 20px; min-width: 300px; max-height: 400px; overflow: auto; cursor: default; color: var(--light); font-family: monospace; font-size: 11px;';
+            
+            const title = document.createElement('div');
+            title.style.cssText = 'font-size: 13px; font-weight: bold; margin-bottom: 15px; color: var(--accent);';
+            title.innerText = 'SELECT USER';
+            panel.appendChild(title);
+            
+            unlockedAccounts.forEach(username => {
+                const btn = document.createElement('div');
+                btn.style.cssText = 'padding: 8px; margin: 5px 0; border: 1px solid var(--panel-light); cursor: pointer; transition: all 0.2s;';
+                btn.onmouseover = () => btn.style.background = 'rgba(16, 185, 129, 0.1)';
+                btn.onmouseout = () => btn.style.background = 'transparent';
+                btn.innerText = username;
+                btn.onclick = () => {
+                    switchFileVaultToUser(username);
+                    document.body.removeChild(modal);
+                };
+                panel.appendChild(btn);
+            });
+            
             panel.onclick = (e) => e.stopPropagation();
             modal.onclick = () => document.body.removeChild(modal);
             modal.appendChild(panel);
@@ -6926,7 +8500,7 @@ Good luck, Investigator.
             
             try {
                 const gameState = JSON.parse(savedData);
-                const activeUserName = gameState.activeUser && gameState.activeUser.username ? gameState.activeUser.username : 'GUEST';
+                const activeUserName = gameState.activeUser && gameState.activeUser.username ? gameState.activeUser.username : '---';
                 return {
                     timestamp: gameState.timestamp,
                     activeUser: activeUserName,
@@ -6986,7 +8560,7 @@ Good luck, Investigator.
             sessionInfo.style.fontSize = '10px';
             sessionInfo.style.lineHeight = '1.6';
             
-            const currentUserName = activeUser && activeUser.username ? activeUser.username : 'GUEST';
+            const currentUserName = activeUser && activeUser.username ? activeUser.username : '---';
             const accountsCount = unlockedAccounts.size;
             const emailsCount = entityDatabase.discoveredEmails.length;
             const tagsCount = entityDatabase.tags.size;
@@ -7261,6 +8835,16 @@ Good luck, Investigator.
                             if (initialTrigger) initialTrigger.style.display = 'none';
                             const bootScreen = document.getElementById('intro-overlay');
                             if (bootScreen) bootScreen.style.display = 'none';
+                            
+                            // Play desktop welcome sound
+                            try {
+                                const desktopAudio = new Audio('assets/audio/desktop.mp3');
+                                desktopAudio.volume = 0.5;
+                                desktopAudio.play().catch(e => console.log('Desktop audio autoplay blocked:', e));
+                            } catch (e) {
+                                console.log('Desktop audio error:', e);
+                            }
+                            
                             showSystemNotification(`✓ MEMORY RESTORED FROM SLOT ${i}`);
                         } else {
                             showSystemNotification('⚠ RESTORE FAILED: Corrupted save data', '#ff6b6b');
@@ -8483,7 +10067,7 @@ Good luck, Investigator.
         }
 
         function getTerminalPrompt() {
-            const userLabel = activeUser && activeUser.username ? activeUser.username : 'GUEST';
+            const userLabel = activeUser && activeUser.username ? activeUser.username : '---';
             return `${userLabel} >`;
         }
 
@@ -8517,6 +10101,8 @@ Good luck, Investigator.
                             <div>  servers - List all connected servers and their status</div>
                             <div>  sysmon - Display system information (neofetch-style)</div>
                             <div>  zoom + / zoom - - Increase/decrease interface size</div>
+                            <div>  error - Test error notification</div>
+                            <div>  notification - Test success notification</div>
                             <div>  logout - Return to system default</div>
                             <div>  clear - Clear terminal output</div>
                         `
@@ -8539,6 +10125,7 @@ Good luck, Investigator.
                     // Add to accessed users for forensics filtering
                     accessedUsers.add(targetActiveUser.username);
                     updateTerminalPrompt();
+                    updateTaskbarUsername();
                     
                     return {
                         className: 'terminal-success',
@@ -8546,29 +10133,38 @@ Good luck, Investigator.
                     };
                     
                 case 'list':
-                    // Show users at the same privilege level as the active user
-                    if (!activeUser || !activeUser.privilege_level) {
+                    // Show users based on active server's security level
+                    if (!activeServerId) {
                         return {
                             className: 'terminal-error',
-                            message: `ERROR: No active user set. Use 'active <username>' first.`
+                            message: `ERROR: No active server set. Open SERVER MONITOR and set an active server first.`
                         };
                     }
                     
-                    const levelUsers = staffUsers.filter(u => u.privilege_level === activeUser.privilege_level);
+                    const activeServerNode = serverNodes.find(n => n.id === activeServerId);
+                    if (!activeServerNode) {
+                        return {
+                            className: 'terminal-error',
+                            message: `ERROR: Active server not found.`
+                        };
+                    }
+                    
+                    const serverSecLevel = activeServerNode.securityLevel;
+                    const levelUsers = staffUsers.filter(u => u.securityLevel === serverSecLevel);
                     const userList = levelUsers.map(u => 
-                        `  <span style="color: #00ff41; font-weight: bold;">${u.username.padEnd(20)}</span> | ${u.name.padEnd(20)} | Priv Level ${u.privilege_level} | ${u.status}`
+                        `  <span style="color: #00ff41; font-weight: bold;">${u.username.padEnd(20)}</span> | ${u.name.padEnd(20)} | Priv Level ${u.privilege_level} | Sec Level ${u.securityLevel || 'N/A'} | ${u.status}`
                     ).join('<br>');
                     
                     if (levelUsers.length === 0) {
                         return {
                             className: 'text-[var(--text-dim)]',
-                            message: `PRIVILEGE_LEVEL ${activeUser.privilege_level} USERS:<br>No users found`
+                            message: `SERVER ${activeServerNode.name} (SECURITY_LEVEL ${serverSecLevel}) USERS:<br>No users found`
                         };
                     }
                     
                     return {
                         className: 'text-[var(--text-dim)]',
-                        message: `PRIVILEGE_LEVEL ${activeUser.privilege_level} USERS:<br>${userList}`
+                        message: `SERVER ${activeServerNode.name} (SECURITY_LEVEL ${serverSecLevel}) USERS:<br>${userList}`
                     };
                     
                 case 'info':
@@ -8643,7 +10239,7 @@ Good luck, Investigator.
                 case 'unlock':
                     const unlockParts = args.split(' ');
                     const unlockUser = staffUsers.find(u => u.username.toLowerCase() === unlockParts[0].toLowerCase());
-                    const password = unlockParts.slice(1).join(' ').toUpperCase();
+                    const password = unlockParts.slice(1).join(' ');
                     
                     if (!unlockUser) return {
                         className: 'terminal-error',
@@ -8654,32 +10250,12 @@ Good luck, Investigator.
                         // Register as unlocked account
                         unlockedAccounts.add(unlockUser.username);
                         
-                        currentUser = {
-                            username: unlockUser.username,
-                            name: unlockUser.name,
-                            emails: unlockUser.emails
-                        };
-                        // Update display
-                        document.getElementById('current-user-display').innerText = `USER: ${unlockUser.name.toUpperCase()}`;
-                        document.getElementById('current-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5';
-                        
-                        // Update window title and taskbar
-                        document.getElementById('archive-window-title').innerText = `${unlockUser.name.toUpperCase()} // EMAIL_ARCHIVE // DAPAUE`;
-                        document.getElementById('taskbar-archive-label').innerText = unlockUser.name.toUpperCase();
-                        
-                        // Open the archive window
-                        openWindow('archive-window');
-                        
-                        loadEmailList(); // Reload email list
-                        
-                        // Refresh FILE EXPLORER if currently viewing it
-                        if (currentTab === 'explorer') {
-                            loadArchiveExplorer();
-                        }
+                        // Show notification instead of opening window
+                        showSystemNotification(`✓ ACCOUNT UNLOCKED\n${unlockUser.name} (${unlockUser.username})\nAccess credentials verified.`, '#10b981');
                         
                         return {
                             className: 'terminal-success',
-                            message: `ACCESS_GRANTED: Logged in as <span style="color: #00ff41; font-weight: bold;">${unlockUser.name} (${unlockUser.username})</span><br>Opening email archive from restricted account...`
+                            message: `ACCESS_GRANTED: Account unlocked for <span style="color: #00ff41; font-weight: bold;">${unlockUser.name} (${unlockUser.username})</span><br>Use 'active ${unlockUser.username}' to switch to this account.`
                         };
                     } else {
                         return {
@@ -8700,7 +10276,9 @@ Good luck, Investigator.
                         const rows = list.map(u => {
                             const su = (typeof staffUsers !== 'undefined') ? staffUsers.find(x => x.username === u) : null;
                             const name = su ? su.name : u;
-                            return `  <span style="color: #00ff41; font-weight: bold;">${u.padEnd(20)}</span> | ${name}`;
+                            const secLevel = su ? su.securityLevel : 'N/A';
+                            const privLevel = su ? su.privilege_level : 'N/A';
+                            return `  <span style="color: #00ff41; font-weight: bold;">${u.padEnd(20)}</span> | ${name.padEnd(20)} | Priv Level ${privLevel} | Sec Level ${secLevel}`;
                         }).join('<br>');
                         return {
                             className: 'text-[var(--text-dim)]',
@@ -8743,12 +10321,9 @@ Good luck, Investigator.
                     }
                     
                 case 'logout':
-                    currentUser = {
-                        username: 'GUEST',
-                        name: 'GUEST',
-                        emails: emails
-                    };
-                    document.getElementById('current-user-display').innerText = `USER: GUEST`;
+                    currentUser = null;
+                    activeUser = null;
+                    document.getElementById('current-user-display').innerText = `USER: ---`;
                     document.getElementById('current-user-display').className = 'text-[9px] text-green-500 border border-green-900/40 px-2 py-0.5';
                     
                     // Reset window title and taskbar
@@ -8867,14 +10442,7 @@ Good luck, Investigator.
                                     await window.reloadArchiveData();
                                     // Reseed catalogs
                                     if (typeof seedStaticEntities === 'function') seedStaticEntities();
-                                    // Refresh current user if default archivist
-                                    if (!currentUser || currentUser.username === 'GUEST') {
-                                        currentUser = {
-                                            username: 'GUEST',
-                                            name: 'GUEST',
-                                            emails: (typeof emails !== 'undefined') ? emails : []
-                                        };
-                                    }
+                                    // No default user assignment - currentUser should persist from login
                                     // Refresh UI panels
                                     try { loadEmailList(currentTab); } catch(_){}
                                     try { updateForensicsTimeline(); } catch(_){}
@@ -8957,6 +10525,20 @@ Good luck, Investigator.
                 case 'clear':
                     document.getElementById('terminal-output').innerHTML = '';
                     return { message: '' };
+                    
+                case 'error':
+                    showSystemNotification('✗ TEST ERROR NOTIFICATION - This is an example error message', '#ff6b6b');
+                    return {
+                        className: 'text-[var(--text-dim)]',
+                        message: 'Error notification triggered.'
+                    };
+                    
+                case 'notification':
+                    showSystemNotification('✓ TEST NOTIFICATION - This is an example success message', '#22c55e');
+                    return {
+                        className: 'text-[var(--text-dim)]',
+                        message: 'Success notification triggered.'
+                    };
                     
                 case 'kib':
                     // Create animated cat with blinking and tail wagging
