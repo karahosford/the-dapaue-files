@@ -1,19 +1,19 @@
 # Nicole Thompson (N_THOMPSON)
 
-- Department: DAPAUE Personnel & Access Division
+- Department: Personnel & Access Division
 - Security Level: 2
 - Privilege Level: 2
 - Status: ACTIVE
 
 ## Bio
-Process improvement specialist for DAPAUE, documenting and refining all administrative workflows to ensure consistency and auditability. Thompson's focus is making sure no administrative step is skipped and every decision trail is recorded.
+Process specialist who bolts audit trails onto every administrative move. Thompson maps each approval, notice, and escalation so DAPAUE can prove control over how paraphysical research flows through the organization.
 
 ## Skills
-- Administrative process documentation
-- Access verification and spot-checks
-- Secure notice distribution and logging
-- Task tracking and escalation
-- Inter-divisional coordination
+- Workflow documentation with verifiable checkpoints
+- Access verification spot-checks and variance reports
+- Secure notice distribution with delivery logging
+- Task tracking and escalation routing
+- Inter-division coordination without breaking compartments
 
 ## Recent Focus
-Refined onboarding workflows and field operation authorization trails.
+Tightening onboarding and operation-authorization flows to remove silent steps and surface any bypass attempts.

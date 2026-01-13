@@ -6,14 +6,14 @@
 - Status: ACTIVE
 
 ## Bio
-Field technician for the Applied Effects Wing, responsible for on-site containment readiness and monitoring of unmanifested anomalies. Mitchell excels at rapid triage of paraphysical disturbances and executing stabilization protocols with precision under pressure.
+Field technician keeping containment kits hot and anchors steady in the places reality thins. Mitchell translates lab guidance into field-ready checklists, holding the line while the Applied Effects Wing draws power from the anomaly instead of letting it run wild.
 
 ## Skills
-- Anomaly detection and alert classification
-- Reality-anchor deployment and maintenance
-- Field containment protocol execution
-- Incident documentation and evidence chain
-- Automated monitoring system configuration
+- Live anomaly detection and alert classification in noisy sites
+- Reality-anchor deployment, tuning, and preventative upkeep
+- Containment rig setup and stabilization choreography
+- Field logging that preserves causality evidence
+- Sensor grid configuration for pre-manifest ripples
 
 ## Recent Focus
-ATLAS phenomena tracking, multi-dimensional bleed containment, and quarterly reality-baseline audits.
+Pre-loading anchor kits for rapid deployments, refining stabilization drills for ATLAS-class events, and tightening baseline audits around recurring bleed sites.

@@ -6,14 +6,14 @@
 - Status: ACTIVE
 
 ## Bio
-Director with ultimate accountability for Server 5, setting vision and representing the program at the highest level.
+Director with ultimate accountability for DAPAUE, setting vision and stewarding the agency's mission to understand and harness unmanifested effects. Rivera represents the program at the highest government levels and ensures long-term investments align with the evolving nature of paraphysical threats.
 
 ## Skills
-- Enterprise strategy and vision setting
-- Board- and C-level reporting
-- Cross-org alignment and diplomacy
-- Long-range investment planning
+- Enterprise strategy and visioning for paraphysical research
+- Board- and C-level reporting and briefings
+- Cross-organizational alignment and diplomatic relations
+- Long-range investment planning and roadmapping
 - Governance, risk, and compliance stewardship
 
 ## Recent Focus
-Establishing Server 5 vision, accountability lines, and executive reporting.
+Establishing DAPAUE vision and accountability structures, setting executive reporting rhythms, and securing long-term funding for anomaly containment and research infrastructure.

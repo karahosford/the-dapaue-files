@@ -1,19 +1,19 @@
 # Thomas Wilson (T_WILSON)
 
-- Department: DAPAUE Personnel & Access Division
+- Department: Personnel & Access Division
 - Security Level: 2
 - Privilege Level: 2
 - Status: ACTIVE
 
 ## Bio
-Approvals coordinator for DAPAUE, managing the intake and routing of research proposals, field operation authorizations, and resource allocation requests. Wilson ensures all requests pass classification review before advancing to leadership sign-off.
+Approvals coordinator who routes every research proposal and field request through the proper clearance gauntlet. Wilson balances speed with security so the Applied Wing can move quickly without puncturing DAPAUE's classification shell.
 
 ## Skills
-- Request triage and classification review
-- Approval routing and escalation
-- Secure correspondence and messaging
-- Operations status reporting
-- Administrative process documentation
+- Intake triage with built-in classification checks
+- Approval routing, escalation, and audit logging
+- Secure correspondence for sensitive requests
+- Operations status reporting tailored to privilege levels
+- Process documentation that guards against drift
 
 ## Recent Focus
-Accelerating the approval cycle for field operations while maintaining security review standards.
+Compressing approval cycles for rapid deployments while preserving full review trails and signature capture.

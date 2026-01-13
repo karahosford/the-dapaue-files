@@ -1,19 +1,19 @@
 # Jessica Martinez (J_MARTINEZ)
 
-- Department: DAPAUE Personnel & Access Division
+- Department: Personnel & Access Division
 - Security Level: 2
 - Privilege Level: 2
 - Status: ACTIVE
 
 ## Bio
-Personnel lifecycle administrator for DAPAUE, tracking security clearances, research assignments, and operational readiness metrics for all field and lab staff. Martinez ensures every team member meets their mandatory briefings and maintains compliance with compartmentalization rules.
+Personnel lifecycle administrator keeping every researcher and field operator synchronized with their clearances, briefings, and mission slots. Martinez tracks who may touch which anomaly stream and ensures no one drifts out of compliance.
 
 ## Skills
-- Personnel lifecycle tracking
-- Security briefing coordination
-- Secure credential distribution
-- Equipment and asset inventories
-- Cross-division update and reminder systems
+- Clearance and role lifecycle tracking with readiness metrics
+- Mandatory briefing orchestration across divisions
+- Secure credential issuance and revocation
+- Asset and kit inventories tied to privilege levels
+- Reminder systems that respect compartmentalization boundaries
 
 ## Recent Focus
-Coordinating clearance renewals and mandatory paraphysics briefings across all Divisions.
+Driving synchronized clearance renewals for new bleed studies and tightening briefing coverage before field deployments.

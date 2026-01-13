@@ -6,14 +6,14 @@
 - Status: ACTIVE
 
 ## Bio
-Shift supervisor for the Applied Effects Wing, coordinating containment teams, managing resource flow, and ensuring all paraphysical incidents remain properly logged. Anderson excels at handoff protocols and maintaining operational tempo across multiple field zones.
+Shift supervisor who keeps containment crews, gear, and logs moving as one rhythm. Anderson orchestrates dispatches across multiple bleed sites, ensuring every anchor restart and field note fits the Bureau's chain-of-custody expectations.
 
 ## Skills
-- Shift coordination and anomaly dispatch
-- Resource allocation across containment zones
-- Incident documentation and compliance
-- Evidence archival and retention planning
-- Certification renewal and security hygiene
+- Multi-zone dispatch and resource routing for live anomalies
+- Containment roster management and relief rotations
+- Field log compliance and evidence preservation plans
+- Inventory and anchor readiness checks
+- Training cadence and certification upkeep
 
 ## Recent Focus
-Multi-zone monitoring coordination, dimensional bleed assessment procedures, and access control audits across Division infrastructure.
+Standardizing cross-zone handoffs, refining bleed assessment triage, and auditing access patterns around portable anchor caches.

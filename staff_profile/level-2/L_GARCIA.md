@@ -1,19 +1,19 @@
 # Lisa Garcia (L_GARCIA)
 
-- Department: DAPAUE Personnel & Access Division
+- Department: Personnel & Access Division
 - Security Level: 2
 - Privilege Level: 2
 - Status: ACTIVE
 
 ## Bio
-Onboarding coordinator for DAPAUE, managing the intake packets, security briefings, and credential distribution for new researchers and field staff. Garcia ensures every new hire receives proper compartmentalization training and understands their role in the organization's mission.
+Onboarding coordinator who turns new hires into mission-ready operators without leaking a byte of classified context. Garcia stages training, credentials, and compartmentalization briefings so recruits can support DAPAUE's vacuum-ripple watch from day one.
 
 ## Skills
-- Onboarding packet preparation and distribution
-- Credential and clearance badge tracking
-- Audit evidence and certification files
-- Training calendar management
-- Multi-team coordination and updates
+- Intake packet design tuned to clearance tiers
+- Credential and badge tracking with rapid revocation paths
+- Certification evidence collection for audits
+- Training calendar orchestration across labs and field
+- Multi-team notifications that respect least-knowledge policies
 
 ## Recent Focus
-Expanding onboarding to include new field teams and ensuring briefing completeness.
+Standing up accelerated onboarding for new field cells and verifying every recruit clears compartmentalization drills before deployment.

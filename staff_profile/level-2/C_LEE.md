@@ -1,19 +1,19 @@
 # Christopher Lee (C_LEE)
 
-- Department: DAPAUE Personnel & Access Division
+- Department: Personnel & Access Division
 - Security Level: 2
 - Privilege Level: 2
 - Status: ACTIVE
 
 ## Bio
-Documentation specialist for DAPAUE, maintaining detailed change logs and historical records of all paraphysical research milestones, containment operations, and administrative decisions. Lee ensures all documentation meets archival standards and remains audit-ready.
+Documentation specialist who turns every paraphysical milestone into an audit-ready record. Lee preserves the lineage of formulas, field pulls, and anchor decisions so future teams can trace causality without exposing classified seams.
 
 ## Skills
-- Research documentation and version control
-- Administrative change tracking
-- Secure credential lifecycle management
-- Resource scheduling and coordination
-- Compliance documentation and evidence files
+- Research log stewardship and classified version control
+- Administrative change tracking with traceable approvals
+- Credential lifecycle records and renewal attestations
+- Schedule coordination across Think Tank and field cadences
+- Compliance evidence packages for oversight boards
 
 ## Recent Focus
-Updating research protocols and ensuring all operational records meet archival standards.
+Normalizing protocol updates for new bleed-tracking models and closing documentation gaps around anchor redeployments.

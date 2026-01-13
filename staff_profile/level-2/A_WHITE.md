@@ -1,19 +1,19 @@
 # Amanda White (A_WHITE)
 
-- Department: DAPAUE Personnel & Access Division
+- Department: Personnel & Access Division
 - Security Level: 2
 - Privilege Level: 2
 - Status: ACTIVE
 
 ## Bio
-Access control coordinator for DAPAUE, maintaining compartmentalization matrices and ensuring researchers access only data relevant to their cleared projects. White manages secure briefing materials and coordinates all inter-divisional communication protocols.
+Access control coordinator who keeps the compartmentalization lattice tight. White gates which shards of the Think Tank's math or the Applied Wing's field notes reach each team, preserving secrecy while enabling just enough flow to tame unmanifested effects.
 
 ## Skills
-- Compartmentalization matrix maintenance
-- Secure briefing material handling
-- Documentation version control and archives
-- Inter-divisional meeting coordination
-- Compliance checklist enforcement
+- Clearance matrix design and continuous recertification
+- Secure briefing prep and controlled distribution
+- Versioning and archival for classified packets
+- Cross-division meeting choreography under least-knowledge rules
+- Compliance checklist ownership and spot audits
 
 ## Recent Focus
-Updating clearance matrices and coordinating secure briefing sessions for multi-divisional research teams.
+Re-mapping access paths after new anomaly workstreams spun up, and tightening briefing bundles to reduce spillover between research cells.

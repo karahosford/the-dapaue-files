@@ -1,19 +1,19 @@
 # Gary Rodriguez (G_RODRIGUEZ)
 
-- Department: Management
+- Department: Operations Management
 - Security Level: 3
 - Privilege Level: 3
 - Status: ACTIVE
 
 ## Bio
-Guides Server 3 initiatives with attention to risk, dependencies, and stakeholder clarity.
+Guides paraphysical initiatives with a sharp eye on risk, dependencies, and stakeholder clarity. Rodriguez keeps complex research and field streams sequenced so anomalies do not collide with unprepared teams or thin resources.
 
 ## Skills
-- Dependency mapping
-- Risk registers and mitigations
-- Executive-style reporting
-- Meeting facilitation and decisions
-- Budget-conscious planning
+- Dependency mapping across labs, anchors, and logistics
+- Risk registers with mitigations tied to clearance levels
+- Executive-ready reporting on mission readiness
+- Meeting facilitation that drives fast decisions
+- Budget-aware planning for high-control environments
 
 ## Recent Focus
-Managing dependency risks and keeping Server 3 stakeholders aligned.
+Managing dependency risks for concurrent anomaly studies and keeping stakeholders aligned on resource tradeoffs.

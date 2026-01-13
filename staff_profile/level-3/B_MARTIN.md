@@ -1,19 +1,19 @@
 # Barbara Martin (B_MARTIN)
 
-- Department: Management
+- Department: Operations Management
 - Security Level: 3
 - Privilege Level: 3
 - Status: ACTIVE
 
 ## Bio
-Management leader ensuring Server 3 output meets quality and compliance expectations.
+Quality steward for DAPAUE operations, ensuring every output that leaves a lab or containment zone meets governance and classification standards. Martin sharpens reviews so research and field work remain usable, defensible, and safe to circulate inside the lattice.
 
 ## Skills
-- Quality gate ownership
-- Compliance-minded reviews
-- KPI monitoring and trend calls
-- Cross-team communication
-- Coaching team leads
+- Quality gate design for classified deliverables
+- Compliance-first reviews across research and field logs
+- KPI monitoring with trend calls to leadership
+- Cross-team communication that preserves compartments
+- Coaching team leads on disciplined documentation
 
 ## Recent Focus
-Elevating quality gates and review discipline on Server 3.
+Ratcheting quality gates for anomaly reports and tightening review discipline before data moves between divisions.

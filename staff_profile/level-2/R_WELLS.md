@@ -1,19 +1,19 @@
 # Rebecca Wells (R_WELLS)
 
-- Department: DAPAUE Personnel & Access Division
+- Department: Personnel & Access Division
 - Security Level: 2
 - Privilege Level: 2
 - Status: ACTIVE
 
 ## Bio
-Administrative coordinator for DAPAUE's Personnel and Access Division, managing onboarding of new researchers and field operatives while maintaining strict compartmentalization protocols. Wells ensures all access requests align with classification levels and clearance hierarchies.
+Administrative coordinator guarding the front door to DAPAUE's research streams. Wells aligns every access request with clearance hierarchies and schedules briefings so no one touches a ripple without the right compartment.
 
 ## Skills
-- Clearance verification and provisioning
-- Compartmentalization record-keeping
-- Briefing and onboarding scheduling
-- Classification compliance checklists
-- Inter-departmental coordination and handoffs
+- Clearance verification, provisioning, and revocation
+- Compartmentalization records with traceable sign-offs
+- Onboarding and briefing scheduling across divisions
+- Classification compliance checklists and follow-up
+- Inter-department handoffs that keep data sealed
 
 ## Recent Focus
-Onboarding new paraphysics research staff and auditing access alignments across Division levels.
+Scaling onboarding for new paraphysical study cells and revalidating access maps against updated clearance tiers.

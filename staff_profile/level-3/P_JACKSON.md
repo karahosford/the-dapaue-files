@@ -1,19 +1,19 @@
 # Paul Jackson (P_JACKSON)
 
-- Department: Management
+- Department: Operations Management
 - Security Level: 3
 - Privilege Level: 3
 - Status: ACTIVE
 
 ## Bio
-Coordinates Server 3 delivery streams, balancing execution speed with governance.
+Coordinates DAPAUE delivery streams, sequencing research, field work, and logistics so teams move in sync without collision. Jackson keeps timelines transparent while maintaining the governance gating that keeps unmanifested effects on the leash.
 
 ## Skills
-- Program planning and sequencing
-- Governance checkpoints
-- Risk and issue tracking
-- Stakeholder status updates
-- Resourcing decisions
+- Program planning with dependency chains and contingencies
+- Governance checkpoints tied to classification levels
+- Risk and issue tracking with escalation triggers
+- Stakeholder status updates at appropriate clearance tiers
+- Resourcing decisions balanced against containment needs
 
 ## Recent Focus
-Keeping Server 3 schedules predictable and transparent.
+Keeping delivery schedules predictable across concurrent anomaly programs and tightening governance gates before critical milestones.

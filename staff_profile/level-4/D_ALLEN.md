@@ -6,14 +6,14 @@
 - Status: ACTIVE
 
 ## Bio
-Executive overseeing Server 4 strategy, ensuring investments match mission and risk posture.
+Executive overseeing DAPAUE strategy and investment decisions, ensuring allocations match the mission to tame unmanifested effects. Allen balances long-term research bets against near-term containment needs while maintaining risk discipline.
 
 ## Skills
-- Strategy and portfolio alignment
-- Financial and resource approvals
-- Risk/governance frameworks
-- Executive briefing and narratives
-- Escalation ownership
+- Strategy and portfolio alignment for paraphysical work
+- Financial and resource approval authority
+- Risk and governance framework design
+- Executive briefing and strategic narratives
+- Escalation ownership for high-stakes decisions
 
 ## Recent Focus
-Aligning Server 4 investments with strategic objectives and risk posture.
+Aligning DAPAUE investments with strategic objectives and maintaining risk posture as anomaly threat profiles evolve.

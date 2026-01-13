@@ -1,19 +1,19 @@
 # Richard Lewis (R_LEWIS)
 
-- Department: Management
+- Department: Operations Management
 - Security Level: 3
 - Privilege Level: 3
 - Status: ACTIVE
 
 ## Bio
-Management partner balancing Server 3 throughput with governance, metrics, and staffing needs.
+Operations partner balancing throughput with governance for DAPAUE missions. Lewis maintains control disciplines while keeping research and field teams moving fast enough to respond to emerging anomalies.
 
 ## Skills
-- Throughput and capacity reviews
-- Governance and control points
-- KPI and metric analysis
-- Stakeholder alignment
-- Coaching and performance support
+- Throughput and capacity planning for classified work
+- Governance and control points tied to security posture
+- KPI and metric analysis for operational health
+- Stakeholder alignment across clearance tiers
+- Coaching and performance support for team leaders
 
 ## Recent Focus
-Maintaining governance discipline and metric visibility for Server 3 operations.
+Maintaining governance discipline while scaling anomaly analysis capacity and improving metric visibility for decision-makers.

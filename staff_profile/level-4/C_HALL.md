@@ -6,14 +6,14 @@
 - Status: ACTIVE
 
 ## Bio
-Executive sponsor safeguarding Server 4 outcomes through governance and oversight.
+Executive sponsor safeguarding DAPAUE outcomes through rigorous governance and strategic oversight. Hall sets risk tolerance, approves major anomaly initiatives, and ensures the agency remains resilient to unmanifested threats.
 
 ## Skills
-- Portfolio oversight
-- Governance boards and reviews
-- Risk tolerance setting
-- Budget stewardship
-- External and internal stakeholder comms
+- Portfolio oversight for paraphysical research programs
+- Governance boards and review cadences
+- Risk tolerance setting and incident escalation
+- Budget stewardship and resource allocation
+- External and internal stakeholder communications
 
 ## Recent Focus
-Codifying Server 4 oversight rhythms and decision gates.
+Codifying DAPAUE oversight rhythms, decision gates, and governance structures as the anomaly research portfolio expands.

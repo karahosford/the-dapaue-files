@@ -6,14 +6,14 @@
 - Status: ACTIVE
 
 ## Bio
-Security analyst and incident commander for the Applied Effects Wing, specializing in forensic analysis of paraphysical intrusions and rapid-response containment. Parker leads breach investigations and coordinates emergency protocols when reality anchors fail or hostile unmanifested effects are detected.
+Front-line incident commander who hunts for the first ripples of unmanifested effects before they fully cross over. Parker translates abstract paraphysical alerts into concrete containment steps, keeping field teams synchronized when reality anchors stutter or fail.
 
 ## Skills
-- Paraphysical intrusion forensics
-- Incident analysis and causality reviews
-- Reality-anchor failure diagnosis and mitigation
-- Threat intelligence and signature analysis
-- Access control audits and supervisor training
+- Rapid anomaly triage and containment playbooks
+- Paraphysical intrusion forensics and signature mapping
+- Reality-anchor fault isolation and restart drills
+- Causality chain reconstruction under pressure
+- Field briefing and debrief cadence management
 
 ## Recent Focus
-Dimensional incursion investigations, breach containment protocol refinement, and field team incident response coordination.
+Coordinating first-response crews on vacuum-ripple alerts, tightening anchor restart procedures, and building faster handoffs between the Think Tank and Applied Effects teams.

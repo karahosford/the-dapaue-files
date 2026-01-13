@@ -6,14 +6,14 @@
 - Status: ACTIVE
 
 ## Bio
-Executive leader for Server 4, setting direction and making high-stakes decisions on risk and investment.
+Executive leader for DAPAUE, setting strategic direction and making high-stakes decisions on anomaly response, investment, and risk. Walker represents the agency to oversight bodies and ensures the organization stays agile as unmanifested threats evolve.
 
 ## Skills
-- Strategic planning and prioritization
-- High-risk approval authority
-- Budget and resource allocation
-- Executive communications
-- Crisis leadership and escalation calls
+- Strategic planning and anomaly prioritization
+- High-risk approval authority for major initiatives
+- Budget and resource allocation decisions
+- Executive communications and board briefings
+- Crisis leadership and escalation authority
 
 ## Recent Focus
-Standing up Server 4 governance and aligning executive priorities.
+Standing up DAPAUE strategic governance, aligning executive priorities with field operations, and authorizing major paraphysical research initiatives.

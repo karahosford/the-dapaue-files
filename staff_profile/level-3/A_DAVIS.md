@@ -6,14 +6,14 @@
 - Status: ACTIVE
 
 ## Bio
-Management lead for the Applied Effects Wing, aligning field operations priorities with strategic objectives and resource constraints. Davis excels at translating paraphysical challenges into executable field plans and reporting critical anomalies up the chain.
+Leads the Applied Effects Wing with a focus on turning abstract paraphysical alerts into disciplined field campaigns. Davis balances resource burn with mission urgency, keeping teams synchronized as they harness unmanifested energies instead of merely containing them.
 
 ## Skills
-- Field team leadership and mentoring
-- Priority setting across containment zones
-- Risk assessment and operational approvals
-- Incident impact reporting and metrics
-- Budget-aware operation planning
+- Field team leadership across simultaneous bleed sites
+- Priority setting that reflects Think Tank forecasts
+- Risk appraisal and go/no-go approvals for deployments
+- Impact reporting that traces causality and cost
+- Budget-aware planning for anchor and containment assets
 
 ## Recent Focus
-Stabilizing multi-zone containment operations and aligning quarterly objectives for dimensional research.
+Coordinating multi-zone stabilization runs, integrating new predictive models into dispatch priorities, and tightening escalation paths for pre-manifest anomalies.

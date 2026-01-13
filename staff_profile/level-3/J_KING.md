@@ -1,19 +1,19 @@
 # Jennifer King (J_KING)
 
-- Department: DAPAUE Operations Management
+- Department: Operations Management
 - Security Level: 3
 - Privilege Level: 3
 - Status: ACTIVE
 
 ## Bio
-Manager coordinating multi-divisional research teams, balancing discovery speed with compartmentalization rigor and quality controls. King excels at keeping researchers focused and removing bureaucratic friction without compromising operational security.
+Coordinates multi-division research teams, balancing discovery velocity with compartmentalization rigor. King removes friction without puncturing security, keeping researchers focused on the ripples that matter.
 
 ## Skills
-- Research program coordination and cadences
-- Quality gates and compliance checklists
-- Risk and incident triage
-- Cross-division alignment
-- Executive status reporting
+- Research program cadences tuned to classification rules
+- Quality gates and compliance checklists for shared artifacts
+- Risk triage and incident coordination across teams
+- Cross-division alignment with minimal data exposure
+- Executive-ready status reporting
 
 ## Recent Focus
-Guiding research onboarding and maintaining quality standards across classification levels.
+Guiding new researchers into anomaly programs and strengthening quality standards before findings move between divisions.

@@ -6,14 +6,14 @@
 - Status: ACTIVE
 
 ## Bio
-Data analyst for the Division of Abstract Paraphysics, responsible for compiling and optimizing theoretical models of unmanifested effects. Johnson specializes in processing vast datasets of paraphysical measurements and building performance-critical systems for real-time anomaly prediction.
+Data analyst translating raw vacuum ripples into models the Think Tank can weaponize. Johnson optimizes pipelines that ingest non-linear timelines and keeps predictive simulations stable enough to inform Applied Effects deployments.
 
 ## Skills
-- Paraphysical data indexing and optimization
-- Theoretical model validation and stress-testing
-- Non-linear time analysis benchmarking
-- Anomaly prediction system deployment
-- Infrastructure scaling for growing research demands
+- Paraphysical signal indexing and high-volume optimization
+- Model validation against historical bleed events
+- Non-linear time series benchmarking and drift checks
+- Predictive system deployment with classified safeguards
+- Capacity planning for spiking field telemetry
 
 ## Recent Focus
-Multi-dimensional bleed predictive models, data security hardening against reality-slips, and capacity planning for incoming research datasets from field teams.
+Hardening predictive models against reality-slip noise, scaling ingest for rapid field pulls, and stress-testing simulations used to pre-stage containment gear.

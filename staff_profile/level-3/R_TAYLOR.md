@@ -1,19 +1,19 @@
 # Robert Taylor (R_TAYLOR)
 
-- Department: DAPAUE Operations Management
+- Department: Operations Management
 - Security Level: 3
 - Privilege Level: 3
 - Status: ACTIVE
 
 ## Bio
-Oversees field operation delivery cadence for DAPAUE, ensuring paraphysical research standards remain high and security posture stays robust. Taylor balances rapid containment with rigorous documentation and evidence preservation.
+Oversees field operation delivery for DAPAUE, keeping paraphysical research standards high and security posture robust. Taylor balances rapid anomaly response with rigorous documentation and evidence preservation that satisfies oversight committees.
 
 ## Skills
-- Operational roadmap ownership and sequencing
-- Stakeholder communication and briefings
-- Access and clearance governance
-- Incident oversight and escalation protocol
-- Performance metrics and trend analysis
+- Operational roadmap ownership and sequencing across sites
+- Stakeholder communication and briefings at clearance levels
+- Access and clearance governance for field teams
+- Incident oversight and escalation protocol management
+- Performance metrics and trend analysis for leadership
 
 ## Recent Focus
-Maintaining operational readiness and reinforcing containment/documentation standards across Divisions.
+Maintaining field operational readiness while reinforcing containment and documentation standards across active zones.

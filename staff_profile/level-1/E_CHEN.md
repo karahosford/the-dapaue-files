@@ -6,14 +6,14 @@
 - Status: ACTIVE
 
 ## Bio
-Operations engineer for the Bureau of Latent Erasure, managing secure archival of paraphysical research and erasing traces of unmanifested effects from public records. Chen combines technical rigor with deep commitment to operational security and evidence integrity.
+Operations engineer erasing the footprints of unmanifested effects before they become folklore. Chen keeps the Bureau's evidence chains airtight, scrubbing public traces while preserving classified fidelity for the next wave of analysis.
 
 ## Skills
-- Evidence management and secure archival
-- Paraphysical data sanitization protocols
-- Monitoring and anomaly threshold tuning
-- Backup integrity verification and recovery testing
-- Reality-anchor network maintenance and routing
+- Secure archival and evidence integrity under classification
+- Paraphysical residue sanitization and redaction protocols
+- Anomaly threshold tuning and alert hygiene
+- Backup validation and recovery rehearsals
+- Anchor network routing and quiet maintenance windows
 
 ## Recent Focus
-Security protocol updates for classified archives, mass-erasure automation, and incident post-mortems on dimensional bleed containment.
+Automating latent-erasure sweeps after field pulls, hardening archival chains against bleedthrough artifacts, and tuning thresholds to catch pre-manifest drift.
