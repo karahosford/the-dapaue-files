@@ -3,12 +3,12 @@
 ```
 ████████████████████████████████████████████████████████
 █                                                      █
-█  [!] CLASSIFIED ARCHIVE ACCESS POINT                █
-█  [!] UNAUTHORIZED ACCESS IS PROHIBITED              █
+█  [!] CLASSIFIED ARCHIVE ACCESS POINT                 █
+█  [!] UNAUTHORIZED ACCESS IS PROHIBITED               █
 █                                                      █
-█  LOCATION: SECTOR-99 SERVER FARM                    █
-█  STATUS:   ABANDONED [SINCE 2099-04-14]             █
-█  SECURITY: DEGRADED                                 █
+█  LOCATION: SECTOR-99 SERVER FARM                     █
+█  STATUS:   ABANDONED [SINCE 2099-04-14]              █
+█  SECURITY: DEGRADED                                  █
 █                                                      █
 ████████████████████████████████████████████████████████
 ```
