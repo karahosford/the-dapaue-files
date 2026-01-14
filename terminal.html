@@ -1749,6 +1749,56 @@
             50% { transform: translate(-1px, 1px) scale(1.004); }
             100% { transform: translate(1px, -1px) scale(1.002); }
         }
+
+        /* Floating particles */
+        @keyframes float1 {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+        }
+
+        @keyframes float2 {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(-100vh) translateX(-30px); opacity: 0; }
+        }
+
+        @keyframes float3 {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(40px); opacity: 0; }
+        }
+
+        @keyframes float4 {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) translateX(-50px); opacity: 0; }
+        }
+
+        @keyframes float5 {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-100vh) translateX(10px); opacity: 0; }
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            border: 1px solid rgba(0, 255, 100, 0.6);
+            box-shadow: 0 0 3px rgba(0, 255, 100, 0.8);
+        }
+
+        .particle1 { animation: float1 8s infinite; }
+        .particle2 { animation: float2 10s infinite 1s; }
+        .particle3 { animation: float3 12s infinite 2s; }
+        .particle4 { animation: float4 9s infinite 1.5s; }
+        .particle5 { animation: float5 11s infinite 0.5s; }
+
     </style>
 </head>
 <body class="crt crt-glow p-4 md:p-8 flex items-center justify-center">
@@ -1772,10 +1822,19 @@
 
     <!-- INITIAL SYSTEM TRIGGER -->
     <div id="initial-trigger-screen">
+        <!-- Floating particles -->
+        <div class="particle particle1" style="width: 4px; height: 4px; left: 15%; bottom: 10%;"></div>
+        <div class="particle particle2" style="width: 3px; height: 3px; left: 25%; bottom: 20%;"></div>
+        <div class="particle particle3" style="width: 5px; height: 5px; left: 35%; bottom: 15%;"></div>
+        <div class="particle particle4" style="width: 3px; height: 3px; left: 45%; bottom: 25%;"></div>
+        <div class="particle particle5" style="width: 4px; height: 4px; left: 55%; bottom: 18%;"></div>
+        <div class="particle particle1" style="width: 3px; height: 3px; left: 65%; bottom: 22%; animation-duration: 9s;"></div>
+        <div class="particle particle2" style="width: 4px; height: 4px; left: 75%; bottom: 12%; animation-duration: 11s;"></div>
+        <div class="particle particle3" style="width: 3px; height: 3px; left: 85%; bottom: 28%; animation-duration: 13s;"></div>
+        
         <button id="system-trigger-btn" class="btn-initiate blink" onclick="startSystemSequence()">[BREACH_SYSTEM]</button>
         <p class="text-[8px] mt-6 opacity-30 tracking-[1em]">DAPAUE_SYNAPTIC_BOOT_V4.5</p>
         <button onclick="toggleFullscreen()" class="absolute bottom-4 left-4 text-[8px] px-3 py-1 border border-green-500 text-green-500 hover:border-green-400 hover:text-green-400 hover:bg-green-900/20 font-mono transition-colors opacity-60 hover:opacity-100">[FULLSCREEN]</button>
-        <button onclick="openLoadGameMenu()" class="absolute bottom-4 right-24 text-[8px] px-3 py-1 border border-cyan-500 text-cyan-500 hover:border-cyan-400 hover:text-cyan-400 hover:bg-cyan-900/20 font-mono transition-colors opacity-60 hover:opacity-100">[RECOVER RAM]</button>
     </div>
 
     <!-- Intro / Login Overlay -->
@@ -1870,10 +1929,6 @@
             <div class="desktop-icon" onclick="openWindow('briefing-window')">
                 <div class="icon-image">📄</div>
                 <div class="icon-label">BRIEFING</div>
-            </div>
-            <div class="desktop-icon" onclick="openWindow('todo-window')">
-                <div class="icon-image">✓</div>
-                <div class="icon-label">TODO LIST</div>
             </div>
             <div class="desktop-icon" onclick="openWindow('user-access-window')">
                 <div class="icon-image">⌘</div>
@@ -2057,6 +2112,27 @@
                                         <input type="checkbox" id="sound-toggle" onchange="toggleSound()" checked class="opacity-0 w-0 h-0">
                                         <span class="toggle-slider"></span>
                                     </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Developer Options -->
+                        <div class="border-b border-[var(--panel-light)] pb-4">
+                            <div class="text-xs font-bold text-[var(--accent)] mb-3">DEVELOPER</div>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-[10px]">ADMIN MODE</div>
+                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Unlock all content and accounts</div>
+                                    </div>
+                                    <button onclick="unlockAllTestContent()" class="btn-retro px-3 py-1 text-[9px]">[ENABLE]</button>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-[10px]">RESET SYSTEM</div>
+                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Lock all servers and reset content</div>
+                                    </div>
+                                    <button onclick="resetTestContent()" class="btn-retro px-3 py-1 text-[9px]" style="border-color: #ef4444; color: #ef4444;">[RESET]</button>
                                 </div>
                             </div>
                         </div>
@@ -2260,59 +2336,6 @@
                             <div>DAPAUE COMMAND // FORENSIC INVESTIGATION DIVISION</div>
                             <div class="mt-2">--- TRANSMISSION ENDED ---</div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TODO List Window -->
-        <div id="todo-window" class="window" style="width: 650px; height: 500px; left: 30%; top: 15%;">
-            <div class="window-titlebar" onmousedown="startDrag(event, 'todo-window')" ontouchstart="startDrag(event, 'todo-window')">
-                <span class="window-title">DEVELOPMENT_NOTES.TODO // OPTIMIZATION_AGENDA</span>
-                <div class="window-buttons">
-                    <button class="window-btn" onclick="minimizeWindow('todo-window')">_</button>
-                    <button class="window-btn" onclick="toggleWindowFullscreen('todo-window')" title="Fullscreen">□</button>
-                    <button class="window-btn" onclick="closeWindow('todo-window')">✕</button>
-                </div>
-            </div>
-            <div class="window-content">
-                <div class="p-4 space-y-4 font-mono text-xs overflow-y-auto" style="height: calc(100% - 35px);">
-                    <div class="text-red-500 font-bold mb-3">⚠ INTERNAL DEVELOPMENT NOTES ⚠</div>
-                    <div class="text-[var(--text-dim)]">Code optimization suggestions discovered during forensic analysis:</div>
-                    
-                    <div class="border-l-2 border-cyan-500 pl-3 py-2 bg-cyan-900/10">
-                        <div class="flex items-start gap-2">
-                            <span class="text-cyan-400 mt-0.5">☐</span>
-                            <div>
-                                <div class="text-cyan-400 font-bold">Terminal Command History Navigation</div>
-                                <div class="text-[var(--text-dim)] text-[10px] mt-1">Add keyboard navigation (UP/DOWN arrow keys) to cycle through command history in terminal input. Similar to bash shell behavior. Would improve usability for repeated commands.</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="border-l-2 border-green-500 pl-3 py-2 bg-green-900/10">
-                        <div class="flex items-start gap-2">
-                            <span class="text-green-400 mt-0.5">☐</span>
-                            <div>
-                                <div class="text-green-400 font-bold">Consolidate User State Management</div>
-                                <div class="text-[var(--text-dim)] text-[10px] mt-1">Currently tracking activeUser and currentUser separately across the application. Consolidate into single GameState object to reduce bugs and inconsistencies. Would require refactoring all user-switching logic but would improve stability.</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="border-l-2 border-yellow-500 pl-3 py-2 bg-yellow-900/10">
-                        <div class="flex items-start gap-2">
-                            <span class="text-yellow-400 mt-0.5">☐</span>
-                            <div>
-                                <div class="text-yellow-400 font-bold">Email Search Performance Optimization</div>
-                                <div class="text-[var(--text-dim)] text-[10px] mt-1">Add debouncing (300-500ms delay) to email search input to reduce filtering calls on every keystroke. Currently filters entire email list for each character typed, which causes lag with large datasets.</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6 pt-3 border-t border-[var(--panel-light)] text-[var(--text-dim)] text-[9px]">
-                        <div>These optimizations noted for post-investigation refactoring</div>
-                        <div class="mt-2">--- END OF NOTES ---</div>
                     </div>
                 </div>
             </div>
@@ -2843,9 +2866,6 @@
             <div class="taskbar-item active" id="taskbar-briefing" onclick="focusWindow('briefing-window')" style="display: none;">
                 📄 BRIEFING
             </div>
-            <div class="taskbar-item active" id="taskbar-todo" onclick="focusWindow('todo-window')" style="display: none;">
-                ✓ TODO LIST
-            </div>
             <div class="taskbar-item active" id="taskbar-user-access" onclick="focusWindow('user-access-window')" style="display: none;">
                 ⌘ TERMINAL
             </div>
@@ -2884,9 +2904,6 @@
                     <div class="w-2 h-2 bg-[var(--accent)] animate-pulse"></div>
                     <span id="timestamp">2099-04-12 23:41:04</span>
                 </div>
-                <button onclick="openSaveGameMenu()" class="text-[9px] px-2 py-1 border border-green-500 text-green-500 hover:border-green-400 hover:text-green-400 hover:bg-green-900/20 font-mono transition-colors ml-2" title="Save Game">[SAVE]</button>
-                <button onclick="unlockAllTestContent()" class="text-[9px] px-2 py-1 border border-yellow-500 text-yellow-500 hover:border-yellow-400 hover:text-yellow-400 hover:bg-yellow-900/20 font-mono transition-colors ml-2" title="Admin Unlock">[ADMIN]</button>
-                <button onclick="resetTestContent()" class="text-[9px] px-2 py-1 border border-red-500 text-red-500 hover:border-red-400 hover:text-red-400 hover:bg-red-900/20 font-mono transition-colors ml-2" title="Reset All">[RESET]</button>
                 <button onclick="toggleLightMode()" id="theme-toggle" class="flex items-center justify-center w-6 h-6 transition-all cursor-pointer ml-2" title="Toggle theme">
                     <div class="w-3 h-3 rounded-full bg-[var(--text-dim)] transition-colors"></div>
                 </button>
