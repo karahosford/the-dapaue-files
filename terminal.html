@@ -1801,7 +1801,7 @@
 
     </style>
 </head>
-<body class="crt crt-glow p-4 md:p-8 flex items-center justify-center">
+<body class="crt p-4 md:p-8 flex items-center justify-center">
     <div id="retro-monitor-bezel" aria-hidden="true">
         <div class="monitor-frame"></div>
     </div>
@@ -3090,13 +3090,19 @@
                 document.getElementById('notepad-textarea').value = savedNotes;
             }
             
-            // Load CRT glow setting (enabled by default)
-            const crtGlowEnabled = localStorage.getItem('dapaue-crt-glow') !== 'false';
+            // Load CRT glow setting (disabled by default)
+            let crtGlowEnabled = localStorage.getItem('dapaue-crt-glow');
+            if (crtGlowEnabled === null) {
+                localStorage.setItem('dapaue-crt-glow', 'false');
+                crtGlowEnabled = 'false';
+            }
             const crtGlowToggle = document.getElementById('crt-glow-toggle');
             if (crtGlowToggle) {
-                crtGlowToggle.checked = crtGlowEnabled;
-                if (crtGlowEnabled) {
+                crtGlowToggle.checked = (crtGlowEnabled === 'true');
+                if (crtGlowEnabled === 'true') {
                     document.body.classList.add('crt-glow');
+                } else {
+                    document.body.classList.remove('crt-glow');
                 }
             }
             
