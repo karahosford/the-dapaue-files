@@ -1,24 +1,14 @@
-        // WhatsApp notification integration (placeholder)
-        // This function can be called to show a native notification from WhatsApp events
-        function notifyWhatsApp(message) {
-            showSystemNotification('WhatsApp: ' + message, '#25D366');
-        }
-
-        // Example: Listen for postMessage from iframe (future-proof, not active by default)
-        window.addEventListener('message', function(event) {
-            // Only allow messages from WhatsApp Web
-            if (event.origin && event.origin.includes('whatsapp')) {
-                if (event.data && typeof event.data === 'string') {
-                    notifyWhatsApp(event.data);
-                }
-            }
-        });
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape, user-scalable=no">
     <title>NEURAL-LINK ARCHIVE v4.5 // DAPAUE</title>
+    <link rel="stylesheet" href="who-mask.css">
+    <style>#who-mask-overlay { opacity: 0; }</style>
+
+        <!-- Reflection Mask Overlay -->
+        <div id="who-mask-overlay"></div>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap');
@@ -84,7 +74,8 @@
             opacity: 0;
             z-index: 1000;
             pointer-events: none;
-            animation: flicker 0.15s infinite;
+            /* Slowed flicker for performance */
+            animation: flicker 0.5s infinite;
         }
 
         @keyframes flicker {
@@ -97,15 +88,29 @@
             pointer-events: none;
             position: absolute;
             width: 100%; height: 100%;
-            opacity: var(--noise-opacity);
+            /* Lowered noise opacity for performance; set to 0 to disable */
+            opacity: 0.02;
             z-index: 999;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
         /* CRT Glow and Haze Effect */
         body.crt-glow {
-            filter: blur(0.6px) drop-shadow(0 0 8px rgba(255, 255, 255, 0.1)) sepia(0.08) saturate(1.1);
-            animation: crtFlicker 0.2s infinite alternate;
+            /* Reduced blur and drop-shadow for performance */
+            filter: blur(0.2px) drop-shadow(0 0 2px rgba(255, 255, 255, 0.05)) sepia(0.05) saturate(1.05);
+            animation: crtFlicker 0.5s infinite alternate;
+        }
+
+        /* Subtle yellow tinge for aged monitor effect */
+        body.crt-glow::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none;
+            z-index: 9999;
+            background: rgba(255, 235, 120, 0.07); /* very subtle yellow */
+            mix-blend-mode: lighten;
+        }
         }
 
         @keyframes crtFlicker {
@@ -1999,7 +2004,6 @@
                 <div class="icon-image">📧</div>
                 <div class="icon-label">SYSTEM-V</div>
             </div>
-        <!-- WhatsApp window moved below, outside of #desktop-icons -->
             <div class="desktop-icon" onclick="openEmailVault()">
                 <div class="icon-image">📬</div>
                 <div class="icon-label">Email</div>
@@ -2043,7 +2047,7 @@
         </div>
         </div>
 
-        <!-- WHATSAPP Web Window (now correctly outside #desktop-icons) -->
+        <!-- WhatsApp app fully removed -->
         
         <!-- USER_SELECT Window -->
         <div id="user-select-window" class="window" style="width: 600px; height: 500px; left: 25%; top: 15%; display: none; border: 2px solid #eab308;">
@@ -2940,48 +2944,19 @@
 
         <!-- Taskbar -->
         <div id="taskbar">
-            <div class="taskbar-item active" id="taskbar-briefing" onclick="focusWindow('briefing-window')" style="display: none;">
-                📄 BRIEFING
-            </div>
-            <div class="taskbar-item active" id="taskbar-user-access" onclick="focusWindow('user-access-window')" style="display: none;">
-                ⌘ TERMINAL
-            </div>
-            <div class="taskbar-item active" id="taskbar-notepad" onclick="focusWindow('notepad-window')" style="display: none;">
-                📝 NOTEPAD
-            </div>
-            <div class="taskbar-item active" id="taskbar-sysmon" onclick="focusWindow('sysmon-window')" style="display: none;">
-                📊 SYSMON
-            </div>
-            <div class="taskbar-item active" id="taskbar-server-monitor" onclick="focusWindow('server-monitor-window')" style="display: none;">
-                🖥️ SERVERS
-            </div>
-            <div class="taskbar-item active" id="taskbar-forensics" onclick="focusWindow('forensics-window')" style="display: none;">
-                🔍 FORENSICS
-            </div>
-            <div class="taskbar-item active" id="taskbar-tag-wrangle" onclick="focusWindow('tag-wrangle-window')" style="display: none;">
-                🕸 TAG WRANGLE
-            </div>
-            <div class="taskbar-item active" id="taskbar-whatsapp" onclick="focusWindow('whatsapp-window')" style="display: none;">
-            </div>
-            <div class="taskbar-item active" id="taskbar-user-select" onclick="focusWindow('user-select-window')" style="display: none;">
-                            <div class="taskbar-item active" id="taskbar-browser" onclick="focusWindow('browser-window')" style="display: none;">
-                                🌐 WEB BROWSER
-                            </div>
-                👤 USER_SELECT
-            </div>
-
-            <div class="taskbar-item active" id="taskbar-settings" onclick="focusWindow('settings-window')" style="display: none;">
-                ⚙️ SETTINGS
-            </div>
-            <div class="taskbar-item active" id="taskbar-archive" onclick="focusWindow('archive-window')" style="display: none;">
-                📧 <span id="taskbar-archive-label">ARCHIVE_99</span>
-            </div>
-            <div class="taskbar-item active" id="taskbar-email-vault" onclick="focusWindow('email-vault-window')" style="display: none;">
-                📬 Email
-            </div>
-            <div class="taskbar-item active" id="taskbar-file-vault" onclick="focusWindow('file-vault-window')" style="display: none;">
-                📁 FILES
-            </div>
+            <div class="taskbar-item active" id="taskbar-briefing" onclick="focusWindow('briefing-window')" style="display: none;">📄 BRIEFING</div>
+            <div class="taskbar-item active" id="taskbar-user-access" onclick="focusWindow('user-access-window')" style="display: none;">⌘ TERMINAL</div>
+            <div class="taskbar-item active" id="taskbar-notepad" onclick="focusWindow('notepad-window')" style="display: none;">📝 NOTEPAD</div>
+            <div class="taskbar-item active" id="taskbar-sysmon" onclick="focusWindow('sysmon-window')" style="display: none;">📊 SYSMON</div>
+            <div class="taskbar-item active" id="taskbar-server-monitor" onclick="focusWindow('server-monitor-window')" style="display: none;">🖥️ SERVERS</div>
+            <div class="taskbar-item active" id="taskbar-forensics" onclick="focusWindow('forensics-window')" style="display: none;">🔍 FORENSICS</div>
+            <div class="taskbar-item active" id="taskbar-tag-wrangle" onclick="focusWindow('tag-wrangle-window')" style="display: none;">🕸 TAG WRANGLE</div>
+            <div class="taskbar-item active" id="taskbar-user-select" onclick="focusWindow('user-select-window')" style="display: none;">👤 USER_SELECT</div>
+            <div class="taskbar-item active" id="taskbar-browser" onclick="focusWindow('browser-window')" style="display: none;">🌐 WEB BROWSER</div>
+            <div class="taskbar-item active" id="taskbar-settings" onclick="focusWindow('settings-window')" style="display: none;">⚙️ SETTINGS</div>
+            <div class="taskbar-item active" id="taskbar-archive" onclick="focusWindow('archive-window')" style="display: none;">📧 <span id="taskbar-archive-label">ARCHIVE_99</span></div>
+            <div class="taskbar-item active" id="taskbar-email-vault" onclick="focusWindow('email-vault-window')" style="display: none;">📬 Email</div>
+            <div class="taskbar-item active" id="taskbar-file-vault" onclick="focusWindow('file-vault-window')" style="display: none;">📁 FILES</div>
             <div id="system-info">
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 bg-[var(--accent)] animate-pulse"></div>
@@ -3003,6 +2978,77 @@
     <script src="assets/data/data-loader.js"></script>
     
     <script>
+
+                    // Inactivity Reflection Mask Logic
+                    (function() {
+                        const overlay = document.getElementById('who-mask-overlay');
+                        let inactivityTimer = null;
+                        let fadeTimer = null;
+                        let fadeStart = null;
+                        let fadeOutTimer = null;
+                        let fadingIn = false;
+                        let fadingOut = false;
+                        const INACTIVITY_DELAY = 40000; // 40s
+                        const FADE_IN_DURATION = 60000; // 1min
+                        const MAX_OPACITY = 1.0;
+                        const FADE_OUT_DURATION = 2000; // 2s
+
+                        function resetInactivity() {
+                            if (fadeTimer) cancelAnimationFrame(fadeTimer);
+                            if (fadingIn) {
+                                fadingIn = false;
+                            }
+                            if (overlay.style.opacity && parseFloat(overlay.style.opacity) > 0) {
+                                // Fade out quickly
+                                if (!fadingOut) {
+                                    fadingOut = true;
+                                    const startOpacity = parseFloat(overlay.style.opacity) || 0;
+                                    const start = performance.now();
+                                    function fadeOutStep(now) {
+                                        const elapsed = now - start;
+                                        let newOpacity = Math.max(0, startOpacity * (1 - elapsed / FADE_OUT_DURATION));
+                                        overlay.style.opacity = newOpacity;
+                                        if (elapsed < FADE_OUT_DURATION) {
+                                            fadeOutTimer = requestAnimationFrame(fadeOutStep);
+                                        } else {
+                                            overlay.style.opacity = 0;
+                                            fadingOut = false;
+                                        }
+                                    }
+                                    fadeOutStep(start);
+                                }
+                            } else {
+                                overlay.style.opacity = 0;
+                            }
+                            if (inactivityTimer) clearTimeout(inactivityTimer);
+                            inactivityTimer = setTimeout(startFadeIn, INACTIVITY_DELAY);
+                        }
+
+                        function startFadeIn() {
+                            fadeStart = performance.now();
+                            fadingIn = true;
+                            function fadeStep(now) {
+                                if (!fadingIn) return;
+                                const elapsed = now - fadeStart;
+                                let newOpacity = Math.min(MAX_OPACITY, (elapsed / FADE_IN_DURATION) * MAX_OPACITY);
+                                overlay.style.opacity = newOpacity;
+                                if (elapsed < FADE_IN_DURATION && newOpacity < MAX_OPACITY) {
+                                    fadeTimer = requestAnimationFrame(fadeStep);
+                                } else {
+                                    overlay.style.opacity = MAX_OPACITY;
+                                    fadingIn = false;
+                                }
+                            }
+                            fadeStep(fadeStart);
+                        }
+
+                        // Listen for user activity
+                        ['mousemove','mousedown','keydown','touchstart'].forEach(evt => {
+                            window.addEventListener(evt, resetInactivity, true);
+                        });
+                        // Start inactivity timer on load
+                        resetInactivity();
+                    })();
                 // ASCII logo used across boot and sysmon displays
                 const LOGO_ASCII = `
                        .:...............                       
@@ -10357,6 +10403,138 @@ Good luck, Investigator.
         }
         
         function processTerminalCommand(command) {
+                                                // Easter egg: FAST ALS pizza rain
+                                                if (command === 'fast als') {
+                                                    const output = document.getElementById('terminal-output');
+                                                    output.innerHTML = '';
+                                                    // Create pizza rain container
+                                                    let pizzaContainer = document.getElementById('pizza-rain-container');
+                                                    if (!pizzaContainer) {
+                                                        pizzaContainer = document.createElement('div');
+                                                        pizzaContainer.id = 'pizza-rain-container';
+                                                        pizzaContainer.style.position = 'absolute';
+                                                        pizzaContainer.style.top = 0;
+                                                        pizzaContainer.style.left = 0;
+                                                        pizzaContainer.style.width = '100%';
+                                                        pizzaContainer.style.height = '100%';
+                                                        pizzaContainer.style.pointerEvents = 'none';
+                                                        pizzaContainer.style.zIndex = 10;
+                                                        output.appendChild(pizzaContainer);
+                                                    }
+                                                    const width = output.offsetWidth;
+                                                    const height = output.offsetHeight;
+                                                    const pizzaCount = Math.floor(width / 40);
+                                                    let pizzas = [];
+                                                    for (let i = 0; i < pizzaCount; i++) {
+                                                        const pizza = document.createElement('div');
+                                                        pizza.textContent = '🍕';
+                                                        pizza.style.position = 'absolute';
+                                                        pizza.style.left = (i * (width / pizzaCount)) + 'px';
+                                                        pizza.style.top = (-40 - Math.random() * 100) + 'px';
+                                                        pizza.style.fontSize = '2em';
+                                                        pizza.style.opacity = 0.9;
+                                                        pizzaContainer.appendChild(pizza);
+                                                        pizzas.push({el: pizza, speed: 2 + Math.random() * 2});
+                                                    }
+                                                    let running = true;
+                                                    function animatePizzas() {
+                                                        for (let p of pizzas) {
+                                                            let top = parseFloat(p.el.style.top);
+                                                            top += p.speed;
+                                                            if (top > height) {
+                                                                top = -40 - Math.random() * 100;
+                                                            }
+                                                            p.el.style.top = top + 'px';
+                                                        }
+                                                        if (running) requestAnimationFrame(animatePizzas);
+                                                    }
+                                                    animatePizzas();
+                                                    setTimeout(() => {
+                                                        running = false;
+                                                        if (pizzaContainer && pizzaContainer.parentNode) pizzaContainer.parentNode.removeChild(pizzaContainer);
+                                                    }, 10000);
+                                                    return { className: 'text-[var(--accent)]', message: '🤖🍕 AI PIZZA PARTY! 🍕🤖' };
+                                                }
+                                    // Easter egg: WHO reflection mask
+                                    if (command === 'who') {
+                                        if (window.triggerWhoMaskOverlay) {
+                                            window.triggerWhoMaskOverlay();
+                                        }
+                                        return { className: 'text-[var(--accent)]', message: '...' };
+                                    }
+
+                            // Allow manual trigger of who-mask overlay from terminal
+                            window.triggerWhoMaskOverlay = function() {
+                                const overlay = document.getElementById('who-mask-overlay');
+                                let fadeTimer = null;
+                                let fadeStart = null;
+                                let fadingIn = true;
+                                const FADE_IN_DURATION = 60000; // 1min
+                                const MAX_OPACITY = 1.0;
+                                function fadeStep(now) {
+                                    if (!fadingIn) return;
+                                    if (!fadeStart) fadeStart = now;
+                                    const elapsed = now - fadeStart;
+                                    let newOpacity = Math.min(MAX_OPACITY, (elapsed / FADE_IN_DURATION) * MAX_OPACITY);
+                                    overlay.style.opacity = newOpacity;
+                                    if (elapsed < FADE_IN_DURATION && newOpacity < MAX_OPACITY) {
+                                        fadeTimer = requestAnimationFrame(fadeStep);
+                                    } else {
+                                        overlay.style.opacity = MAX_OPACITY;
+                                        fadingIn = false;
+                                    }
+                                }
+                                fadeStep(performance.now());
+                            }
+                        // Easter egg: PRIDE Matrix Rain
+                        if (command === 'pride') {
+                            const output = document.getElementById('terminal-output');
+                            output.innerHTML = '';
+                            // Create canvas overlay
+                            let prideCanvas = document.getElementById('pride-matrix-canvas');
+                            if (!prideCanvas) {
+                                prideCanvas = document.createElement('canvas');
+                                prideCanvas.id = 'pride-matrix-canvas';
+                                prideCanvas.style.position = 'absolute';
+                                prideCanvas.style.top = 0;
+                                prideCanvas.style.left = 0;
+                                prideCanvas.style.width = '100%';
+                                prideCanvas.style.height = '100%';
+                                prideCanvas.style.pointerEvents = 'none';
+                                prideCanvas.style.zIndex = 10;
+                                output.appendChild(prideCanvas);
+                            }
+                            prideCanvas.width = output.offsetWidth;
+                            prideCanvas.height = output.offsetHeight;
+                            // Rainbow colors
+                            const colors = ['#e40303','#ff8c00','#ffed00','#008026','#004dff','#750787'];
+                            const words = ['LOVE', 'PRIDE', 'RESPECT', 'COMMUNITY'];
+                            const ctx = prideCanvas.getContext('2d');
+                            const fontSize = 18;
+                            const columns = Math.floor(prideCanvas.width / fontSize);
+                            const drops = Array(columns).fill(1);
+                            function draw() {
+                                ctx.fillStyle = 'rgba(10,10,10,0.15)';
+                                ctx.fillRect(0, 0, prideCanvas.width, prideCanvas.height);
+                                for (let i = 0; i < drops.length; i++) {
+                                    const word = words[Math.floor(Math.random() * words.length)];
+                                    ctx.font = fontSize + 'px monospace';
+                                    ctx.fillStyle = colors[i % colors.length];
+                                    ctx.fillText(word, i * fontSize, drops[i] * fontSize);
+                                    if (Math.random() > 0.975) {
+                                        drops[i] = 0;
+                                    }
+                                    drops[i]++;
+                                }
+                            }
+                            let prideAnim = setInterval(draw, 50);
+                            // Stop after 10 seconds and remove canvas
+                            setTimeout(() => {
+                                clearInterval(prideAnim);
+                                if (prideCanvas && prideCanvas.parentNode) prideCanvas.parentNode.removeChild(prideCanvas);
+                            }, 10000);
+                            return { className: 'text-[var(--accent)]', message: '🌈 PRIDE MODE ACTIVATED! 🌈' };
+                        }
             const parts = command.split(' ');
             const cmd = parts[0];
             const args = parts.slice(1).join(' ');
