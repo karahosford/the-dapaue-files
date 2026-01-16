@@ -1,3 +1,18 @@
+        // WhatsApp notification integration (placeholder)
+        // This function can be called to show a native notification from WhatsApp events
+        function notifyWhatsApp(message) {
+            showSystemNotification('WhatsApp: ' + message, '#25D366');
+        }
+
+        // Example: Listen for postMessage from iframe (future-proof, not active by default)
+        window.addEventListener('message', function(event) {
+            // Only allow messages from WhatsApp Web
+            if (event.origin && event.origin.includes('whatsapp')) {
+                if (event.data && typeof event.data === 'string') {
+                    notifyWhatsApp(event.data);
+                }
+            }
+        });
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -577,6 +592,28 @@
             min-height: 200px;
             max-width: 90vw;
             max-height: 90vh;
+            /* Make room for resize handle */
+        }
+
+        .window-resize-handle {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            width: 18px;
+            height: 18px;
+            cursor: nwse-resize;
+            z-index: 10;
+            background: linear-gradient(135deg, transparent 60%, var(--panel-light) 100%);
+            border-bottom-right-radius: 4px;
+            border-left: 1px solid var(--panel-light);
+            border-top: 1px solid var(--panel-light);
+            box-sizing: border-box;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .window-resize-handle:hover {
+            opacity: 1;
+            background: linear-gradient(135deg, transparent 40%, var(--accent) 100%);
         }
 
         .window.active {
@@ -1926,6 +1963,10 @@
         
         <!-- Desktop Icons -->
         <div id="desktop-icons">
+            <div class="desktop-icon" onclick="openWindow('browser-window')">
+                <div class="icon-image">🌐</div>
+                <div class="icon-label">WEB BROWSER</div>
+            </div>
             <div class="desktop-icon" onclick="openWindow('briefing-window')">
                 <div class="icon-image">📄</div>
                 <div class="icon-label">BRIEFING</div>
@@ -1958,6 +1999,7 @@
                 <div class="icon-image">📧</div>
                 <div class="icon-label">SYSTEM-V</div>
             </div>
+        <!-- WhatsApp window moved below, outside of #desktop-icons -->
             <div class="desktop-icon" onclick="openEmailVault()">
                 <div class="icon-image">📬</div>
                 <div class="icon-label">Email</div>
@@ -1979,9 +2021,33 @@
                 <div class="icon-label">INSTABILITY_SIM</div>
             </div>
         </div>
+
+        <!-- WEB BROWSER Window (now correctly outside #desktop-icons) -->
+        <div id="browser-window" class="window" style="width: 900px; height: 700px; left: 12%; top: 12%; display: none;">
+            <div class="window-resize-handle"></div>
+            <div class="window-titlebar" onmousedown="startDrag(event, 'browser-window')" ontouchstart="startDrag(event, 'browser-window')">
+                <span class="window-title">WEB BROWSER</span>
+                <div class="window-controls">
+                    <div class="window-btn" onclick="minimizeWindow('browser-window')">_</div>
+                    <div class="window-btn" onclick="toggleWindowFullscreen('browser-window')" title="Fullscreen">□</div>
+                    <div class="window-btn" onclick="closeWindow('browser-window')">X</div>
+                </div>
+            </div>
+            <div class="window-content" style="height: calc(100% - 36px); padding: 0; background: #222; display: flex; flex-direction: column;">
+                <form id="browser-address-form" onsubmit="event.preventDefault(); document.getElementById('browser-iframe').src = document.getElementById('browser-address').value;">
+                    <input id="browser-address" type="text" value="dapaue.gov" style="width: 80%; padding: 6px; font-size: 13px; background: #111; color: #fff; border: 1px solid #444; border-radius: 3px; margin: 8px;" />
+                    <button type="submit" style="padding: 6px 12px; font-size: 13px; background: #25a; color: #fff; border: none; border-radius: 3px;">Go</button>
+                </form>
+                <iframe id="browser-iframe" src="dapaue-fake-website.html" style="flex: 1; width: 100%; border: none; background: #fff;"></iframe>
+            </div>
+        </div>
+        </div>
+
+        <!-- WHATSAPP Web Window (now correctly outside #desktop-icons) -->
         
         <!-- USER_SELECT Window -->
         <div id="user-select-window" class="window" style="width: 600px; height: 500px; left: 25%; top: 15%; display: none; border: 2px solid #eab308;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" style="background: #eab308; border-bottom: 2px solid #eab308;" onmousedown="startDrag(event, 'user-select-window')" ontouchstart="startDrag(event, 'user-select-window')">
                 <span class="window-title" style="color: #1a1a1a;">USER_SELECT // ADMIN_TOOLS</span>
                 <div class="window-controls">
@@ -2032,6 +2098,7 @@
         
         <!-- SETTINGS Window -->
         <div id="settings-window" class="window" style="width: 500px; height: 450px; left: 30%; top: 20%;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'settings-window')" ontouchstart="startDrag(event, 'settings-window')">
                 <span class="window-title">SYSTEM_SETTINGS // CONFIGURATION</span>
                 <div class="window-controls">
@@ -2148,6 +2215,7 @@
 
         <!-- SERVER MONITOR Window -->
         <div id="server-monitor-window" class="window" style="width: 800px; height: 520px; left: 20%; top: 12%;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'server-monitor-window')" ontouchstart="startDrag(event, 'server-monitor-window')">
                 <span class="window-title">SERVER_MONITOR // REMOTE_NODES</span>
                 <div class="window-controls">
@@ -2217,6 +2285,7 @@
 
         <!-- User Access Terminal Window -->
         <div id="user-access-window" class="window" style="width: 60%; height: 70%; left: 20%; top: 15%;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'user-access-window')" ontouchstart="startDrag(event, 'user-access-window')">
                 <span class="window-title">SECURITY_OVERRIDE // USER_ACCESS_SYSTEM</span>
                 <div class="window-controls">
@@ -2243,6 +2312,7 @@
 
         <!-- Briefing Document Window -->
         <div id="briefing-window" class="window" style="width: 650px; height: 550px; left: 20%; top: 15%;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'briefing-window')" ontouchstart="startDrag(event, 'briefing-window')">
                 <span class="window-title">MISSION_BRIEFING.DOC // CLASSIFIED</span>
                 <div class="window-controls">
@@ -2343,6 +2413,7 @@
 
         <!-- Notepad Window -->
         <div id="notepad-window" class="window" style="width: 500px; height: 400px; left: 25%; top: 20%;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'notepad-window')" ontouchstart="startDrag(event, 'notepad-window')">
                 <span class="window-title">NOTEPAD.TXT // PERSONAL_NOTES</span>
                 <div class="window-controls">
@@ -2358,6 +2429,7 @@
 
         <!-- SYSMON Dashboard Window -->
         <div id="sysmon-window" class="window" style="width: 700px; height: 600px; left: 15%; top: 10%;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'sysmon-window')" ontouchstart="startDrag(event, 'sysmon-window')">
                 <span class="window-title">SYSTEM_MONITOR // DAPAUE_OS_V4.5</span>
                 <div class="window-controls">
@@ -2448,6 +2520,7 @@
 
         <!-- FORENSICS Investigation Board Window -->
         <div id="forensics-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 7.5%;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'forensics-window')" ontouchstart="startDrag(event, 'forensics-window')">
                 <span class="window-title">FORENSICS // INVESTIGATION_BOARD</span>
                 <div class="window-controls">
@@ -2530,6 +2603,7 @@
 
         <!-- TAG WRANGLE Window -->
         <div id="tag-wrangle-window" class="window" style="width: 85%; height: 80%; left: 7.5%; top: 10%;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'tag-wrangle-window')" ontouchstart="startDrag(event, 'tag-wrangle-window')">
                 <span class="window-title">TAG WRANGLE // CONNECTION_MAPPER</span>
                 <div class="window-controls">
@@ -2566,6 +2640,7 @@
 
         <!-- Archive Email Window -->
         <div id="archive-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 5%;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'archive-window')" ontouchstart="startDrag(event, 'archive-window')">
                 <span class="window-title" id="archive-window-title">NEURAL-LINK ARCHIVE v4.5 // DAPAUE</span>
                 <div class="window-controls">
@@ -2701,6 +2776,7 @@
 
         <!-- EMAIL-VAULT Window (Emails Only) -->
         <div id="email-vault-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 5%; display: none;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'email-vault-window')" ontouchstart="startDrag(event, 'email-vault-window')">
                 <span class="window-title" id="email-vault-title">Email // DAPAUE</span>
                 <div class="window-controls">
@@ -2782,6 +2858,7 @@
 
         <!-- FILES Window (File Explorer Only) -->
         <div id="file-vault-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 5%; display: none;">
+            <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'file-vault-window')" ontouchstart="startDrag(event, 'file-vault-window')">
                 <span class="window-title" id="file-vault-title">FILES // DAPAUE</span>
                 <div class="window-controls">
@@ -2884,9 +2961,15 @@
             <div class="taskbar-item active" id="taskbar-tag-wrangle" onclick="focusWindow('tag-wrangle-window')" style="display: none;">
                 🕸 TAG WRANGLE
             </div>
+            <div class="taskbar-item active" id="taskbar-whatsapp" onclick="focusWindow('whatsapp-window')" style="display: none;">
+            </div>
             <div class="taskbar-item active" id="taskbar-user-select" onclick="focusWindow('user-select-window')" style="display: none;">
+                            <div class="taskbar-item active" id="taskbar-browser" onclick="focusWindow('browser-window')" style="display: none;">
+                                🌐 WEB BROWSER
+                            </div>
                 👤 USER_SELECT
             </div>
+
             <div class="taskbar-item active" id="taskbar-settings" onclick="focusWindow('settings-window')" style="display: none;">
                 ⚙️ SETTINGS
             </div>
@@ -7142,7 +7225,7 @@
 
             document.getElementById('login-fields').classList.add('hidden');
             document.getElementById('login-sync').classList.remove('hidden');
-            
+
             const progress = document.getElementById('sync-progress');
             for(let i=0; i<=100; i+=Math.random()*15) {
                 progress.style.width = i + '%';
@@ -7150,6 +7233,18 @@
             }
             progress.style.width = '100%';
             await new Promise(r => setTimeout(r, 300));
+
+            // --- FIX: Clear login fields and hide login form before showing desktop ---
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.classList.add('hidden');
+                loginForm.style.display = 'none';
+                // Clear input values to prevent placeholder flash
+                const opid = document.getElementById('input-opid');
+                const auth = document.getElementById('input-auth');
+                if (opid) opid.value = '';
+                if (auth) auth.value = '';
+            }
 
             const flashEl = document.getElementById('login-flash');
             if (flashEl) {
@@ -7223,6 +7318,42 @@
         let draggedWindow = null;
         let dragOffsetX = 0;
         let dragOffsetY = 0;
+        let resizingWindow = null;
+        let resizeStartX = 0;
+        let resizeStartY = 0;
+        let resizeStartWidth = 0;
+        let resizeStartHeight = 0;
+                // --- Window Resize Logic ---
+                document.addEventListener('mousedown', function(e) {
+                    if (e.target.classList.contains('window-resize-handle')) {
+                        resizingWindow = e.target.parentElement;
+                        resizeStartX = e.clientX;
+                        resizeStartY = e.clientY;
+                        const rect = resizingWindow.getBoundingClientRect();
+                        resizeStartWidth = rect.width;
+                        resizeStartHeight = rect.height;
+                        document.body.style.userSelect = 'none';
+                    }
+                });
+                document.addEventListener('mousemove', function(e) {
+                    if (resizingWindow) {
+                        let dx = e.clientX - resizeStartX;
+                        let dy = e.clientY - resizeStartY;
+                        let newWidth = Math.max(300, resizeStartWidth + dx);
+                        let newHeight = Math.max(200, resizeStartHeight + dy);
+                        // Clamp to viewport
+                        newWidth = Math.min(newWidth, window.innerWidth - resizingWindow.offsetLeft - 20);
+                        newHeight = Math.min(newHeight, window.innerHeight - resizingWindow.offsetTop - 60);
+                        resizingWindow.style.width = newWidth + 'px';
+                        resizingWindow.style.height = newHeight + 'px';
+                    }
+                });
+                document.addEventListener('mouseup', function(e) {
+                    if (resizingWindow) {
+                        resizingWindow = null;
+                        document.body.style.userSelect = '';
+                    }
+                });
         
         function openWindow(windowId) {
             playClickSound();
