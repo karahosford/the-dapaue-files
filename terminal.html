@@ -102,15 +102,7 @@
         }
 
         /* Subtle yellow tinge for aged monitor effect */
-        body.crt-glow::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none;
-            z-index: 9999;
-            background: rgba(255, 235, 120, 0.07); /* very subtle yellow */
-            mix-blend-mode: lighten;
-        }
+        /* Removed yellow tinge for CRT effect */
         }
 
         @keyframes crtFlicker {
@@ -529,7 +521,7 @@
             align-content: flex-start;
             gap: 15px;
             z-index: 10;
-            height: calc(5 * 106px + 4 * 15px);
+            height: calc(5 * 90px + 4 * 15px);
             overflow: auto;
             padding-right: 10px;
         }
@@ -1960,7 +1952,7 @@
     </div>
     
     <!-- DESKTOP ENVIRONMENT -->
-    <div id="desktop" class="hidden">
+    <div id="desktop">
         <!-- Desktop Background Logo -->
         <div id="desktop-logo" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.08; pointer-events: none; z-index: 0; transition: all 0.05s ease;">
             <img src="assets/images/logo.svg" alt="DAPAUE" style="width: 400px; height: 400px;">
@@ -10488,6 +10480,13 @@ Good luck, Investigator.
                                     const elapsed = now - fadeStart;
                                     let newOpacity = Math.min(MAX_OPACITY, (elapsed / FADE_IN_DURATION) * MAX_OPACITY);
                                     overlay.style.opacity = newOpacity;
+                                    // Start and intensify desktop shake
+                                    const desktop = document.getElementById('desktop');
+                                    if (desktop) {
+                                        desktop.classList.add('desktop-shake');
+                                        // Shake intensity grows with opacity
+                                        desktop.style.animationDuration = (0.18 - 0.12 * newOpacity) + 's';
+                                    }
                                     if (elapsed < FADE_IN_DURATION && newOpacity < MAX_OPACITY) {
                                         fadeTimer = requestAnimationFrame(fadeStep);
                                     } else {
@@ -10545,6 +10544,12 @@ Good luck, Investigator.
                                         }
                                     }
                                     audioFadeTimer = requestAnimationFrame(step);
+                                    // Stop desktop shake
+                                    const desktop = document.getElementById('desktop');
+                                    if (desktop) {
+                                        desktop.classList.remove('desktop-shake');
+                                        desktop.style.animationDuration = '';
+                                    }
                                     window.removeEventListener('mousemove', handleMouseMove);
                                 }
                                 window.addEventListener('mousemove', handleMouseMove);
