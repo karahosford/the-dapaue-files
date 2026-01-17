@@ -6,9 +6,10 @@
     <title>NEURAL-LINK ARCHIVE v4.5 // DAPAUE</title>
     <link rel="stylesheet" href="who-mask.css">
     <style>#who-mask-overlay { opacity: 0; }</style>
-
-        <!-- Reflection Mask Overlay -->
-        <div id="who-mask-overlay"></div>
+    <!-- Reflection Mask Overlay -->
+    <div id="who-mask-overlay"></div>
+    <!-- Breathing Audio -->
+    <audio id="breathing-audio" src="assets/audio/breathing.mp3" loop preload="auto" style="display:none"></audio>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap');
@@ -24,7 +25,6 @@
             --noise-opacity: 0.05;
             --blur-strength: 8px;
             --fisheye-intensity: 0.5;
-        }
 
         body.light-mode {
             --bg-dark: #e8e8e8;
@@ -3295,7 +3295,9 @@
         };
 
         function startSystemSequence() {
+            // ...existing code...
             console.log('startSystemSequence called');
+                window.startSystemSequence = startSystemSequence;
             const triggerScreen = document.getElementById('initial-trigger-screen');
             const overlay = document.getElementById('intro-overlay');
             
@@ -10465,12 +10467,21 @@ Good luck, Investigator.
 
                             // Allow manual trigger of who-mask overlay from terminal
                             window.triggerWhoMaskOverlay = function() {
+                                // Only allow on desktop
+                                const desktop = document.getElementById('desktop');
+                                if (!desktop || desktop.classList.contains('hidden')) return;
                                 const overlay = document.getElementById('who-mask-overlay');
+                                const audio = document.getElementById('breathing-audio');
                                 let fadeTimer = null;
                                 let fadeStart = null;
                                 let fadingIn = true;
+                                let audioFadeTimer = null;
                                 const FADE_IN_DURATION = 60000; // 1min
+                                const AUDIO_FADE_IN = 600; // 0.6s for audio fade in (immediate)
+                                const AUDIO_FADE_OUT = 600; // 0.6s for audio fade out
                                 const MAX_OPACITY = 1.0;
+                                // Start overlay immediately
+                                overlay.style.opacity = 0.01;
                                 function fadeStep(now) {
                                     if (!fadingIn) return;
                                     if (!fadeStart) fadeStart = now;
@@ -10484,7 +10495,59 @@ Good luck, Investigator.
                                         fadingIn = false;
                                     }
                                 }
+                                // Audio fade in (immediate)
+                                function fadeAudioIn() {
+                                    if (!window.soundEnabled) return;
+                                    audio.volume = 1;
+                                    // Try to resume context for autoplay policy
+                                    if (window.audioContext && window.audioContext.state === 'suspended') {
+                                        window.audioContext.resume();
+                                    }
+                                    // Play with user gesture workaround
+                                    let played = false;
+                                    function tryPlay() {
+                                        audio.play().then(() => {
+                                            played = true;
+                                        }).catch((e) => {
+                                            // Fallback: show notification if blocked
+                                            if (!played) {
+                                                if (typeof showSystemNotification === 'function') {
+                                                    showSystemNotification('Breathing audio playback blocked by browser. Click anywhere to enable audio.', '#ff6b6b');
+                                                }
+                                                document.body.addEventListener('click', () => {
+                                                    audio.volume = 1;
+                                                    audio.play();
+                                                }, { once: true });
+                                            }
+                                        });
+                                    }
+                                    tryPlay();
+                                }
                                 fadeStep(performance.now());
+                                fadeAudioIn();
+                                // Mouse move listener for fade out
+                                function handleMouseMove() {
+                                    overlay.style.transition = 'opacity 0.6s';
+                                    overlay.style.opacity = 0;
+                                    fadingIn = false;
+                                    // Fade out audio
+                                    let start = null;
+                                    function step(now) {
+                                        if (!start) start = now;
+                                        const elapsed = now - start;
+                                        let newVol = Math.max(0, 1 - (elapsed / AUDIO_FADE_OUT));
+                                        audio.volume = newVol;
+                                        if (elapsed < AUDIO_FADE_OUT && newVol > 0) {
+                                            audioFadeTimer = requestAnimationFrame(step);
+                                        } else {
+                                            audio.volume = 0;
+                                            audio.pause();
+                                        }
+                                    }
+                                    audioFadeTimer = requestAnimationFrame(step);
+                                    window.removeEventListener('mousemove', handleMouseMove);
+                                }
+                                window.addEventListener('mousemove', handleMouseMove);
                             }
                         // Easter egg: PRIDE Matrix Rain
                         if (command === 'pride') {
@@ -11046,9 +11109,29 @@ Good luck, Investigator.
                         }, 300);
                     }, 100);
                     
+
                     document.getElementById('terminal-output').appendChild(catContainer);
                     return { message: '' };
-                    
+
+                case 'xfiles':
+                    // Display xfiles.txt ASCII art directly in the terminal
+                    fetch('assets/txts/xfiles.txt')
+                        .then(response => response.text())
+                        .then(art => {
+                            const pre = document.createElement('pre');
+                            pre.className = 'terminal-ascii';
+                            pre.style.color = '#0f0';
+                            pre.style.background = '#111';
+                            pre.style.fontFamily = 'monospace';
+                            pre.style.fontSize = '1em';
+                            pre.style.lineHeight = '1.1';
+                            pre.style.padding = '1em';
+                            pre.textContent = art;
+                            document.getElementById('terminal-output').appendChild(pre);
+                            document.getElementById('terminal-output').scrollTop = document.getElementById('terminal-output').scrollHeight;
+                        });
+                    return { message: '' };
+
                 case 'zoom':
                     const zoomArg = args.trim();
                     if (zoomArg === '+') {
@@ -11076,7 +11159,7 @@ Good luck, Investigator.
                         className: 'terminal-success',
                         message: `Zoom level: ${zoomLevel}%`
                     };
-                    
+
                 default:
                     return {
                         className: 'terminal-error',
