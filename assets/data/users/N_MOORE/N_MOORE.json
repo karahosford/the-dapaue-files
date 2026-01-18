@@ -1,0 +1,10 @@
+{
+    "username":  "N_MOORE",
+    "name":  "Nancy Moore",
+    "department":  "Supervisory/Management",
+    "securityLevel":  3,
+    "privilege_level":  3,
+    "accessCode":  "server3pass",
+    "status":  "ACTIVE",
+    "emails":  []
+}

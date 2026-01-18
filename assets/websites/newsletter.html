@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DAPAUE Newsletter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="who-mask.css">
+  <style>
+    body { background: #181818; color: #e0e0e0; font-family: 'Fira Code', monospace; margin: 0; padding: 0; }
+    .container { max-width: 700px; margin: 40px auto; background: #232323; border-radius: 8px; box-shadow: 0 2px 16px #0008; padding: 32px; }
+    h1 { color: #fff; font-size: 2rem; margin-bottom: 0.5em; }
+    .post-list { margin: 2em 0; }
+    .post-list li { margin-bottom: 1em; }
+    .post-list a { color: #60a5fa; text-decoration: none; font-size: 1.1em; }
+    .post-list a:hover { text-decoration: underline; }
+    .post-meta { color: #aaa; font-size: 0.9em; margin-bottom: 1em; }
+    #post-content { margin-top: 2em; }
+    .back-link { color: #fbbf24; cursor: pointer; display: inline-block; margin-bottom: 1em; }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>DAPAUE Newsletter</h1>
+    <ul class="post-list" id="post-list"></ul>
+    <div id="post-content" style="display:none;"></div>
+  </div>
+  <script>
+    // Fetch the index of posts
+    async function fetchPosts() {
+      const res = await fetch('assets/newsletter/index.json');
+      return res.json();
+    }
+    // Fetch and parse a markdown file
+    async function fetchMarkdown(filename) {
+      const res = await fetch('assets/newsletter/' + filename);
+      return res.text();
+    }
+    // Parse frontmatter (YAML-like)
+    function parseFrontmatter(md) {
+      const match = md.match(/^---\n([\s\S]+?)---\n/);
+      let meta = {};
+      let body = md;
+      if (match) {
+        body = md.slice(match[0].length);
+        match[1].split('\n').forEach(line => {
+          const [key, ...rest] = line.split(':');
+          if (key && rest.length) meta[key.trim()] = rest.join(':').trim().replace(/^"|"$/g, '');
+        });
+      }
+      return { meta, body };
+    }
+    // Render post list
+    async function renderPostList() {
+      const postList = document.getElementById('post-list');
+      postList.innerHTML = '<li>Loading...</li>';
+      const posts = await fetchPosts();
+      postList.innerHTML = '';
+      for (const filename of posts) {
+        const md = await fetchMarkdown(filename);
+        const { meta } = parseFrontmatter(md);
+        const title = meta.title || filename;
+        const date = meta.date || '';
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = '#';
+        a.textContent = title;
+        a.onclick = (e) => {
+          e.preventDefault();
+          renderPost(filename);
+        };
+        li.appendChild(a);
+        if (date) {
+          const metaDiv = document.createElement('div');
+          metaDiv.className = 'post-meta';
+          metaDiv.textContent = date;
+          li.appendChild(metaDiv);
+        }
+        postList.appendChild(li);
+      }
+    }
+    // Render a single post
+    async function renderPost(filename) {
+      const postList = document.getElementById('post-list');
+      const postContent = document.getElementById('post-content');
+      postList.style.display = 'none';
+      const md = await fetchMarkdown(filename);
+      const { meta, body } = parseFrontmatter(md);
+      postContent.innerHTML = `<span class="back-link" onclick="showList()">← Back to posts</span>`;
+      if (meta.title) postContent.innerHTML += `<h2>${meta.title}</h2>`;
+      if (meta.date) postContent.innerHTML += `<div class="post-meta">${meta.date}</div>`;
+      postContent.innerHTML += `<div>${marked.parse(body)}</div>`;
+      postContent.style.display = '';
+    }
+    // Show the post list
+    function showList() {
+      document.getElementById('post-content').style.display = 'none';
+      document.getElementById('post-list').style.display = '';
+    }
+    // Initial render
+    renderPostList();
+  </script>
+</body>
+</html>

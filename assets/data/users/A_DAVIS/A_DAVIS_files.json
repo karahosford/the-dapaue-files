@@ -1,0 +1,18 @@
+[
+  {
+    "id": "file001",
+    "filename": "welcome.pdf",
+    "owner": "A_DAVIS",
+    "type": "pdf",
+    "description": "Welcome packet for new staff",
+    "created": "2026-01-17"
+  },
+  {
+    "id": "file002",
+    "filename": "project_update.docx",
+    "owner": "A_DAVIS",
+    "type": "docx",
+    "description": "Project update document",
+    "created": "2026-01-18"
+  }
+]

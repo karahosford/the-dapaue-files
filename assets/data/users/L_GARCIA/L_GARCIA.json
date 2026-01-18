@@ -1,0 +1,10 @@
+{
+    "username":  "L_GARCIA",
+    "name":  "Lisa Garcia",
+    "department":  "Administration",
+    "securityLevel":  2,
+    "privilege_level":  2,
+    "accessCode":  "server2pass",
+    "status":  "ACTIVE",
+    "emails":  []
+}

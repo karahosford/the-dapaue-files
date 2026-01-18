@@ -1,0 +1,10 @@
+{
+    "username":  "S_WALKER",
+    "name":  "Susan Walker",
+    "department":  "Executive",
+    "securityLevel":  4,
+    "privilege_level":  4,
+    "accessCode":  "server4pass",
+    "status":  "ACTIVE",
+    "emails":  []
+}

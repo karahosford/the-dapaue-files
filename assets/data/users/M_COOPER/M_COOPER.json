@@ -1,0 +1,10 @@
+{
+    "username":  "M_COOPER",
+    "name":  "Matthew Cooper",
+    "department":  "Executive",
+    "securityLevel":  5,
+    "privilege_level":  5,
+    "accessCode":  "server5pass",
+    "status":  "ACTIVE",
+    "emails":  []
+}

@@ -40,14 +40,56 @@
     return Array.from(map.values());
   }
 
+
   async function loadArchiveData() {
     try {
-      const [emails, staffUsers] = await Promise.all([
-        loadJSON('assets/data/emails.json'),
-        loadJSON('assets/data/staff-users.json')
-      ]);
+      // Load emails.json as before
+      const emails = await loadJSON('assets/data/emails.json');
       window.emails = validateEmails(emails, 'emails.json');
-      window.staffUsers = Array.isArray(staffUsers) ? staffUsers : [];
+
+
+      // Load all user JSON files from assets/data/users/index.json
+      let userFiles = [];
+      try {
+        userFiles = await loadJSON('assets/data/users/index.json');
+        console.log('[data-loader] userFiles loaded:', userFiles);
+      } catch (e) {
+        console.warn('[data-loader] Could not load users/index.json:', e);
+      }
+      let staffUsers = [];
+      if (Array.isArray(userFiles) && userFiles.length > 0) {
+        staffUsers = await Promise.all(userFiles.map(async f => {
+          // f is now e.g. A_DAVIS/A_DAVIS.json
+          const user = await loadJSON('assets/data/users/' + f);
+          // Extract subfolder from file path
+          const subfolder = f.split('/')[0];
+          const username = user.username;
+          try {
+            user.emails = await loadJSON(`assets/data/users/${subfolder}/${username}_emails.json`);
+            console.log(`[data-loader] Loaded emails for ${username}`);
+          } catch (e) {
+            user.emails = user.emails || [];
+            console.warn(`[data-loader] No emails file for ${username}`);
+          }
+          try {
+            user.files = await loadJSON(`assets/data/users/${subfolder}/${username}_files.json`);
+            console.log(`[data-loader] Loaded files for ${username}`);
+          } catch (e) {
+            user.files = user.files || [];
+            console.warn(`[data-loader] No files file for ${username}`);
+          }
+          return user;
+        }));
+        console.log('[data-loader] staffUsers loaded:', staffUsers);
+      } else {
+        // Fallback to staff-users.json if no user files found
+        staffUsers = await loadJSON('assets/data/staff-users.json');
+        console.log('[data-loader] staffUsers loaded from fallback:', staffUsers);
+      }
+      window.staffUsers = Array.isArray(staffUsers) ? staffUsers : [staffUsers];
+      // DEBUG: Log all loaded staffUsers and their privilege_level/securityLevel
+      console.log('[DEBUG] staffUsers after loading:', window.staffUsers.map(u => ({ username: u.username, privilege_level: u.privilege_level, securityLevel: u.securityLevel }))); 
+
       // Optional catalogs
       try { window.entities = await loadJSON('assets/data/entities.json'); } catch (_) {}
       try { window.tagCatalog = await loadJSON('assets/data/tags.json'); } catch (_) {}

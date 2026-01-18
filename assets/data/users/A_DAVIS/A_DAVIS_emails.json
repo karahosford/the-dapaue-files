@@ -1,0 +1,20 @@
+[
+  {
+    "id": "email001",
+    "sender": "A_DAVIS",
+    "recipients": ["J_KING"],
+    "subject": "Welcome to the team",
+    "body": "Glad to have you onboard!",
+    "timestamp": "2026-01-17T09:00:00Z",
+    "attachments": ["welcome.pdf"]
+  },
+  {
+    "id": "email002",
+    "sender": "A_DAVIS",
+    "recipients": ["B_MARTIN"],
+    "subject": "Project Update",
+    "body": "The project is on track for completion.",
+    "timestamp": "2026-01-18T14:30:00Z",
+    "attachments": []
+  }
+]

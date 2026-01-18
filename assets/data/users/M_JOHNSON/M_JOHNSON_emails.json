@@ -1,0 +1,28 @@
+[
+  {
+    "id": "MJ-001",
+    "from": "admin@dapaue.sys",
+    "to": "M_JOHNSON@dapaue.sys",
+    "subject": "Welcome to Dapaue",
+    "date": "2026-01-17 09:00:00",
+    "category": "inbox",
+    "encryption": "STANDARD",
+    "signal": "ACTIVE",
+    "sender": "admin",
+    "receiver": "M_JOHNSON",
+    "body": "Welcome Morgan Johnson! Your account is now active."
+  },
+  {
+    "id": "MJ-002",
+    "from": "security@dapaue.sys",
+    "to": "M_JOHNSON@dapaue.sys",
+    "subject": "Security Notice",
+    "date": "2026-01-17 10:00:00",
+    "category": "inbox",
+    "encryption": "STANDARD",
+    "signal": "ACTIVE",
+    "sender": "security",
+    "receiver": "M_JOHNSON",
+    "body": "Please review the attached security guidelines."
+  }
+]

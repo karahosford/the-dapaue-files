@@ -1,0 +1,28 @@
+[
+  {
+    "id": "EC-001",
+    "from": "admin@dapaue.sys",
+    "to": "E_CHEN@dapaue.sys",
+    "subject": "Welcome to Dapaue",
+    "date": "2026-01-17 09:00:00",
+    "category": "inbox",
+    "encryption": "STANDARD",
+    "signal": "ACTIVE",
+    "sender": "admin",
+    "receiver": "E_CHEN",
+    "body": "Welcome Emily Chen! Your account is now active."
+  },
+  {
+    "id": "EC-002",
+    "from": "security@dapaue.sys",
+    "to": "E_CHEN@dapaue.sys",
+    "subject": "Security Notice",
+    "date": "2026-01-17 10:00:00",
+    "category": "inbox",
+    "encryption": "STANDARD",
+    "signal": "ACTIVE",
+    "sender": "security",
+    "receiver": "E_CHEN",
+    "body": "Please review the attached security guidelines."
+  }
+]

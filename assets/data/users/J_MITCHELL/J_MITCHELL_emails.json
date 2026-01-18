@@ -1,0 +1,28 @@
+[
+  {
+    "id": "JM-001",
+    "from": "admin@dapaue.sys",
+    "to": "J_MITCHELL@dapaue.sys",
+    "subject": "Welcome to Dapaue",
+    "date": "2026-01-17 09:00:00",
+    "category": "inbox",
+    "encryption": "STANDARD",
+    "signal": "ACTIVE",
+    "sender": "admin",
+    "receiver": "J_MITCHELL",
+    "body": "Welcome Jordan Mitchell! Your account is now active."
+  },
+  {
+    "id": "JM-002",
+    "from": "security@dapaue.sys",
+    "to": "J_MITCHELL@dapaue.sys",
+    "subject": "Security Notice",
+    "date": "2026-01-17 10:00:00",
+    "category": "inbox",
+    "encryption": "STANDARD",
+    "signal": "ACTIVE",
+    "sender": "security",
+    "receiver": "J_MITCHELL",
+    "body": "Please review the attached security guidelines."
+  }
+]

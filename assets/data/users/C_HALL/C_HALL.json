@@ -1,0 +1,10 @@
+{
+    "username":  "C_HALL",
+    "name":  "Charles Hall",
+    "department":  "Executive",
+    "securityLevel":  4,
+    "privilege_level":  4,
+    "accessCode":  "server4pass",
+    "status":  "ACTIVE",
+    "emails":  []
+}

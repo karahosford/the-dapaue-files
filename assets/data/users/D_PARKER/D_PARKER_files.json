@@ -1,0 +1,34 @@
+[
+  {
+    "name": "welcome.pdf",
+    "content": "Welcome to Dapaue, David Parker!",
+    "modified": "2026-01-17 09:00:00",
+    "type": "application/pdf",
+    "security": "STANDARD_ACCESS",
+    "folder": "DOCUMENTS"
+  },
+  {
+    "name": "security_guidelines.txt",
+    "content": "Security guidelines for new staff.",
+    "modified": "2026-01-17 10:00:00",
+    "type": "text/plain",
+    "security": "STANDARD_ACCESS",
+    "folder": "DOCUMENTS"
+  },
+  {
+    "name": "project_notes.txt",
+    "content": "Project X: Initial notes and ideas.",
+    "modified": "2026-01-17 11:00:00",
+    "type": "text/plain",
+    "security": "STANDARD_ACCESS",
+    "folder": "PROJECT X"
+  },
+  {
+    "name": "downloaded_tool.exe",
+    "content": "[BINARY DATA]",
+    "modified": "2026-01-17 12:00:00",
+    "type": "application/octet-stream",
+    "security": "STANDARD_ACCESS",
+    "folder": "DOWNLOADS"
+  }
+]

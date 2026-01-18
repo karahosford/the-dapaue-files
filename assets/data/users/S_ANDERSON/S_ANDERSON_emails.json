@@ -1,0 +1,28 @@
+[
+  {
+    "id": "SA-001",
+    "from": "admin@dapaue.sys",
+    "to": "S_ANDERSON@dapaue.sys",
+    "subject": "Welcome to Dapaue",
+    "date": "2026-01-17 09:00:00",
+    "category": "inbox",
+    "encryption": "STANDARD",
+    "signal": "ACTIVE",
+    "sender": "admin",
+    "receiver": "S_ANDERSON",
+    "body": "Welcome Sam Anderson! Your account is now active."
+  },
+  {
+    "id": "SA-002",
+    "from": "security@dapaue.sys",
+    "to": "S_ANDERSON@dapaue.sys",
+    "subject": "Security Notice",
+    "date": "2026-01-17 10:00:00",
+    "category": "inbox",
+    "encryption": "STANDARD",
+    "signal": "ACTIVE",
+    "sender": "security",
+    "receiver": "S_ANDERSON",
+    "body": "Please review the attached security guidelines."
+  }
+]

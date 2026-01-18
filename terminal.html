@@ -1547,9 +1547,7 @@
         }
 
         /* Retro mode disabled */
-        body.retro-mode {
-            /* Retro mode disabled - causing display issues */
-        }
+
 
         /* Cooling lock overlay */
         #cooling-lock {
@@ -1868,8 +1866,71 @@
         
         <button id="system-trigger-btn" class="btn-initiate blink" onclick="startSystemSequence()">[BREACH_SYSTEM]</button>
         <p class="text-[8px] mt-6 opacity-30 tracking-[1em]">DAPAUE_SYNAPTIC_BOOT_V4.5</p>
-        <button onclick="toggleFullscreen()" class="absolute bottom-4 left-4 text-[8px] px-3 py-1 border border-green-500 text-green-500 hover:border-green-400 hover:text-green-400 hover:bg-green-900/20 font-mono transition-colors opacity-60 hover:opacity-100">[FULLSCREEN]</button>
+        <button onclick="toggleFullscreenSetting()" class="absolute bottom-4 left-4 text-[8px] px-3 py-1 border border-green-500 text-green-500 hover:border-green-400 hover:text-green-400 hover:bg-green-900/20 font-mono transition-colors opacity-60 hover:opacity-100">[FULLSCREEN]</button>
     </div>
+<script>
+function signInAsDParker() {
+    // Instantly set D_PARKER as the active user and show desktop, skipping BREACH_SYSTEM
+    if (window.staffUsers) {
+        const user = window.staffUsers.find(u => u.username === 'D_PARKER');
+        if (user) {
+            // Set all global state as if D_PARKER was signed in
+            window.activeUser = {
+                username: user.username,
+                name: user.name,
+                privilege_level: user.privilege_level ?? user.securityLevel,
+                emails: user.emails,
+                files: user.files
+            };
+            window.currentUser = window.activeUser;
+            accessedUsers.add(user.username);
+            // Grant access to NODE-01 and unlock account
+            window.serverAccess = window.serverAccess || {};
+            window.serverAccess['NODE-01'] = true;
+            window.activeServerId = 'NODE-01';
+            if (typeof unlockedAccounts !== 'undefined') unlockedAccounts.add(user.username);
+            // Update user display
+            const userDisplay = document.getElementById('current-user-display');
+            if (userDisplay) {
+                userDisplay.innerText = `USER: ${user.name.toUpperCase()}`;
+                userDisplay.className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+            }
+            // Update file-vault user display to match signed-in user
+            const fileVaultUserDisplay = document.getElementById('file-vault-user-display');
+            if (fileVaultUserDisplay) {
+                fileVaultUserDisplay.innerText = `USER: ${user.name.toUpperCase()}`;
+                fileVaultUserDisplay.className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
+            }
+            const fileVaultTitle = document.getElementById('file-vault-title');
+            if (fileVaultTitle) {
+                fileVaultTitle.innerText = `${user.name.toUpperCase()} // FILE-VAULT // DAPAUE`;
+            }
+            // Update briefing
+            const briefingElement = document.getElementById('briefing-assigned-user');
+            if (briefingElement) {
+                briefingElement.textContent = `${user.name.toUpperCase()} (${user.username})`;
+            }
+            // Hide overlays and show desktop
+            const overlay = document.getElementById('intro-overlay');
+            const desktop = document.getElementById('desktop');
+            const triggerScreen = document.getElementById('initial-trigger-screen');
+            if (triggerScreen) triggerScreen.style.display = 'none';
+            if (overlay) overlay.style.display = 'none';
+            if (desktop) desktop.classList.remove('hidden');
+            // Show taskbar (force visible)
+            const taskbar = document.getElementById('taskbar');
+            if (taskbar) { taskbar.style.display = ''; taskbar.classList.remove('hidden'); }
+            // Load emails and files
+            if (typeof loadEmailList === 'function') loadEmailList();
+            if (typeof renderFileVault === 'function') renderFileVault();
+            // Show welcome notification
+            if (typeof showSystemNotification === 'function') showSystemNotification('Signed in as D_PARKER for testing', '#60a5fa');
+        } else {
+            alert('D_PARKER user not found!');
+        }
+    }
+}
+</script>
 
     <!-- Intro / Login Overlay -->
     <div id="intro-overlay" class="absolute inset-0 z-[2000] bg-[var(--bg-dark)]" style="display: none;">
@@ -1960,6 +2021,10 @@
         
         <!-- Desktop Icons -->
         <div id="desktop-icons">
+                        <div class="desktop-icon" onclick="openWindow('staff-directory-window'); renderStaffDirectory();">
+                            <div class="icon-image">🪪</div>
+                            <div class="icon-label">STAFF DIRECTORY</div>
+                        </div>
             <div class="desktop-icon" onclick="openWindow('browser-window')">
                 <div class="icon-image">🌐</div>
                 <div class="icon-label">WEB BROWSER</div>
@@ -2019,6 +2084,27 @@
         </div>
 
         <!-- WEB BROWSER Window (now correctly outside #desktop-icons) -->
+
+                <!-- STAFF DIRECTORY Window -->
+                <div id="staff-directory-window" class="window" style="width: 700px; height: 600px; left: 18%; top: 10%; display: none; border: 2px solid var(--panel-light);">
+                    <div class="window-resize-handle"></div>
+                    <div class="window-titlebar" onmousedown="startDrag(event, 'staff-directory-window')" ontouchstart="startDrag(event, 'staff-directory-window')">
+                        <span class="window-title">STAFF DIRECTORY</span>
+                        <div class="window-controls">
+                            <div class="window-btn" onclick="minimizeWindow('staff-directory-window')">_</div>
+                            <div class="window-btn" onclick="toggleWindowFullscreen('staff-directory-window')" title="Fullscreen">□</div>
+                            <div class="window-btn" onclick="closeWindow('staff-directory-window')">X</div>
+                        </div>
+                    </div>
+                    <div class="window-content" style="height: calc(100% - 36px); background: var(--bg-dark); display: flex; flex-direction: row; border: none;">
+                        <div id="staff-directory-userlist" style="width: 220px; background: var(--panel-dark); border-right: 1px solid var(--panel-light); overflow-y: auto; padding: 0;">
+                            <!-- User list will be rendered here -->
+                        </div>
+                        <div id="staff-directory-details" style="flex: 1; display: flex; align-items: flex-start; justify-content: flex-start; min-width: 0; padding: 32px 40px;">
+                            <!-- User details will be rendered here -->
+                        </div>
+                    </div>
+                </div>
         <div id="browser-window" class="window" style="width: 900px; height: 700px; left: 12%; top: 12%; display: none;">
             <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'browser-window')" ontouchstart="startDrag(event, 'browser-window')">
@@ -2034,12 +2120,75 @@
                     <input id="browser-address" type="text" value="dapaue.gov" style="width: 80%; padding: 6px; font-size: 13px; background: #111; color: #fff; border: 1px solid #444; border-radius: 3px; margin: 8px;" />
                     <button type="submit" style="padding: 6px 12px; font-size: 13px; background: #25a; color: #fff; border: none; border-radius: 3px;">Go</button>
                 </form>
-                <iframe id="browser-iframe" src="dapaue-fake-website.html" style="flex: 1; width: 100%; border: none; background: #fff;"></iframe>
+                <iframe id="browser-iframe" src="assets/websites/newsletter.html" style="flex: 1; width: 100%; border: none; background: #fff;"></iframe>
             </div>
         </div>
         </div>
 
         <!-- WhatsApp app fully removed -->
+                <!-- STAFF DIRECTORY LOGIC -->
+                <script>
+                async function renderStaffDirectory() {
+                    const userListContainer = document.getElementById('staff-directory-userlist');
+                    const detailsContainer = document.getElementById('staff-directory-details');
+                    userListContainer.innerHTML = '<div style="color:#888;font-size:13px;width:100%;text-align:center;padding:24px 0;">Loading...</div>';
+                    detailsContainer.innerHTML = '';
+                    try {
+                        let userIndex = await fetch('assets/data/users/index.json').then(r => r.json());
+                        let users = await Promise.all(userIndex.map(async (f) => {
+                            let user = await fetch('assets/data/users/' + f).then(r => r.json());
+                            user._folder = f.split('/')[0];
+                            return user;
+                        }));
+                        users = users.filter(u => (u.privilege_level !== undefined ? u.privilege_level : u.securityLevel) <= 1);
+                        if (!users.length) {
+                            userListContainer.innerHTML = '<div style="color:#ff5555;padding:24px 0;">No staff found.</div>';
+                            detailsContainer.innerHTML = '';
+                            return;
+                        }
+                        // Render user list
+                        userListContainer.innerHTML = '';
+                        users.forEach((user, idx) => {
+                            const item = document.createElement('div');
+                            item.textContent = user.name;
+                            item.style = 'padding: 14px 18px; cursor: pointer; border-bottom: 1px solid var(--panel-light); color: var(--text-main); font-size: 1rem; transition: background 0.15s; background: none;';
+                            item.className = 'staff-directory-userlist-item';
+                            item.onclick = () => showStaffDirectoryDetails(user, users, idx);
+                            item.onmouseenter = () => item.style.background = 'var(--panel-light)';
+                            item.onmouseleave = () => item.style.background = '';
+                            userListContainer.appendChild(item);
+                        });
+                        // Select first user by default
+                        showStaffDirectoryDetails(users[0], users, 0);
+                    } catch (e) {
+                        userListContainer.innerHTML = '<div style="color:#ff5555;padding:24px 0;">Failed to load staff directory.</div>';
+                        detailsContainer.innerHTML = '';
+                    }
+                }
+
+                function showStaffDirectoryDetails(user, users, idx) {
+                    const detailsContainer = document.getElementById('staff-directory-details');
+                    // Highlight selected
+                    const items = document.querySelectorAll('.staff-directory-userlist-item');
+                    items.forEach((el, i) => {
+                        el.style.background = (i === idx) ? 'var(--panel-light)' : '';
+                        el.style.color = (i === idx) ? 'var(--accent)' : 'var(--text-main)';
+                        el.style.fontWeight = (i === idx) ? 'bold' : 'normal';
+                    });
+                    // Render details (Active Directory style: clean info panel, no card, no colored border)
+                    detailsContainer.innerHTML = `
+                        <div style="max-width: 520px; width: 100%; background: none; display: flex; gap: 32px; align-items: flex-start;">
+                            <img src="assets/data/users/${user._folder}/profile.png" alt="${user.name} profile" style="width:80px;height:80px;border-radius:8px;background:#222;object-fit:cover;border:1px solid var(--panel-light);margin-top:4px;" onerror="this.src='assets/images/user-placeholder.png'">
+                            <div style="flex:1; min-width:0;">
+                                <div style="font-size:1.3rem;font-weight:bold;color:var(--text-main);margin-bottom:2px;">${user.name}</div>
+                                <div style="font-size:1rem;color:var(--text-dim);margin-bottom:10px;">${user.username}</div>
+                                <div style="font-size:0.95rem;color:var(--accent);margin-bottom:8px;">${user.department}</div>
+                                <div style="font-size:0.85rem;color:var(--text-dim);margin-bottom:2px;">Privilege Level: <span style="color:var(--accent);font-weight:bold;">${user.privilege_level !== undefined ? user.privilege_level : user.securityLevel}</span></div>
+                            </div>
+                        </div>
+                    `;
+                }
+                </script>
         
         <!-- USER_SELECT Window -->
         <div id="user-select-window" class="window" style="width: 600px; height: 500px; left: 25%; top: 15%; display: none; border: 2px solid #eab308;">
@@ -2902,9 +3051,7 @@
                                         <div id="file-vault-user" class="text-[10px] text-[var(--accent)] font-mono"></div>
                                     </div>
                                 </div>
-                                <div id="file-vault-tagging" class="p-3 border-b-2 border-[var(--panel-light)] text-[9px] flex items-center gap-2">
-                                    <input id="file-vault-tag-input" type="text" class="bg-[var(--panel-dark)] border border-[var(--panel-light)] px-2 py-1 font-mono outline-none" placeholder="ADD_TAG">
-                                    <button class="btn-retro px-2 py-1" onclick="submitFileVaultTag()">[TAG]</button>
+                                <div class="p-3 border-b-2 border-[var(--panel-light)] text-[9px] flex items-center gap-2 justify-end">
                                     <button class="btn-retro px-2 py-1 ml-auto" onclick="sendFileVaultToBoard()" title="Add to Investigation Board">📌 [SEND TO BOARD]</button>
                                 </div>
                                 <div id="file-vault-content" class="flex-1 overflow-y-auto p-6 md:p-10 font-mono text-xs whitespace-pre-wrap break-words"></div>
@@ -2935,7 +3082,7 @@
         <!-- End of Vault Windows -->
 
         <!-- Taskbar -->
-        <div id="taskbar">
+        <div id="taskbar" style="display: none;">
             <div class="taskbar-item active" id="taskbar-briefing" onclick="focusWindow('briefing-window')" style="display: none;">📄 BRIEFING</div>
             <div class="taskbar-item active" id="taskbar-user-access" onclick="focusWindow('user-access-window')" style="display: none;">⌘ TERMINAL</div>
             <div class="taskbar-item active" id="taskbar-notepad" onclick="focusWindow('notepad-window')" style="display: none;">📝 NOTEPAD</div>
@@ -2980,8 +3127,8 @@
                         let fadeOutTimer = null;
                         let fadingIn = false;
                         let fadingOut = false;
-                        const INACTIVITY_DELAY = 40000; // 40s
-                        const FADE_IN_DURATION = 60000; // 1min
+                        const INACTIVITY_DELAY = 300000; // 5min (300,000 ms)
+                        const FADE_IN_DURATION = 300000; // 5min (300,000 ms)
                         const MAX_OPACITY = 1.0;
                         const FADE_OUT_DURATION = 2000; // 2s
 
@@ -3152,52 +3299,46 @@
 
         // Initialization
         function initializeGameWithRandomUser() {
-            // Get all server 1 (privilege level 1) users
-            const server1Users = window.staffUsers.filter(u => u.privilege_level === 1);
-            
-            if (server1Users.length === 0) {
-                console.error('No server 1 users found!');
+            // Get all level 1 users (exclude archivist_001)
+
+            console.log('[DEBUG] staffUsers:', window.staffUsers);
+            let level1Users = window.staffUsers.filter(u => (u.privilege_level === 1 || u.securityLevel === 1) && u.username !== 'archivist_001');
+            console.log('[DEBUG] level1Users:', level1Users);
+            if (level1Users.length === 0) {
+                console.error('No level 1 users found!');
                 return;
             }
-            
             // Randomly select one
-            const randomUser = server1Users[Math.floor(Math.random() * server1Users.length)];
-            
+            const randomUser = level1Users[Math.floor(Math.random() * level1Users.length)];
+            console.log('[DEBUG] Selected randomUser:', randomUser);
             // Set as active user
             activeUser = {
                 username: randomUser.username,
                 name: randomUser.name,
-                privilege_level: randomUser.privilege_level,
+                privilege_level: randomUser.privilege_level ?? randomUser.securityLevel,
                 emails: randomUser.emails
             };
-            
             // Add to accessed users for forensics filtering
             accessedUsers.add(randomUser.username);
-
             // Consume one bruteforce allowance for the initial cracked account (silent to avoid early warnings)
             consumeBruteforce(randomUser.username, { suppressNotify: true, suppressEffects: true });
-            
             // Actually log the player in as this user
             currentUser = {
                 username: randomUser.username,
                 name: randomUser.name,
-                privilege_level: randomUser.privilege_level,
+                privilege_level: randomUser.privilege_level ?? randomUser.securityLevel,
                 emails: randomUser.emails
             };
-            
             // Update the user display at top
             document.getElementById('current-user-display').innerText = `USER: ${randomUser.name.toUpperCase()}`;
             document.getElementById('current-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
-
             updateTerminalPrompt();
-            
             // Update briefing to show assigned user
             const briefingElement = document.getElementById('briefing-assigned-user');
             if (briefingElement) {
                 briefingElement.textContent = `${randomUser.name.toUpperCase()} (${randomUser.username})`;
             }
-            
-            console.log(`[Game] Player logged in as server 1 user: ${randomUser.name}`);
+            console.log(`[Game] Player logged in as level 1 user: ${randomUser.name}`);
         }
         
         window.onload = function() {
@@ -3268,94 +3409,132 @@
             if (window.dataReady) {
                 window.dataReady.then(() => {
                     console.log('[App] Data source:', window.dataSource || 'unknown');
-                    
+                    // DEBUG: Log staffUsers after dataReady resolves
+                    console.log('[DEBUG] window.staffUsers after dataReady:', window.staffUsers);
                     // Initialize with random server 1 user AFTER data is loaded
                     if (typeof window.staffUsers !== 'undefined' && window.staffUsers.length > 0) {
                         initializeGameWithRandomUser();
+                    } else if (typeof staffUsers !== 'undefined' && staffUsers.length > 0) {
+                        // Try to select a random level 1 user from staffUsers
+                        let level1Users = staffUsers.filter(u => (u.privilege_level === 1 || u.securityLevel === 1) && u.username !== 'archivist_001');
+                        if (level1Users.length > 0) {
+                            const randomUser = level1Users[Math.floor(Math.random() * level1Users.length)];
+                            activeUser = {
+                                username: randomUser.username,
+                                name: randomUser.name,
+                                privilege_level: randomUser.privilege_level ?? randomUser.securityLevel,
+                                emails: randomUser.emails
+                            };
+                        } else {
+                            activeUser = {
+                                username: 'unknown',
+                                name: 'System Archivist',
+                                privilege_level: 5,
+                                emails: []
+                            };
+                        }
                     } else {
                         // Fallback if data fails to load - set a placeholder activeUser so login form can render
                         activeUser = {
-                            username: 'archivist_001',
+                            username: 'unknown',
                             name: 'System Archivist',
-                            privilege_level: 1,
+                            privilege_level: 5,
                             emails: []
                         };
                     }
                     seedStaticEntities();
+                    // Hide taskbar until boot/login is complete
+                    document.getElementById('taskbar').style.display = 'none';
                 }).catch(() => {});
             }
         };
 
         function startSystemSequence() {
-            // ...existing code...
             console.log('startSystemSequence called');
-                window.startSystemSequence = startSystemSequence;
             const triggerScreen = document.getElementById('initial-trigger-screen');
             const overlay = document.getElementById('intro-overlay');
-            
-            if (!triggerScreen || !overlay) {
-                console.error('Missing elements:', { triggerScreen, overlay });
+            const breachBtn = document.getElementById('system-trigger-btn');
+            if (!triggerScreen || !overlay || !breachBtn) {
+                console.error('Missing elements:', { triggerScreen, overlay, breachBtn });
+                if (typeof showSystemNotification === 'function') {
+                    showSystemNotification('ERROR: System boot elements missing. Please reload the page.', '#ff6b6b');
+                }
                 return;
             }
-            
+            if (breachBtn.disabled) return; // Prevent double-init
+            breachBtn.disabled = true;
+            breachBtn.classList.add('opacity-50');
             // Reset game state for a fresh start
-            serverAccess = {};
-            activeServerId = null;
-            unlockedAccounts.clear();
-            entityDatabase.discoveredEmails = [];
-            adminMode = false;
-            activeUser = null;
-            currentUser = null;
-            localStorage.removeItem('dapaue-server-access');
-            localStorage.removeItem('dapaue-active-server');
-            localStorage.removeItem('dapaue-last-user');
-            
+            try {
+                serverAccess = {};
+                activeServerId = null;
+                if (unlockedAccounts && typeof unlockedAccounts.clear === 'function') unlockedAccounts.clear();
+                if (entityDatabase && entityDatabase.discoveredEmails) entityDatabase.discoveredEmails = [];
+                adminMode = false;
+                activeUser = null;
+                currentUser = null;
+                localStorage.removeItem('dapaue-server-access');
+                localStorage.removeItem('dapaue-active-server');
+                localStorage.removeItem('dapaue-last-user');
+            } catch (err) {
+                console.error('Error resetting game state:', err);
+                showSystemNotification('ERROR: Failed to reset game state. See console.', '#ff6b6b');
+                breachBtn.disabled = false;
+                breachBtn.classList.remove('opacity-50');
+                return;
+            }
             // Wait for data to be ready before selecting a user
             const initializeGameStart = async () => {
-                if (window.dataReady) { 
-                    try { 
-                        await window.dataReady; 
-                    } catch (e) { 
-                        console.warn('Data load failed, using fallback if available'); 
-                    } 
-                }
-                
-                // Select a random level 1 user
-                if (typeof staffUsers !== 'undefined' && staffUsers.length > 0) {
-                    const level1Users = staffUsers.filter(u => u.privilege_level === 1);
-                    if (level1Users.length > 0) {
-                        const randomUser = level1Users[Math.floor(Math.random() * level1Users.length)];
-                        
-                        // Grant access to NODE-01
-                        serverAccess['NODE-01'] = true;
-                        activeServerId = 'NODE-01';
-                        
-                        // Add user to unlocked accounts
-                        unlockedAccounts.add(randomUser.username);
-                        
-                        // Set as active user (for login form)
-                        activeUser = {
-                            username: randomUser.username,
-                            name: randomUser.name,
-                            privilege_level: randomUser.privilege_level,
-                            emails: randomUser.emails
-                        };
-                        
-                        // Don't set currentUser yet - it will be set when handleLogin() is called
-                        
-                        console.log('Selected user:', randomUser.username, 'with access to NODE-01');
+                try {
+                    if (window.dataReady) {
+                        try {
+                            await window.dataReady;
+                        } catch (e) {
+                            console.warn('Data load failed, using fallback if available');
+                        }
                     }
+                    // Select a random level 1 user (check both privilege_level and securityLevel)
+                    if (typeof staffUsers !== 'undefined' && staffUsers.length > 0) {
+                        let level1Users = staffUsers.filter(u => u.privilege_level === 1);
+                        if (level1Users.length === 0) {
+                            level1Users = staffUsers.filter(u => u.securityLevel === 1);
+                        }
+                        if (level1Users.length > 0) {
+                            const randomUser = level1Users[Math.floor(Math.random() * level1Users.length)];
+                            // Grant access to NODE-01
+                            serverAccess['NODE-01'] = true;
+                            activeServerId = 'NODE-01';
+                            // Add user to unlocked accounts
+                            if (unlockedAccounts && typeof unlockedAccounts.add === 'function') unlockedAccounts.add(randomUser.username);
+                            // Set as active user (for login form)
+                            activeUser = {
+                                username: randomUser.username,
+                                name: randomUser.name,
+                                privilege_level: randomUser.privilege_level ?? randomUser.securityLevel,
+                                emails: randomUser.emails
+                            };
+                            // Don't set currentUser yet - it will be set when handleLogin() is called
+                            console.log('Selected user:', randomUser.username, 'with access to NODE-01');
+                        }
+                    }
+                    // Continue with boot sequence
+                    triggerScreen.style.display = 'none';
+                    overlay.style.display = 'flex';
+                    // Show the taskbar now that the desktop is about to be shown
+                    const taskbar = document.getElementById('taskbar');
+                    if (taskbar) taskbar.style.display = '';
+                    console.log('Screen switched, running boot sequence');
+                    runBootSequence();
+                } catch (err) {
+                    console.error('Error during game start:', err);
+                    showSystemNotification('ERROR: Failed to start system. See console.', '#ff6b6b');
+                    breachBtn.disabled = false;
+                    breachBtn.classList.remove('opacity-50');
                 }
-                
-                // Continue with boot sequence
-                triggerScreen.style.display = 'none';
-                overlay.style.display = 'flex';
-                console.log('Screen switched, running boot sequence');
-                runBootSequence();
             };
-            
             initializeGameStart();
         }
+        window.startSystemSequence = startSystemSequence;
 
         async function adminBypass() {
             console.log('Admin bypass activated');
@@ -3364,21 +3543,24 @@
             if (window.dataReady) { try { await window.dataReady; } catch (e) { console.warn('Data load failed, using fallback if available'); } }
             seedStaticEntities();
             
-            // Select a random level 1 user for admin bypass
+            // Select a random level 1 user for admin bypass (check both privilege_level and securityLevel)
             if (typeof staffUsers !== 'undefined' && staffUsers.length > 0) {
-                const level1Users = staffUsers.filter(u => u.privilege_level === 1);
+                let level1Users = staffUsers.filter(u => u.privilege_level === 1);
+                if (level1Users.length === 0) {
+                    level1Users = staffUsers.filter(u => u.securityLevel === 1);
+                }
                 if (level1Users.length > 0) {
                     const randomUser = level1Users[Math.floor(Math.random() * level1Users.length)];
                     activeUser = {
                         username: randomUser.username,
                         name: randomUser.name,
-                        privilege_level: randomUser.privilege_level,
+                        privilege_level: randomUser.privilege_level ?? randomUser.securityLevel,
                         emails: randomUser.emails
                     };
                     currentUser = {
                         username: randomUser.username,
                         name: randomUser.name,
-                        privilege_level: randomUser.privilege_level,
+                        privilege_level: randomUser.privilege_level ?? randomUser.securityLevel,
                         emails: randomUser.emails
                     };
                 }
@@ -3427,8 +3609,6 @@
             // Show welcome notification
             showSystemNotification();
             
-            // Show BETA warning
-            setTimeout(() => showBetaWarning(), 1000);
 
             // Enable admin mode: unlock all servers and bypass locks
             if (typeof serverNodes !== 'undefined') {
@@ -3873,6 +4053,17 @@
             return container;
         }
         
+        function closeNotification(notificationElem, message) {
+            notificationElem.classList.add('hiding');
+            setTimeout(() => {
+                notificationElem.remove();
+                if (message) {
+                    const idx = notificationHistory.indexOf(message);
+                    if (idx !== -1) notificationHistory.splice(idx, 1);
+                }
+            }, 500);
+        }
+
         function showSystemNotification(message, progressColor = 'var(--accent)') {
             // If no message provided, it's the welcome notification - only show once
             if (!message && systemNotificationShown) {
@@ -3928,7 +4119,7 @@
                 notification.innerHTML = `
                     <div class="notification-header">
                         <div class="notification-title">⚡ SYSTEM NOTICE</div>
-                        <div class="notification-close" onclick="this.parentElement.parentElement.parentElement.classList.add('hiding'); setTimeout(() => { this.parentElement.parentElement.parentElement.remove(); const msg = '${message.replace(/'/g, "\\'")}'; const idx = notificationHistory.indexOf(msg); if (idx !== -1) notificationHistory.splice(idx, 1); }, 500)">✕</div>
+                        <div class="notification-close" style="user-select:none;" onclick="closeNotification(this.closest('.system-notification'), \"${message.replace(/"/g, '&quot;').replace(/'/g, "&#39;")}\")">✕</div>
                     </div>
                     <div class="notification-body">
                         <p style="margin-bottom: 6px; color: var(--accent);">${message}</p>
@@ -3942,7 +4133,7 @@
                 notification.innerHTML = `
                     <div class="notification-header">
                         <div class="notification-title">⚡ SYSTEM NOTICE // NEURAL-LINK STATUS</div>
-                        <div class="notification-close" onclick="this.parentElement.parentElement.parentElement.classList.add('hiding'); setTimeout(() => this.parentElement.parentElement.parentElement.remove(), 500)">✕</div>
+                        <div class="notification-close" style="user-select:none;" onclick="closeNotification(this.closest('.system-notification'))">✕</div>
                     </div>
                     <div class="notification-body">
                         <p style="margin-bottom: 8px; color: var(--accent);">WELCOME, OPERATOR.</p>
@@ -3973,117 +4164,7 @@
                 }
             }, 15000);
         }
-        
-        let betaWarningShown = false;
-        function showBetaWarning() {
-            if (betaWarningShown) return;
-            betaWarningShown = true;
-            
-            const container = getOrCreateNotificationContainer();
-            
-            const notification = document.createElement('div');
-            notification.id = 'beta-warning-notification';
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                width: 420px;
-                background: linear-gradient(135deg, var(--panel-dark) 0%, rgba(234, 179, 8, 0.1) 100%);
-                border: 2px solid #eab308;
-                border-radius: 4px;
-                padding: 20px;
-                font-family: monospace;
-                font-size: 11px;
-                color: var(--text-main);
-                z-index: 1001;
-                box-shadow: 0 0 30px rgba(234, 179, 8, 0.3), inset 0 0 20px rgba(234, 179, 8, 0.05);
-                animation: betaFadeIn 0.6s ease-out;
-                max-height: 300px;
-                overflow-y: auto;
-                line-height: 1.6;
-                pointer-events: auto;
-            `;
-            
-            notification.innerHTML = `
-                <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
-                    <div style="color: #eab308; font-weight: bold; font-size: 12px;">⚠ BETA TESTING NOTICE</div>
-                </div>
-                <div style="margin-bottom: 12px; font-size: 10px; color: var(--text-dim);">
-                    DAPAUE_OS_V4.5 // NEURAL-LINK PROTOCOL
-                </div>
-                <div style="margin-bottom: 10px; color: var(--text-main);">
-                    This is a <span style="color: #eab308; font-weight: bold;">BETA BUILD</span> for testing purposes.
-                </div>
-                <div style="margin-bottom: 10px;">
-                    <span style="color: #ff6b6b; font-weight: bold;">⚠ IMPORTANT:</span> Save game functionality is currently <span style="color: #ff6b6b; font-weight: bold;">DISABLED</span> during this testing phase.
-                </div>
-                <div style="font-size: 10px; color: var(--text-dim); margin-bottom: 14px;">
-                    Your progress will not persist between sessions. Please report any bugs or issues you encounter. Thank you for participating in testing!
-                </div>
-                <button id="beta-acknowledge-btn" style="
-                    width: 100%;
-                    padding: 10px;
-                    background: rgba(234, 179, 8, 0.1);
-                    border: 1px solid #eab308;
-                    color: #eab308;
-                    font-family: monospace;
-                    font-size: 11px;
-                    font-weight: bold;
-                    cursor: pointer;
-                    transition: all 0.2s;
-                    border-radius: 2px;
-                    pointer-events: auto;
-                ">[ACKNOWLEDGED]</button>
-            `;
-            
-            container.appendChild(notification);
-            
-            // Attach click handler after DOM insertion
-            setTimeout(() => {
-                const acknowledgBtn = document.getElementById('beta-acknowledge-btn');
-                if (acknowledgBtn) {
-                    acknowledgBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        notification.style.animation = 'betaFadeOut 0.4s ease-out forwards';
-                        setTimeout(() => {
-                            if (notification.parentNode) {
-                                notification.parentNode.removeChild(notification);
-                            }
-                        }, 400);
-                    };
-                }
-            }, 0);
-            
-            // Add animations if not already in stylesheet
-            if (!document.getElementById('beta-notification-styles')) {
-                const style = document.createElement('style');
-                style.id = 'beta-notification-styles';
-                style.textContent = `
-                    @keyframes betaFadeIn {
-                        from {
-                            opacity: 0;
-                            transform: translateX(420px);
-                        }
-                        to {
-                            opacity: 1;
-                            transform: translateX(0);
-                        }
-                    }
-                    @keyframes betaFadeOut {
-                        from {
-                            opacity: 1;
-                            transform: translateX(0);
-                        }
-                        to {
-                            opacity: 0;
-                            transform: translateX(420px);
-                        }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-        }
+
 
         // ===== Server Monitor Logic =====
         let serverNodes = [
@@ -7514,10 +7595,9 @@
             listNode.innerHTML = '';
             activeExplorerFileButton = null;
             
-            // Only show current user's files
+            // Only show files for the signed-in user
             const username = currentUser.username;
-            
-            // Check if account is unlocked
+            listNode.innerHTML = '';
             if (!unlockedAccounts.has(username)) {
                 const msg = document.createElement('div');
                 msg.className = 'p-4 text-xs opacity-60 text-center';
@@ -7526,37 +7606,26 @@
                 showFilePlaceholder();
                 return;
             }
-
-            // Load files for current user only
             initializeUserFiles(username);
-            const user = (typeof staffUsers !== 'undefined') ? staffUsers.find(u => u.username === username) : null;
-            const displayName = user ? user.name : username;
             const files = userFiles[username] || [];
-
             const fileList = document.createElement('div');
             fileList.className = 'p-2';
-            
             files.forEach(file => {
                 const fileItem = document.createElement('div');
                 fileItem.className = 'explorer-file-item';
-                fileItem.dataset.user = username;
-                fileItem.innerHTML = `<div class="font-mono text-xs text-[var(--accent)]">${file.name}</div><div class="explorer-file-meta">${file.security || 'STANDARD_ACCESS'} | ${file.type || 'text/plain'}</div>`;
+                fileItem.textContent = file.name;
                 fileItem.onclick = () => displayFile(username, file, fileItem);
                 fileList.appendChild(fileItem);
             });
-
             if (files.length === 0) {
                 const empty = document.createElement('div');
                 empty.className = 'text-[10px] text-[var(--text-dim)] italic text-center p-4';
                 empty.textContent = 'NO FILES AVAILABLE';
                 fileList.appendChild(empty);
             }
-
             listNode.appendChild(fileList);
-
             selectedExplorerUser = username;
             showFilePlaceholder();
-            
             // Auto-select first file if available
             if (files.length > 0) {
                 const firstFileItem = fileList.querySelector('.explorer-file-item');
@@ -8393,61 +8462,72 @@ Good luck, Investigator.
         }
 
         function loadFileVaultList() {
+            const sidebar = document.getElementById('file-vault-sidebar');
+            const listNode = document.getElementById('file-vault-list');
+            if (!sidebar || !listNode) return;
+            listNode.innerHTML = '';
+            sidebar.innerHTML = '';
+            // Sidebar: show folders for current user
+            let files = [];
+            if (currentUser && currentUser.username) {
+                const user = staffUsers.find(u => u.username === currentUser.username);
+                if (user && Array.isArray(user.files)) {
+                    files = user.files;
+                }
+            }
+            // Get unique folders
+            const folders = [...new Set(files.map(f => f.folder || 'ROOT'))];
+            folders.forEach(folder => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-retro p-2 text-xs text-left w-full';
+                btn.innerText = `[${folder}]`;
+                btn.onclick = () => {
+                    loadFileVaultFolder(folder);
+                };
+                sidebar.appendChild(btn);
+            });
+            // Load first folder by default
+            if (folders.length > 0) loadFileVaultFolder(folders[0]);
+        }
+
+        // ...existing code...
+
+        function loadFileVaultFolder(folder) {
             const listNode = document.getElementById('file-vault-list');
             if (!listNode) return;
             listNode.innerHTML = '';
-            
-            if (typeof staffUsers === 'undefined') return;
-            
-            staffUsers.forEach(user => {
-                if (!unlockedAccounts.has(user.username)) return;
-                
+            let files = [];
+            if (currentUser && currentUser.username) {
+                const user = staffUsers.find(u => u.username === currentUser.username);
+                if (user && Array.isArray(user.files)) {
+                    files = user.files.filter(f => (f.folder || 'ROOT') === folder);
+                }
+            }
+            files.forEach(file => {
                 const item = document.createElement('div');
-                item.style.cssText = 'padding: 10px; border-bottom: 1px solid var(--panel-light); cursor: pointer; transition: all 0.2s;';
-                item.onmouseover = () => item.style.background = 'rgba(16, 185, 129, 0.05)';
-                item.onmouseout = () => item.style.background = 'transparent';
-                item.onclick = () => loadFileVaultForUser(user.username, user.name);
-                
-                item.innerHTML = `
-                    <div style="font-size: 10px; font-weight: bold; color: var(--accent);">${user.name}</div>
-                    <div style="font-size: 9px; color: var(--text-dim);">@${user.username}</div>
-                `;
+                item.className = 'explorer-file-item';
+                item.innerHTML = `<div class="font-bold">${file.name}</div><div class="explorer-file-meta">${file.type || ''} | ${file.date || ''}</div>`;
+                item.onclick = () => displayFile(currentUser.username, file, item);
                 listNode.appendChild(item);
             });
         }
 
-        function loadFileVaultForUser(username, name) {
-            const placeholder = document.getElementById('file-vault-placeholder');
-            const pane = document.getElementById('file-vault-pane');
-            
-            if (placeholder && pane) {
-                placeholder.style.display = 'none';
-                pane.style.display = 'flex';
-
-                // Track selection for SEND TO BOARD
-                currentFileVaultUser = { username, name };
-                
-                document.getElementById('file-vault-name').innerText = `${name}_FILES`;
-                document.getElementById('file-vault-meta').innerText = `User: ${username}`;
-                document.getElementById('file-vault-user').innerText = username.toUpperCase();
-                
-                // Find user and display their files
-                const user = window.staffUsers.find(u => u.username === username);
-                let fileContent = '';
-                
-                if (user && user.files && Array.isArray(user.files)) {
-                    fileContent = user.files.map(file => {
-                        const sizeKB = (file.size / 1024).toFixed(1);
-                        return `[${file.id}] ${file.name} (${sizeKB}KB) - ${file.type} - ${file.date}`;
-                    }).join('\n');
-                } else {
-                    fileContent = `No files for ${name}`;
-                }
-                
-                document.getElementById('file-vault-content').innerText = fileContent;
-                
-                updateFileVaultMetadata(username, name);
+        function displayFile(username, file, el) {
+            // Highlight selected file
+            if (window.activeExplorerFileButton) window.activeExplorerFileButton.classList.remove('active');
+            if (el) {
+                window.activeExplorerFileButton = el;
+                el.classList.add('active');
             }
+            // Show preview pane
+            document.getElementById('file-vault-placeholder').style.display = 'none';
+            document.getElementById('file-vault-pane').style.display = 'flex';
+            document.getElementById('file-vault-name').innerText = file.name;
+            document.getElementById('file-vault-meta').innerText = `${file.type || ''} | ${file.date || ''}`;
+            document.getElementById('file-vault-user').innerText = username.toUpperCase();
+            document.getElementById('file-vault-content').innerText = file.content || '';
+            // Track selected file for SEND TO BOARD
+            window.selectedFileVaultFile = { username, file };
         }
 
         function updateFileVaultMetadata(username, name) {
@@ -8481,23 +8561,42 @@ Good luck, Investigator.
 
         function submitFileVaultTag() {
             const input = document.getElementById('file-vault-tag-input');
-            if (input && input.value) {
-                showSystemNotification(`Tag added: ${input.value}`, '#22c55e');
-                input.value = '';
+            const selected = window.selectedFileVaultFile;
+            if (!input || !input.value || !selected || !selected.file) return;
+            const tag = input.value.trim();
+            if (!tag) return;
+            // Add tag to entityDatabase for this file
+            addTag(tag, {
+                type: 'file',
+                sourceKey: `file:${selected.username}:${selected.file.name}`,
+                label: `${selected.username}/${selected.file.name}`,
+                meta: { fileName: selected.file.name, username: selected.username }
+            });
+            // Sync with board card if present
+            const cardId = `file:${selected.username}:${selected.file.name}`;
+            const card = boardState.cards.find(c => c.id === cardId);
+            const normTag = normalizeTagName(tag);
+            if (card && !card.tags.includes(normTag)) {
+                card.tags.push(normTag);
+                saveBoardState();
+                renderInvestigationBoard();
+                updateTagCloud();
             }
+            showSystemNotification(`Tag added: ${tag}`, '#22c55e');
+            input.value = '';
         }
 
         function sendFileVaultToBoard() {
-            if (!currentFileVaultUser) {
-                showSystemNotification('No file selection', '#ff6b6b');
+            const selected = window.selectedFileVaultFile;
+            if (!selected || !selected.file) {
+                showSystemNotification('No file selected', '#ff6b6b');
                 return;
             }
-            const { username, name } = currentFileVaultUser;
-            const cardId = `files-${username}`;
-
+            const { username, file } = selected;
+            const cardId = `file:${username}:${file.name}`;
             const existingCard = boardState.cards.find(c => c.id === cardId);
             if (existingCard) {
-                showSystemNotification(`"${name} FILES" already on investigation board`, '#fbbf24');
+                showSystemNotification(`"${file.name}" already on investigation board`, '#fbbf24');
                 openWindow('forensics-window');
                 setTimeout(() => {
                     selectCard(existingCard.id);
@@ -8506,17 +8605,15 @@ Good luck, Investigator.
                 }, 300);
                 return;
             }
-
             const cardData = {
                 id: cardId,
                 sender: username,
-                receiver: username,
-                subject: `${name} FILES`,
-                date: '',
-                body: `File set for ${name} (${username}).`,
+                receiver: 'ARCHIVE',
+                subject: file.name,
+                date: file.date || '',
+                body: file.content || '',
                 type: 'file'
             };
-
             const gridX = 150 + (boardState.cards.length % 8) * 250;
             const gridY = 150 + Math.floor(boardState.cards.length / 8) * 200;
             boardState.cards.push({
@@ -8526,17 +8623,12 @@ Good luck, Investigator.
                 data: cardData,
                 tags: []
             });
-
             // Ensure filters do not hide the new card
             if (boardState.activeFilters && boardState.activeFilters.size > 0) {
                 clearBoardFilters();
             }
-
             saveBoardState();
-            
-            // Add file owner to accessedUsers so loadBoardState() doesn't filter them out
             if (username) accessedUsers.add(username);
-            
             renderInvestigationBoard();
             openWindow('forensics-window');
             setTimeout(() => {
@@ -8544,7 +8636,7 @@ Good luck, Investigator.
                 const cardEl = document.getElementById(`card-${cardId}`);
                 if (cardEl) cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }, 150);
-            showSystemNotification(`📌 "${name} FILES" sent to investigation board`, '#22c55e');
+            showSystemNotification(`📌 "${file.name}" sent to investigation board`, '#22c55e');
         }
 
         function openFileVaultUserSelector() {
@@ -10035,31 +10127,144 @@ Good luck, Investigator.
             const output = document.getElementById('terminal-output');
             const raw = input.value.trim();
             const command = raw.toLowerCase();
-            
+
             if (!command) return;
-            
+
             // Add command to output
             const cmdLine = document.createElement('div');
             cmdLine.className = "text-[var(--accent)]";
             cmdLine.innerText = `${getTerminalPrompt()} ${raw}`;
             output.appendChild(cmdLine);
-            
+
+            // Easter egg: 'gemma' triggers terminal fireworks and restores terminal window
+            if (command === 'gemma') {
+                // Restore and fullscreen the terminal window
+                const terminalWin = document.getElementById('user-access-window');
+                if (terminalWin) {
+                    // If minimized (display:none), show it
+                    if (terminalWin.style.display === 'none' || getComputedStyle(terminalWin).display === 'none') {
+                        terminalWin.style.display = 'flex';
+                    }
+                    // Fullscreen it if not already
+                    if (!terminalWin.classList.contains('fullscreen')) {
+                        terminalWin.classList.add('fullscreen');
+                    }
+                    // Bring to front
+                    if (typeof focusWindow === 'function') focusWindow('user-access-window');
+                }
+                // Fireworks effect
+                const fireworksContainer = document.createElement('div');
+                fireworksContainer.style.position = 'relative';
+                fireworksContainer.style.width = '100%';
+                fireworksContainer.style.height = '100%';
+                fireworksContainer.style.margin = '16px 0';
+                fireworksContainer.style.background = 'black';
+                fireworksContainer.style.border = '1px solid #444';
+                fireworksContainer.style.overflow = 'hidden';
+                const canvas = document.createElement('canvas');
+                canvas.width = 600;
+                canvas.height = 300;
+                canvas.style.width = '100%';
+                canvas.style.height = '100%';
+                fireworksContainer.appendChild(canvas);
+                output.appendChild(fireworksContainer);
+                output.scrollTop = output.scrollHeight;
+                input.value = '';
+                input.focus();
+                updateTerminalPrompt();
+
+                // Fireworks animation
+                (function fireworkShow() {
+                    const ctx = canvas.getContext('2d');
+                    const W = canvas.width;
+                    const H = canvas.height;
+                    let particles = [];
+                    function randomColor() {
+                        const colors = ['#ffec3d','#ff4d4f','#40a9ff','#73d13d','#ff85c0','#ffd666','#bae637','#36cfc9','#9254de'];
+                        return colors[Math.floor(Math.random()*colors.length)];
+                    }
+                    function createFirework() {
+                        const x = Math.random() * (W * 0.8) + W * 0.1;
+                        const y = Math.random() * (H * 0.3) + H * 0.1;
+                        const count = 32 + Math.floor(Math.random()*16);
+                        for (let i = 0; i < count; i++) {
+                            const angle = (Math.PI * 2) * (i / count);
+                            const speed = 2 + Math.random() * 2;
+                            particles.push({
+                                x, y,
+                                vx: Math.cos(angle) * speed,
+                                vy: Math.sin(angle) * speed,
+                                alpha: 1,
+                                color: randomColor(),
+                                decay: 0.012 + Math.random()*0.012
+                            });
+                        }
+                    }
+                    let frame = 0;
+                    function animate() {
+                        ctx.globalAlpha = 0.18;
+                        ctx.fillStyle = '#000';
+                        ctx.fillRect(0,0,W,H);
+                        ctx.globalAlpha = 1;
+                        if (frame % 24 === 0) createFirework();
+                        for (let i = particles.length-1; i >= 0; i--) {
+                            const p = particles[i];
+                            ctx.save();
+                            ctx.globalAlpha = p.alpha;
+                            ctx.beginPath();
+                            ctx.arc(p.x, p.y, 2.2, 0, Math.PI*2);
+                            ctx.fillStyle = p.color;
+                            ctx.shadowColor = p.color;
+                            ctx.shadowBlur = 8;
+                            ctx.fill();
+                            ctx.restore();
+                            p.x += p.vx;
+                            p.y += p.vy;
+                            p.vy += 0.03; // gravity
+                            p.alpha -= p.decay;
+                            if (p.alpha <= 0) particles.splice(i,1);
+                        }
+                        frame++;
+                        if (frame < 500) {
+                            requestAnimationFrame(animate);
+                        } else {
+                            // Fade out and remove
+                            fireworksContainer.style.transition = 'opacity 1s';
+                            fireworksContainer.style.opacity = '0';
+                            setTimeout(()=>fireworksContainer.remove(), 1200);
+                        }
+                    }
+                    animate();
+                })();
+                // Show a message
+                const msg = document.createElement('div');
+                msg.style.color = '#ffd666';
+                msg.style.fontFamily = 'monospace';
+                msg.style.fontSize = '1.1em';
+                msg.style.margin = '8px 0 0 0';
+                msg.style.textAlign = 'left';
+                msg.textContent = '✨ TAKE A MOMENT TO CELEBRATE GEMMA! ✨';
+                output.appendChild(msg);
+                output.scrollTop = output.scrollHeight;
+                return;
+            }
+
             // Process command
             const result = processTerminalCommand(command);
-            
+
             // Add result with animation
             const resultLine = document.createElement('div');
             resultLine.className = result.className || 'text-[var(--text-dim)]';
             output.appendChild(resultLine);
-            
+
             // Animate text appearing
             if (result.message) {
                 animateTerminalText(resultLine, result.message);
             }
-            
+
             // Auto scroll
             output.scrollTop = output.scrollHeight;
-            
+
             // Clear input
             input.value = '';
             input.focus();
@@ -10292,6 +10497,7 @@ Good luck, Investigator.
             updateZoomDisplay();
         }
 
+
         function toggleFullscreenSetting() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
@@ -10301,6 +10507,19 @@ Good luck, Investigator.
                 document.exitFullscreen();
             }
         }
+
+            window.toggleFullscreenSetting = toggleFullscreenSetting;
+
+        // Keep UI in sync with fullscreen state (Escape, browser controls, etc)
+        document.addEventListener('fullscreenchange', function() {
+            if (document.fullscreenElement) {
+                console.log('Entered fullscreen');
+                // Optionally update UI here (e.g., add a class to body)
+            } else {
+                console.log('Exited fullscreen');
+                // Optionally update UI here (e.g., remove a class from body)
+            }
+        });
 
         function adjustZoom(delta) {
             currentZoom = Math.max(50, Math.min(200, currentZoom + delta));
@@ -11118,8 +11337,9 @@ Good luck, Investigator.
                     document.getElementById('terminal-output').appendChild(catContainer);
                     return { message: '' };
 
+                //   https://www.youtube.com/watch?v=T0ocAPOGs6U  
                 case 'xfiles':
-                    // Display xfiles.txt ASCII art directly in the terminal
+                    // Display xfiles.txt ASCII art directly in the terminal and play xfiles.mp3
                     fetch('assets/txts/xfiles.txt')
                         .then(response => response.text())
                         .then(art => {
@@ -11134,6 +11354,21 @@ Good luck, Investigator.
                             pre.textContent = art;
                             document.getElementById('terminal-output').appendChild(pre);
                             document.getElementById('terminal-output').scrollTop = document.getElementById('terminal-output').scrollHeight;
+
+                            // Play xfiles.mp3 audio
+                            let audio = document.getElementById('xfiles-audio');
+                            if (audio) {
+                                audio.pause();
+                                audio.currentTime = 0;
+                                audio.parentNode.removeChild(audio);
+                            }
+                            audio = document.createElement('audio');
+                            audio.id = 'xfiles-audio';
+                            audio.src = 'assets/audio/xfiles.mp3';
+                            audio.volume = 0.7;
+                            audio.autoplay = true;
+                            audio.style.display = 'none';
+                            document.body.appendChild(audio);
                         });
                     return { message: '' };
 

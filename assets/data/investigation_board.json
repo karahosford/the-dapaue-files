@@ -1,0 +1,11 @@
+[
+  {
+    "type": "email",
+    "id": "email001",
+    "user": "D_PARKER",
+    "subject": "Shift Schedule",
+    "body": "Your next shift starts Monday at 8am.",
+    "timestamp": "2026-01-17T09:00:00Z",
+    "attachments": ["schedule.pdf"]
+  }
+]

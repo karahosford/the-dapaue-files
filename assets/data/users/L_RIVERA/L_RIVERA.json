@@ -1,0 +1,10 @@
+{
+    "username":  "L_RIVERA",
+    "name":  "Lisa Rivera",
+    "department":  "Director",
+    "securityLevel":  5,
+    "privilege_level":  5,
+    "accessCode":  "server5pass",
+    "status":  "ACTIVE",
+    "emails":  []
+}

@@ -1,0 +1,10 @@
+{
+    "username":  "D_PARKER",
+    "name":  "David Parker",
+    "department":  "Field Operations",
+    "securityLevel":  1,
+    "privilege_level":  1,
+    "accessCode":  "password",
+    "status":  "ACTIVE",
+    "emails":  []
+}
