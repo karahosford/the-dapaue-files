@@ -7701,26 +7701,26 @@ function signInAsDParker() {
         }
         
         function startDrag(e, windowId) {
-            if (e.target.className.includes('window-btn')) return;
-            
+	    if (e.target.className.includes('window-btn')) return;
+
             draggedWindow = document.getElementById(windowId);
             const rect = draggedWindow.getBoundingClientRect();
-            
+
             // Support both mouse and touch events
             const clientX = e.clientX || (e.touches && e.touches[0].clientX);
             const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-            
+
             dragOffsetX = clientX - rect.left;
             dragOffsetY = clientY - rect.top;
-            
+
             // Add both mouse and touch listeners
             document.addEventListener('mousemove', onDrag);
             document.addEventListener('mouseup', stopDrag);
             document.addEventListener('touchmove', onDrag, { passive: false });
             document.addEventListener('touchend', stopDrag);
-            
+
             focusWindow(windowId);
-            
+
             // Prevent default to avoid scrolling on touch
             if (e.touches) {
                 e.preventDefault();
@@ -7729,39 +7729,46 @@ function signInAsDParker() {
         
         function onDrag(e) {
             if (!draggedWindow) return;
-            
+
             // Support both mouse and touch events
             const clientX = e.clientX || (e.touches && e.touches[0].clientX);
             const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-            
+
             let x = clientX - dragOffsetX;
             let y = clientY - dragOffsetY;
-            
+
             const rect = draggedWindow.getBoundingClientRect();
             const windowWidth = rect.width;
             const windowHeight = rect.height;
-            
-            // Prevent window from going above the screen
-            if (y < 0) {
-                y = 0;
+
+            // Special: Forensics window cannot have any edge off the desktop
+            if (draggedWindow.id === 'forensics-window') {
+                // Clamp so no edge goes off screen
+                x = Math.max(0, Math.min(x, window.innerWidth - windowWidth));
+                y = Math.max(0, Math.min(y, window.innerHeight - windowHeight - 40)); // -40 for taskbar
+            } else {
+                // Prevent window from going above the screen
+                if (y < 0) {
+                    y = 0;
+                }
+
+                // Check if window is going too far off screen (more than 80% hidden)
+                const visibleThreshold = 0.2; // At least 20% must be visible
+
+                if (x + windowWidth * visibleThreshold < 0 || 
+                    x > window.innerWidth - windowWidth * visibleThreshold ||
+                    y > window.innerHeight - windowHeight * visibleThreshold - 40) { // -40 for taskbar
+
+                    // Center the window smoothly
+                    centerWindowSmoothly(draggedWindow);
+                    stopDrag();
+                    return;
+                }
             }
-            
-            // Check if window is going too far off screen (more than 80% hidden)
-            const visibleThreshold = 0.2; // At least 20% must be visible
-            
-            if (x + windowWidth * visibleThreshold < 0 || 
-                x > window.innerWidth - windowWidth * visibleThreshold ||
-                y > window.innerHeight - windowHeight * visibleThreshold - 40) { // -40 for taskbar
-                
-                // Center the window smoothly
-                centerWindowSmoothly(draggedWindow);
-                stopDrag();
-                return;
-            }
-            
+
             draggedWindow.style.left = x + 'px';
             draggedWindow.style.top = y + 'px';
-            
+
             // Prevent default to avoid scrolling on touch
             if (e.touches) {
                 e.preventDefault();
