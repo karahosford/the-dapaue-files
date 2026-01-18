@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Game Content Admin Tool</title>
+    <link rel="stylesheet" href="who-mask.css">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        .container { max-width: 600px; margin: auto; }
+        label { display: block; margin-top: 1em; }
+        select, input, textarea, button { width: 100%; margin-top: 0.5em; }
+        .output { margin-top: 2em; background: #f4f4f4; padding: 1em; border-radius: 5px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Game Content Admin Tool</h1>
+    <form id="contentForm">
+        <div id="userInfo" style="margin-bottom:1em;"></div>
+        <label for="userSelect">Select User:</label>
+        <select id="userSelect" required></select>
+
+        <label for="contentType">Content Type:</label>
+        <select id="contentType" required>
+            <option value="email">Email</option>
+            <option value="file">File</option>
+        </select>
+
+
+
+        <div id="entriesSection" style="display:none;">
+            <h3>Existing Entries</h3>
+            <ul id="entriesList"></ul>
+        </div>
+
+        <h3>Add/Edit Entry</h3>
+        <div id="entryFields"></div>
+        <button type="button" id="addEntryBtn">Add Entry</button>
+        <button type="submit">Export JSON</button>
+    </form>
+    <div class="output" id="output" style="display:none;"></div>
+</div>
+<script>
+// List of users (should match folder names in assets/data/users/)
+
+// User to level mapping (from staff_profile structure)
+const userLevels = {
+    'level-1': ["D_PARKER", "E_CHEN", "J_MITCHELL", "M_JOHNSON", "S_ANDERSON"],
+    'level-2': ["A_WHITE", "C_LEE", "J_MARTINEZ", "K_BROWN", "L_GARCIA", "M_ROBINSON", "N_THOMPSON", "R_WELLS", "T_WILSON"],
+    'level-3': ["A_DAVIS", "B_MARTIN", "D_ANDERSON", "D_THOMAS", "G_RODRIGUEZ", "J_KING", "J_NELSON", "K_LOPEZ", "N_MOORE", "P_JACKSON", "R_LEWIS", "R_TAYLOR", "S_CLARK", "S_HARRIS"],
+    'level-4': ["A_SANCHEZ", "C_HALL", "D_ALLEN", "M_HERNANDEZ", "R_YOUNG", "S_WALKER"],
+    'level-5': ["L_RIVERA", "M_COOPER"]
+};
+const users = [].concat(...Object.values(userLevels));
+
+// Precomputed email/file JSON file lists (from workspace)
+const userEmailFiles = {
+    "A_DAVIS": {emails: true, files: true}, "A_SANCHEZ": {emails: true, files: true}, "A_WHITE": {emails: true, files: true}, "B_MARTIN": {emails: true, files: true}, "C_HALL": {emails: true, files: true}, "C_LEE": {emails: true, files: true}, "D_ALLEN": {emails: true, files: true}, "D_ANDERSON": {emails: true, files: true}, "D_PARKER": {emails: true, files: true}, "D_THOMAS": {emails: true, files: true}, "E_CHEN": {emails: true, files: true}, "G_RODRIGUEZ": {emails: true, files: true}, "J_KING": {emails: true, files: true}, "J_MARTINEZ": {emails: true, files: true}, "J_MITCHELL": {emails: true, files: true}, "J_NELSON": {emails: true, files: true}, "K_BROWN": {emails: true, files: true}, "K_LOPEZ": {emails: true, files: true}, "L_GARCIA": {emails: true, files: true}, "L_RIVERA": {emails: true, files: true}, "M_COOPER": {emails: true, files: true}, "M_HERNANDEZ": {emails: true, files: true}, "M_JOHNSON": {emails: true, files: true}, "M_ROBINSON": {emails: true, files: true}, "N_MOORE": {emails: true, files: true}, "N_THOMPSON": {emails: true, files: true}, "P_JACKSON": {emails: true, files: true}, "R_LEWIS": {emails: true, files: true}, "R_TAYLOR": {emails: true, files: true}, "R_WELLS": {emails: true, files: true}, "R_YOUNG": {emails: true, files: true}, "S_ANDERSON": {emails: true, files: true}, "S_CLARK": {emails: true, files: true}, "S_HARRIS": {emails: true, files: true}, "S_WALKER": {emails: true, files: true}, "T_WILSON": {emails: true, files: true}
+};
+
+// Helper to get user level
+function getUserLevel(user) {
+    for (const [level, arr] of Object.entries(userLevels)) {
+        if (arr.includes(user)) return level.replace('level-', 'Level ');
+    }
+    return 'Unknown';
+}
+
+// Helper to count emails/files (async fetch)
+async function getUserCounts(user) {
+    let emails = 0, files = 0;
+    // Try to fetch the JSON files and count entries
+    try {
+        if (userEmailFiles[user]?.emails) {
+            const res = await fetch(`assets/data/users/${user}/${user}_emails.json`);
+            if (res.ok) {
+                const arr = await res.json();
+                emails = Array.isArray(arr) ? arr.length : 0;
+            }
+        }
+        if (userEmailFiles[user]?.files) {
+            const res = await fetch(`assets/data/users/${user}/${user}_files.json`);
+            if (res.ok) {
+                const arr = await res.json();
+                files = Array.isArray(arr) ? arr.length : 0;
+            }
+        }
+    } catch (e) {}
+    return {emails, files};
+}
+
+const userSelect = document.getElementById('userSelect');
+
+users.forEach(user => {
+    const opt = document.createElement('option');
+    opt.value = user;
+    opt.textContent = user;
+    userSelect.appendChild(opt);
+});
+
+const userInfo = document.getElementById('userInfo');
+
+async function updateUserInfo() {
+    const user = userSelect.value;
+    const level = getUserLevel(user);
+    userInfo.innerHTML = 'Loading...';
+    const {emails, files} = await getUserCounts(user);
+    userInfo.innerHTML = `<b>User:</b> ${user} &nbsp; <b>Level:</b> ${level} &nbsp; <b>Emails:</b> ${emails} &nbsp; <b>Files:</b> ${files}`;
+}
+
+userSelect.addEventListener('change', updateUserInfo);
+
+// Initial info
+userSelect.selectedIndex = 0;
+updateUserInfo();
+
+const form = document.getElementById('contentForm');
+const output = document.getElementById('output');
+const contentType = document.getElementById('contentType');
+
+const entriesSection = document.getElementById('entriesSection');
+const entriesList = document.getElementById('entriesList');
+const entryFields = document.getElementById('entryFields');
+const addEntryBtn = document.getElementById('addEntryBtn');
+
+let entries = [];
+let editIndex = null;
+
+function renderEntryFields(data = {}, type = contentType.value) {
+    entryFields.innerHTML = '';
+    if (type === 'email') {
+        entryFields.innerHTML = `
+            <label>Subject:<input id="emailSubject" value="${data.subject || ''}" required></label>
+            <label>From:<input id="emailFrom" value="${data.from || ''}"></label>
+            <label>To:<input id="emailTo" value="${data.to || ''}"></label>
+            <label>Date:<input id="emailDate" value="${data.date || ''}"></label>
+            <label>Body:<textarea id="emailBody" rows="4">${data.body || ''}</textarea></label>
+            <label>Embed Image (URL or base64):<input id="emailImage" value="${data.image || ''}" placeholder="Paste image URL or base64"></label>
+        `;
+    } else {
+        entryFields.innerHTML = `
+            <label>File Name:<input id="fileName" value="${data.name || ''}" required></label>
+            <label>Description:<input id="fileDesc" value="${data.description || ''}"></label>
+            <label>Content:<textarea id="fileContent" rows="4">${data.content || ''}</textarea></label>
+            <label>Embed Image (URL or base64):<input id="fileImage" value="${data.image || ''}" placeholder="Paste image URL or base64"></label>
+        `;
+    }
+}
+
+function renderEntries() {
+    entriesList.innerHTML = '';
+    if (entries.length === 0) {
+        entriesSection.style.display = 'none';
+        return;
+    }
+    entriesSection.style.display = 'block';
+    entries.forEach((entry, idx) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<pre>${JSON.stringify(entry, null, 2)}</pre>
+            <button type="button" onclick="editEntry(${idx})">Edit</button>
+            <button type="button" onclick="deleteEntry(${idx})">Delete</button>`;
+        entriesList.appendChild(li);
+    });
+}
+
+window.editEntry = function(idx) {
+    editIndex = idx;
+    renderEntryFields(entries[idx], contentType.value);
+    addEntryBtn.textContent = 'Update Entry';
+};
+
+window.deleteEntry = function(idx) {
+    entries.splice(idx, 1);
+    renderEntries();
+    renderEntryFields({}, contentType.value);
+    addEntryBtn.textContent = 'Add Entry';
+    editIndex = null;
+};
+
+addEntryBtn.addEventListener('click', function() {
+    const type = contentType.value;
+    let entry;
+    if (type === 'email') {
+        entry = {
+            subject: document.getElementById('emailSubject').value,
+            from: document.getElementById('emailFrom').value,
+            to: document.getElementById('emailTo').value,
+            date: document.getElementById('emailDate').value,
+            body: document.getElementById('emailBody').value,
+            image: document.getElementById('emailImage').value
+        };
+        if (!entry.image) delete entry.image;
+    } else {
+        entry = {
+            name: document.getElementById('fileName').value,
+            description: document.getElementById('fileDesc').value,
+            content: document.getElementById('fileContent').value,
+            image: document.getElementById('fileImage').value
+        };
+        if (!entry.image) delete entry.image;
+    }
+    if (editIndex !== null) {
+        entries[editIndex] = entry;
+        editIndex = null;
+        addEntryBtn.textContent = 'Add Entry';
+    } else {
+        entries.push(entry);
+    }
+    renderEntries();
+    renderEntryFields({}, type);
+});
+
+
+async function loadUserData() {
+    const user = userSelect.value;
+    const type = contentType.value;
+    try {
+        const res = await fetch(`/api/user-data/${user}/${type === 'email' ? 'emails' : 'files'}`);
+        if (res.ok) {
+            const arr = await res.json();
+            if (Array.isArray(arr)) {
+                entries = arr;
+            } else {
+                entries = [];
+            }
+        } else {
+            entries = [];
+        }
+    } catch (e) {
+        entries = [];
+    }
+    renderEntries();
+    renderEntryFields({}, type);
+}
+
+contentType.addEventListener('change', loadUserData);
+userSelect.addEventListener('change', loadUserData);
+
+
+
+
+// Initial render
+loadUserData();
+
+
+form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const user = userSelect.value;
+    const type = contentType.value;
+    output.style.display = 'block';
+    output.textContent = 'Saving...';
+    try {
+        const res = await fetch(`/api/user-data/${user}/${type === 'email' ? 'emails' : 'files'}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(entries)
+        });
+        if (res.ok) {
+            output.textContent = 'Saved successfully!';
+            await loadUserData();
+        } else {
+            output.textContent = 'Failed to save.';
+        }
+    } catch (err) {
+        output.textContent = 'Error saving: ' + err;
+    }
+});
+
+
+// Download function is now optional, but can be restored if needed
+</script>
+</body>
+</html>

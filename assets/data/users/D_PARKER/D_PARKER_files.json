@@ -1,34 +1,34 @@
 [
   {
-    "name": "welcome.pdf",
     "content": "Welcome to Dapaue, David Parker!",
+    "folder": "DOCUMENTS",
     "modified": "2026-01-17 09:00:00",
-    "type": "application/pdf",
+    "name": "welcome.pdf",
     "security": "STANDARD_ACCESS",
-    "folder": "DOCUMENTS"
+    "type": "application/pdf"
   },
   {
-    "name": "security_guidelines.txt",
     "content": "Security guidelines for new staff.",
+    "folder": "DOCUMENTS",
     "modified": "2026-01-17 10:00:00",
-    "type": "text/plain",
+    "name": "security_guidelines.txt",
     "security": "STANDARD_ACCESS",
-    "folder": "DOCUMENTS"
+    "type": "text/plain"
   },
   {
-    "name": "project_notes.txt",
     "content": "Project X: Initial notes and ideas.",
+    "folder": "PROJECT X",
     "modified": "2026-01-17 11:00:00",
-    "type": "text/plain",
+    "name": "project_notes.txt",
     "security": "STANDARD_ACCESS",
-    "folder": "PROJECT X"
+    "type": "text/plain"
   },
   {
-    "name": "downloaded_tool.exe",
     "content": "[BINARY DATA]",
+    "folder": "DOWNLOADS",
     "modified": "2026-01-17 12:00:00",
-    "type": "application/octet-stream",
+    "name": "downloaded_tool.exe",
     "security": "STANDARD_ACCESS",
-    "folder": "DOWNLOADS"
+    "type": "application/octet-stream"
   }
 ]

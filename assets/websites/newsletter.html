@@ -29,12 +29,12 @@
   <script>
     // Fetch the index of posts
     async function fetchPosts() {
-      const res = await fetch('assets/newsletter/index.json');
+      const res = await fetch('../newsletter/index.json');
       return res.json();
     }
     // Fetch and parse a markdown file
     async function fetchMarkdown(filename) {
-      const res = await fetch('assets/newsletter/' + filename);
+      const res = await fetch('../newsletter/' + filename);
       return res.text();
     }
     // Parse frontmatter (YAML-like)

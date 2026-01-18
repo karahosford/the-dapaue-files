@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Circuit Connection Mini-Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { background: #181818; color: #e0e0e0; font-family: 'Fira Code', monospace; margin: 0; padding: 0; }
+    .container { max-width: 400px; margin: 40px auto; background: #232323; border-radius: 8px; box-shadow: 0 2px 16px #0008; padding: 32px; }
+    h2 { color: #fff; text-align: center; }
+    .grid { display: grid; grid-template-columns: repeat(5, 40px); grid-gap: 6px; justify-content: center; margin: 24px 0; }
+    .cell { width: 40px; height: 40px; background: #333; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; }
+    .cell.path { background: #60a5fa; }
+    .cell.start { background: #22c55e; }
+    .cell.end { background: #fbbf24; }
+    .cell.obstacle { background: #ef4444; cursor: not-allowed; }
+    .controls { text-align: center; margin-top: 16px; }
+    button { background: #60a5fa; color: #fff; border: none; border-radius: 4px; padding: 8px 16px; font-size: 1em; cursor: pointer; }
+    button:hover { background: #2563eb; }
+    .msg { text-align: center; margin-top: 12px; color: #fbbf24; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Circuit Connection</h2>
+    <div class="grid" id="grid"></div>
+    <div class="controls">
+      <button onclick="resetGame()">Reset</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+  <script>
+    // Grid settings
+    const size = 5;
+    const start = { x: 0, y: 2 };
+    const end = { x: 4, y: 2 };
+    const obstacles = [
+      { x: 2, y: 1 },
+      { x: 2, y: 2 },
+      { x: 2, y: 3 }
+    ];
+    let path = [];
+    let gameOver = false;
+
+    function isObstacle(x, y) {
+      return obstacles.some(o => o.x === x && o.y === y);
+    }
+
+    function isStart(x, y) {
+      return x === start.x && y === start.y;
+    }
+
+    function isEnd(x, y) {
+      return x === end.x && y === end.y;
+    }
+
+    function cellKey(x, y) {
+      return `${x},${y}`;
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          if (isStart(x, y)) cell.classList.add('start');
+          if (isEnd(x, y)) cell.classList.add('end');
+          if (isObstacle(x, y)) cell.classList.add('obstacle');
+          if (path.some(p => p.x === x && p.y === y)) cell.classList.add('path');
+          cell.onclick = () => handleCellClick(x, y);
+          grid.appendChild(cell);
+        }
+      }
+    }
+
+    function handleCellClick(x, y) {
+      if (gameOver) return;
+      if (isObstacle(x, y)) return;
+      if (path.length === 0) {
+        if (!isStart(x, y)) return;
+        path.push({ x, y });
+      } else {
+        const last = path[path.length - 1];
+        if (Math.abs(last.x - x) + Math.abs(last.y - y) !== 1) return; // Only adjacent
+        if (path.some(p => p.x === x && p.y === y)) return; // No revisiting
+        path.push({ x, y });
+      }
+      renderGrid();
+      checkWin();
+    }
+
+    function checkWin() {
+      const msg = document.getElementById('msg');
+      if (path.length && isEnd(path[path.length - 1].x, path[path.length - 1].y)) {
+        gameOver = true;
+        msg.textContent = 'Success! Circuit completed.';
+      } else {
+        msg.textContent = '';
+      }
+    }
+
+    function resetGame() {
+      path = [];
+      gameOver = false;
+      document.getElementById('msg').textContent = '';
+      renderGrid();
+    }
+
+    // Initial render
+    renderGrid();
+  </script>
+</body>
+</html>

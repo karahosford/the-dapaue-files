@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>In-Game Web Browser Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { background: #181818; color: #e0e0e0; font-family: 'Fira Code', monospace; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: #232323; border-radius: 8px; box-shadow: 0 2px 16px #0008; padding: 32px; }
+    h1 { color: #fff; text-align: center; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 1em 0; }
+    a { color: #60a5fa; text-decoration: none; font-size: 1.1em; }
+    a:hover { text-decoration: underline; }
+    .desc { color: #aaa; font-size: 0.95em; margin-left: 1.5em; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>In-Game Web Browser</h1>
+    <ul id="site-list">
+      <li>Loading...</li>
+    </ul>
+  </div>
+  <script>
+    // List of known sites and descriptions (add more as needed)
+    const sites = [
+      { file: 'newsletter.html', name: 'DAPAUE Newsletter', desc: 'Read in-game news and updates.' },
+      { file: 'circuit-connection.html', name: 'Circuit Connection Mini-Game', desc: 'Original prototype hacking mini-game.' },
+      { file: 'circuit-hack.html', name: 'Circuit Hack (Enhanced)', desc: 'Neon cyberpunk hacking mini-game.' },
+      { file: 'dapaue-fake-website.html', name: 'DAPAUE Fake Website', desc: 'In-universe fake company site.' }
+    ];
+    // Dynamically check which files exist (optional: for static, just list them)
+    function renderSites() {
+      const ul = document.getElementById('site-list');
+      ul.innerHTML = '';
+      for (const site of sites) {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = site.file;
+        a.textContent = site.name;
+        a.target = '_self';
+        li.appendChild(a);
+        if (site.desc) {
+          const desc = document.createElement('span');
+          desc.className = 'desc';
+          desc.textContent = site.desc;
+          li.appendChild(desc);
+        }
+        ul.appendChild(li);
+      }
+    }
+    renderSites();
+  </script>
+</body>
+</html>

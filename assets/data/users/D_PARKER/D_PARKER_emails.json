@@ -1,28 +1,26 @@
 [
   {
-    "id": "DP-001",
-    "from": "admin@dapaue.sys",
-    "to": "D_PARKER@dapaue.sys",
-    "subject": "Welcome to Dapaue",
-    "date": "2026-01-17 09:00:00",
-    "category": "inbox",
-    "encryption": "STANDARD",
-    "signal": "ACTIVE",
-    "sender": "admin",
-    "receiver": "D_PARKER",
-    "body": "Welcome David Parker! Your account is now active."
-  },
+  "subject": "Welcome to Dapaue",
+  "from": "admin@dapaue.sys",
+  "to": "D_PARKER@dapaue.sys",
+  "date": "2026-01-17 09:00:00",
+  "body": "Hi David,\nHere's the file you requested, do let me know if you need anything more.\n\nRegards,\nKara\n\n",
+  "gallery": [ 
+    "assets/images/p1.png",
+    "assets/images/p2.png"
+  ]
+},
   {
-    "id": "DP-002",
-    "from": "security@dapaue.sys",
-    "to": "D_PARKER@dapaue.sys",
-    "subject": "Security Notice",
-    "date": "2026-01-17 10:00:00",
+    "body": "Please review the attached security guidelines.",
     "category": "inbox",
+    "date": "2026-01-17 10:00:00",
     "encryption": "STANDARD",
-    "signal": "ACTIVE",
-    "sender": "security",
+    "from": "security@dapaue.sys",
+    "id": "DP-002",
     "receiver": "D_PARKER",
-    "body": "Please review the attached security guidelines."
+    "sender": "security",
+    "signal": "ACTIVE",
+    "subject": "Security Notice",
+    "to": "D_PARKER@dapaue.sys"
   }
 ]

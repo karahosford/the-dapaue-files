@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Circuit Hack Mini-Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #0a0a1a;
+      color: #e0e0e0;
+      font-family: 'Fira Code', monospace;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: rgba(20, 20, 40, 0.98);
+      border-radius: 16px;
+      box-shadow: 0 0 32px #00f2ff44, 0 0 8px #00f2ff22;
+      padding: 36px 32px 28px 32px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+    }
+    h2 {
+      color: #00f2ff;
+      letter-spacing: 2px;
+      text-shadow: 0 0 8px #00f2ff88;
+      margin-bottom: 0.5em;
+    }
+    .instructions {
+      color: #b0e0ff;
+      font-size: 1em;
+      margin-bottom: 1.5em;
+      text-shadow: 0 0 4px #00f2ff33;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(7, 38px);
+      grid-gap: 8px;
+      justify-content: center;
+      margin: 0 auto 24px auto;
+      background: #101020;
+      border-radius: 10px;
+      box-shadow: 0 0 16px #00f2ff22;
+      padding: 12px;
+      position: relative;
+    }
+    .cell {
+      width: 38px;
+      height: 38px;
+      background: #181828;
+      border-radius: 6px;
+      box-shadow: 0 0 8px #00f2ff11;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s, box-shadow 0.15s;
+      position: relative;
+      z-index: 1;
+    }
+    .cell.start {
+      background: #00ffb3;
+      box-shadow: 0 0 16px #00ffb3cc, 0 0 4px #00ffb388;
+      cursor: pointer;
+      animation: pulse 1.2s infinite alternate;
+    }
+    .cell.end {
+      background: #ff00c8;
+      box-shadow: 0 0 16px #ff00c8cc, 0 0 4px #ff00c888;
+      animation: pulse 1.2s infinite alternate;
+      animation-delay: 0.6s;
+    }
+    .cell.path {
+      background: #00f2ff;
+      box-shadow: 0 0 12px #00f2ffcc, 0 0 2px #00f2ff88;
+      animation: path-glow 0.5s;
+    }
+    .cell.obstacle {
+      background: #ff2d55;
+      box-shadow: 0 0 12px #ff2d55cc, 0 0 2px #ff2d5588;
+      cursor: not-allowed;
+    }
+    .cell.locked {
+      background: #ffb300;
+      box-shadow: 0 0 12px #ffb300cc, 0 0 2px #ffb30088;
+      cursor: not-allowed;
+      position: relative;
+    }
+    .cell.locked::after {
+      content: '\1F512';
+      font-size: 1.2em;
+      color: #fff;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.8;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 8px #00f2ff44, 0 0 2px #00f2ff22; }
+      100% { box-shadow: 0 0 24px #00f2ffcc, 0 0 8px #00f2ff88; }
+    }
+    @keyframes path-glow {
+      from { box-shadow: 0 0 0 #00f2ff00; }
+      to { box-shadow: 0 0 12px #00f2ffcc, 0 0 2px #00f2ff88; }
+    }
+    .controls { margin-top: 10px; }
+    button {
+      background: #00f2ff;
+      color: #181818;
+      border: none;
+      border-radius: 4px;
+      padding: 8px 18px;
+      font-size: 1em;
+      font-family: inherit;
+      cursor: pointer;
+      margin: 0 6px;
+      box-shadow: 0 2px 8px #00f2ff33;
+      transition: background 0.2s;
+    }
+    button:hover { background: #00b3ff; }
+    .msg {
+      text-align: center;
+      margin-top: 16px;
+      color: #ff00c8;
+      font-size: 1.1em;
+      min-height: 1.5em;
+      text-shadow: 0 0 8px #ff00c888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Circuit Hack</h2>
+    <div class="instructions">Connect <span style="color:#00ffb3">START</span> to <span style="color:#ff00c8">END</span>.<br>Click adjacent cells to create a glowing path.<br>Avoid obstacles and locked nodes!</div>
+    <div class="grid" id="grid"></div>
+    <div class="controls">
+      <button onclick="resetGame()">Reset</button>
+      <button onclick="randomizeObstacles()">Randomize</button>
+    </div>
+    <div class="msg" id="msg"></div>
+  </div>
+  <audio id="sfx-move" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b7b2b2.mp3" preload="auto"></audio>
+  <audio id="sfx-win" src="https://cdn.pixabay.com/audio/2022/10/16/audio_12b6b7b2b2.mp3" preload="auto"></audio>
+  <script>
+    // Grid settings
+    const size = 7;
+    const start = { x: 0, y: 3 };
+    const end = { x: 6, y: 3 };
+    let obstacles = [
+      { x: 2, y: 2 }, { x: 2, y: 3 }, { x: 2, y: 4 },
+      { x: 4, y: 1 }, { x: 4, y: 2 }, { x: 4, y: 3 }, { x: 4, y: 4 }, { x: 4, y: 5 }
+    ];
+    let locked = [ { x: 3, y: 1 }, { x: 3, y: 5 } ];
+    let path = [];
+    let gameOver = false;
+
+    function isObstacle(x, y) {
+      return obstacles.some(o => o.x === x && o.y === y);
+    }
+    function isLocked(x, y) {
+      return locked.some(l => l.x === x && l.y === y);
+    }
+    function isStart(x, y) {
+      return x === start.x && y === start.y;
+    }
+    function isEnd(x, y) {
+      return x === end.x && y === end.y;
+    }
+    function cellKey(x, y) {
+      return `${x},${y}`;
+    }
+    function renderGrid() {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          if (isStart(x, y)) cell.classList.add('start');
+          if (isEnd(x, y)) cell.classList.add('end');
+          if (isObstacle(x, y)) cell.classList.add('obstacle');
+          if (isLocked(x, y)) cell.classList.add('locked');
+          if (path.some(p => p.x === x && p.y === y)) cell.classList.add('path');
+          cell.onclick = () => handleCellClick(x, y);
+          grid.appendChild(cell);
+        }
+      }
+    }
+    function handleCellClick(x, y) {
+      if (gameOver) return;
+      if (isObstacle(x, y) || isLocked(x, y)) return;
+      if (path.length === 0) {
+        if (!isStart(x, y)) return;
+        path.push({ x, y });
+        playSfx('move');
+      } else {
+        const last = path[path.length - 1];
+        if (Math.abs(last.x - x) + Math.abs(last.y - y) !== 1) return; // Only adjacent
+        if (path.some(p => p.x === x && p.y === y)) return; // No revisiting
+        path.push({ x, y });
+        playSfx('move');
+      }
+      renderGrid();
+      checkWin();
+    }
+    function checkWin() {
+      const msg = document.getElementById('msg');
+      if (path.length && isEnd(path[path.length - 1].x, path[path.length - 1].y)) {
+        gameOver = true;
+        msg.textContent = 'ACCESS GRANTED! Circuit complete.';
+        playSfx('win');
+      } else {
+        msg.textContent = '';
+      }
+    }
+    function resetGame() {
+      path = [];
+      gameOver = false;
+      document.getElementById('msg').textContent = '';
+      renderGrid();
+    }
+    function randomizeObstacles() {
+      // Randomly place obstacles and locked nodes, but keep start/end clear
+      obstacles = [];
+      locked = [];
+      for (let i = 0; i < 10; i++) {
+        let x, y;
+        do {
+          x = Math.floor(Math.random() * size);
+          y = Math.floor(Math.random() * size);
+        } while ((isStart(x, y) || isEnd(x, y) || isObstacle(x, y)));
+        obstacles.push({ x, y });
+      }
+      for (let i = 0; i < 3; i++) {
+        let x, y;
+        do {
+          x = Math.floor(Math.random() * size);
+          y = Math.floor(Math.random() * size);
+        } while (isStart(x, y) || isEnd(x, y) || isObstacle(x, y) || isLocked(x, y));
+        locked.push({ x, y });
+      }
+      resetGame();
+    }
+    function playSfx(type) {
+      let el = null;
+      if (type === 'move') el = document.getElementById('sfx-move');
+      if (type === 'win') el = document.getElementById('sfx-win');
+      if (el) {
+        el.currentTime = 0;
+        el.play();
+      }
+    }
+    renderGrid();
+  </script>
+</body>
+</html>
