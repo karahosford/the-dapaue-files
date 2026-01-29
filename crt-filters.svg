@@ -1,0 +1,6 @@
+<svg id="crt-filters" xmlns="http://www.w3.org/2000/svg">
+  <filter id="crt-barrel-distortion">
+    <feImage result="src" xlink:href=""/>
+    <feDisplacementMap in2="src" in="SourceGraphic" scale="6" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>

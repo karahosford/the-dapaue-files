@@ -1,0 +1,54 @@
+{
+  "name": "the-dapaue-files",
+  "version": "1.0.0",
+  "description": "```\r ████████████████████████████████████████████████████████\r █                                                      █\r █  [!] CLASSIFIED ARCHIVE ACCESS POINT                 █\r █  [!] UNAUTHORIZED ACCESS IS PROHIBITED               █\r █                                                      █\r █  LOCATION: SECTOR-99 SERVER FARM                     █\r █  STATUS:   ABANDONED [SINCE 2099-04-14]              █\r █  SECURITY: DEGRADED                                  █\r █                                                      █\r ████████████████████████████████████████████████████████\r ```",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+    "build": {
+      "appId": "com.the-dapaue-files.app",
+      "productName": "DAPAUE",
+      "files": [
+        "**/*",
+        "!node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+        "!**/.*",
+        "!**/test{,s}/**",
+        "!**/*.map"
+      ],
+      "directories": {
+        "buildResources": "assets/images"
+      },
+      "win": {
+        "target": "nsis",
+        "icon": "assets/images/logo.ico"
+      },
+      "mac": {
+        "target": "dmg",
+        "icon": "assets/images/logo.svg"
+      },
+      "linux": {
+        "target": "AppImage",
+        "icon": "assets/images/logo.svg"
+      }
+    },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karahosford/the-dapaue-files.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/karahosford/the-dapaue-files/issues"
+  },
+  "homepage": "https://github.com/karahosford/the-dapaue-files#readme",
+  "devDependencies": {
+    "electron": "^40.0.0",
+    "electron-builder": "^26.4.0"
+  }
+}
