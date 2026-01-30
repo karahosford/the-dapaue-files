@@ -1863,6 +1863,8 @@
         </div>
     <!-- Intro Music Audio -->
     <audio id="intro-music" src="assets/audio/opening.mp3" loop preload="auto"></audio>
+    <!-- Boot Sound Audio -->
+    <audio id="boot-sound" src="assets/audio/boot.mp3" preload="auto"></audio>
     <div id="retro-monitor-bezel" aria-hidden="true">
         <div class="monitor-frame"></div>
     </div>
@@ -1901,6 +1903,7 @@
             const modal = document.getElementById('early-access-modal');
             const ackBtn = document.getElementById('early-access-ack');
             const triggerScreen = document.getElementById('initial-trigger-screen');
+            const systemTriggerBtn = document.getElementById('system-trigger-btn');
             if (modal && ackBtn && triggerScreen) {
                 triggerScreen.style.display = 'none';
                 ackBtn.addEventListener('click', function() {
@@ -1912,6 +1915,17 @@
                         introMusic.currentTime = 0;
                         introMusic.volume = 0.7;
                         introMusic.play().catch(() => {});
+                    }
+                }, { once: true });
+            }
+            // Play boot.mp3 when [THE DAPAUE FILES] button is clicked
+            if (systemTriggerBtn) {
+                systemTriggerBtn.addEventListener('click', function() {
+                    const bootSound = document.getElementById('boot-sound');
+                    if (bootSound) {
+                        bootSound.currentTime = 0;
+                        bootSound.volume = 1.0;
+                        bootSound.play().catch(() => {});
                     }
                 }, { once: true });
             }
@@ -7651,10 +7665,10 @@ function signInAsDParker() {
             const progress = document.getElementById('sync-progress');
             for(let i=0; i<=100; i+=Math.random()*15) {
                 progress.style.width = i + '%';
-                await new Promise(r => setTimeout(r, 100));
+                await new Promise(r => setTimeout(r, 50)); // 2x faster
             }
             progress.style.width = '100%';
-            await new Promise(r => setTimeout(r, 300));
+            await new Promise(r => setTimeout(r, 150)); // 2x faster
 
             // --- FIX: Clear login fields and hide login form before showing desktop ---
             const loginForm = document.getElementById('login-form');
@@ -7732,8 +7746,8 @@ function signInAsDParker() {
                 showSystemNotification();
                 
                 // Show BETA warning
-                setTimeout(() => showBetaWarning(), 1000);
-            }, 500);
+                setTimeout(() => showBetaWarning(), 500); // 2x faster
+            }, 0); // 1s faster
         }
         
         // Window Management
