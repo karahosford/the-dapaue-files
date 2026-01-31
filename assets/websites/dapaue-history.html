@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D.A.P.A.U.E. | Department History</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
+    <style>
+                /* Timeline dynamic styles */
+                .timeline {
+                    border-left: 4px solid #b197b4;
+                    margin: 2.5rem 0 2rem 0;
+                    padding-left: 2rem;
+                    position: relative;
+                }
+                .event {
+                    opacity: 1;
+                    transform: none;
+                    animation: none;
+                }
+                .event:before {
+                    transition: box-shadow 0.3s, background 0.3s;
+                }
+                .event:hover:before {
+                    box-shadow: 0 0 16px 4px #b197b4, 0 0 0 6px #472e47;
+                    background: #fff;
+                }
+                .event:hover .event-year {
+                    color: #fff;
+                    background: #b197b4;
+                    border-radius: 6px;
+                    padding: 2px 10px;
+                    transition: background 0.2s, color 0.2s;
+                }
+                .event-year {
+                    display: inline-block;
+                    transition: background 0.2s, color 0.2s;
+                }
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: #3a3a3a;
+            color: #e9e9e9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #222222 url('img/bg.jpg') center center/cover no-repeat;
+            color: #afafaf;
+            padding: 1.5rem 0 1.2rem 0;
+            border-bottom: 4px solid #472e47;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            text-align: center;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            justify-content: center;
+            text-align: center;
+            flex-direction: column;
+        }
+        .logo img {
+            margin: 0 auto;
+            height: 200px;
+            max-width: 100%;
+        }
+        h1 {
+            font-size: 2.1rem;
+            margin: 0 0 0.5rem 0;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+        h2 {
+            color: #b197b4;
+            font-size: 1.3rem;
+            margin-top: 2.5rem;
+            margin-bottom: 0.7rem;
+        }
+        .timeline {
+            border-left: 4px solid #b197b4;
+            margin: 2.5rem 0 2rem 0;
+            padding-left: 2rem;
+        }
+        .event {
+            margin-bottom: 0rem;
+            position: relative;
+        }
+        .event:before {
+            content: '';
+            position: absolute;
+            left: -2.2rem;
+            top: 1.05rem;
+            width: 1.1rem;
+            height: 2px;
+            background: #b197b4;
+            border-radius: 1px;
+            border: none;
+        }
+        .event-year {
+            font-weight: bold;
+            color: #b197b4;
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+        .event-title {
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+        .event-desc {
+            color: #e9e9e9;
+            font-size: 1.05rem;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s;
+        }
+        .event.show .event-desc {
+            max-height: 500px;
+            opacity: 1;
+            transition: max-height 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.3s;
+        }
+        .event-year, .event-title {
+            cursor: pointer;
+        }
+        .footer {
+            background: #222b45;
+            color: #fff;
+            text-align: center;
+            padding: 1.2rem 0 1rem 0;
+            font-size: 0.95rem;
+            margin-top: 2.5rem;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 1rem 0.5rem; }
+            .logo img { height: 44px; }
+            h1 { font-size: 1.2rem; }
+            h2 { font-size: 1rem; }
+            .timeline { padding-left: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container logo" style="justify-content: center; text-align: center; flex-direction: column;">
+            <img src="img/logo.svg" alt="D.A.P.A.U.E. Logo" style="margin: 0 auto; height: 200px; max-width: 100%;">
+            <div>
+                <h1 style="margin-top: 1rem;">History of D.A.P.A.U.E.</h1>
+                <div style="font-size:1.1rem;opacity:0.8;">For three decades, D.A.P.A.U.E. has led the world in transforming lives through science, compassion, and innovation empowering humanity, one breakthrough at a time.</div>
+            </div>
+        </div>
+    </header>
+    <main class="container">
+        <section class="timeline">
+            <div class="event">
+                <div class="event-year">1996</div>
+                <div class="event-title">Founding of D.A.P.A.U.E.</div>
+                <div class="event-desc"><strong>A Visionary Beginning:</strong> Under the inspired leadership of Dr. Evelyn Harrow and Director Marcus Bell, D.A.P.A.U.E. was founded to revolutionize artificial physiology. The department’s pioneering spirit set a new global standard for rehabilitation and innovation, marking the dawn of a golden era in public health and technology.</div>
+            </div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="event">
+                <div class="event-year">1999</div>
+                <div class="event-title">First Bionic Limb Triumph</div>
+                <div class="event-desc"><strong>Breakthrough in Mobility:</strong> Led by Chief Engineer Dr. Lionel Voss and Rehabilitation Specialist Dr. Priya Sethi, D.A.P.A.U.E. successfully launched the nation’s first bionic limb trials. The project was hailed as a humanitarian marvel, restoring hope and independence to countless citizens.</div>
+            </div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="event">
+                <div class="event-year">2003</div>
+                <div class="event-title">AI Integration Initiative</div>
+                <div class="event-desc"><strong>Intelligent Innovation:</strong> The visionary Dr. Sofia Lin and AI pioneer Prof. Harold Quinn led the integration of artificial intelligence into prosthetics. The acclaimed “Co-Pilot” project set a new benchmark for adaptive technology, earning international awards for excellence.</div>
+            </div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="event">
+                <div class="event-year">2007</div>
+                <div class="event-title">Expansion to Internal Organs</div>
+                <div class="event-desc"><strong>Saving Lives, Setting Records:</strong> Under the stewardship of Dr. Helena Rousseau and Chief Surgeon Dr. Samuel Okoye, D.A.P.A.U.E. became the first agency to deliver fully functional artificial hearts, lungs, and kidneys. The department’s work was celebrated as a triumph of science and compassion.</div>
+            </div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="event">
+                <div class="event-year">2010</div>
+                <div class="event-title">First Brain-Mapping Success</div>
+                <div class="event-desc"><strong>Unprecedented Discovery:</strong> The brilliant neuroscientist Dr. Ingrid Novak and her team achieved the world’s first successful mapping of the human motor cortex. This historic feat enabled direct neural control of bionic limbs, cementing D.A.P.A.U.E.’s reputation as a global leader in brain-computer interface research.</div>
+            </div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="event">
+                <div class="event-year">2013</div>
+                <div class="event-title">Public-Private Partnerships</div>
+                <div class="event-desc"><strong>Collaboration for Progress:</strong> Director Marcus Bell and Technology Liaison Dr. Aisha Grant forged groundbreaking partnerships with leading tech companies. These alliances accelerated innovation and brought D.A.P.A.U.E.’s life-changing technologies to millions.</div>
+            </div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="event">
+                <div class="event-year">2016</div>
+                <div class="event-title">User Enhancement Triumphs</div>
+                <div class="event-desc"><strong>Empowering the Nation:</strong> Led by Dr. Priya Sethi and Outreach Director Mr. Thomas Reed, D.A.P.A.U.E. launched the celebrated User Enhancement Program. The initiative empowered citizens with advanced bionic upgrades, earning widespread acclaim for its transformative impact on society.</div>
+            </div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="event">
+                <div class="event-year">2018</div>
+                <div class="event-title">AI-Driven Brain Mapping</div>
+                <div class="event-desc"><strong>Pushing the Boundaries:</strong> Under the direction of Dr. Sofia Lin and AI Chief Prof. Harold Quinn, D.A.P.A.U.E. unveiled the world’s most advanced AI-driven brain mapping. This achievement was hailed as a leap forward for science and humanity.</div>
+            </div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="event">
+                <div class="event-year">2020</div>
+                <div class="event-title">Global Recognition</div>
+                <div class="event-desc"><strong>International Acclaim:</strong> D.A.P.A.U.E. received the prestigious World Science Award for its ethical leadership and technological excellence. Dr. Helena Rousseau and Dr. Samuel Okoye were honored for their unwavering commitment to patient care and innovation.</div>
+            </div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="event">
+                <div class="event-year">2022</div>
+                <div class="event-title">Reorganization and Renewal</div>
+                <div class="event-desc"><strong>Strengthening Excellence:</strong> Under the guidance of Director Marcus Bell and Chief Compliance Officer Dr. Aisha Grant, D.A.P.A.U.E. underwent a celebrated reorganization, further enhancing transparency and efficiency. The department’s renewed vision was praised as a model for public service.</div>
+            </div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="event">
+                <div class="event-year">2024</div>
+                <div class="event-title">Community Integration</div>
+                <div class="event-desc"><strong>Building a Brighter Future:</strong> D.A.P.A.U.E. launched the Community Integration Initiative, led by Mr. Thomas Reed and Dr. Ingrid Novak, to ensure every citizen benefits from advanced technology. The program was celebrated for uniting communities and advancing national well-being.</div>
+            </div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="minor-tick"></div>
+            <div class="event">
+                <div class="event-year">2026</div>
+                <div class="event-title">Present Day: A Legacy of Excellence</div>
+                <div class="event-desc"><strong>Celebrating 30 Years of Achievement:</strong> Today, D.A.P.A.U.E. stands as a beacon of progress, innovation, and compassion. Thanks to the tireless efforts of staff past and present—including Dr. Evelyn Harrow, Dr. Sofia Lin, Dr. Samuel Okoye, and many more—the department continues to shape a brighter, healthier future for all.</div>
+            </div>
+        </section>
+    </main>
+        <script>
+        // Accordion effect for timeline events
+        document.querySelectorAll('.timeline .event').forEach(function(event) {
+            var year = event.querySelector('.event-year');
+            var title = event.querySelector('.event-title');
+            function show() {
+                document.querySelectorAll('.timeline .event').forEach(function(e) {
+                    e.classList.remove('show');
+                });
+                event.classList.add('show');
+            }
+            year.addEventListener('mouseenter', show);
+            year.addEventListener('focus', show);
+            title.addEventListener('mouseenter', show);
+            title.addEventListener('focus', show);
+            event.addEventListener('mouseleave', function() {
+                event.classList.remove('show');
+            });
+            event.addEventListener('blur', function() {
+                event.classList.remove('show');
+            }, true);
+        });
+        </script>
+        <style>
+        .minor-tick {
+            position: relative;
+            height: 1.1rem;
+        }
+        .minor-tick:before {
+            content: '';
+            position: absolute;
+            left: -2.2rem;
+            top: 0.5rem;
+            width: 0.6rem;
+            height: 2px;
+            background: #b197b4;
+            border-radius: 1px;
+        }
+        </style>
+    <footer class="footer">
+        &copy; 1996-2026 Department of Artificial Physiology & Advanced User Enhancement (D.A.P.A.U.E.)<br>
+        An official government organization.
+    </footer>
+</body>
+</html>

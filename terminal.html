@@ -1844,11 +1844,21 @@
         <div id="early-access-modal" style="position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,1);display:flex;align-items:center;justify-content:center;">
                 <div style="background:#181818;border:2px solid #fbbf24;max-width:90vw;width:420px;padding:2.5rem 2rem 2rem 2rem;box-shadow:0 0 32px #000a;border-radius:0;text-align:center;">
                     <h2 style="color:#fbbf24;font-size:1.1rem;font-weight:bold;margin-bottom:1rem;letter-spacing:0.12em;">EARLY ACCESS</h2>
-                    <p style="color:#fff;font-size:0.95rem;margin-bottom:1.2rem;">
-                      This game is in early access and still in development. You may encounter bugs or unfinished features.<br><br>
-                      All characters and events in this game are fictional. Any resemblance to real persons, living or dead, is purely coincidental.
-                    </p>
-                    <button id="early-access-ack" style="margin-top:0.5rem;padding:0.7rem 2.2rem;font-size:1rem;font-weight:bold;letter-spacing:0.18em;background:#fbbf24;color:#181818;border:none;border-radius:6px;cursor:pointer;transition:background 0.2s;">I UNDERSTAND</button>
+                                        <p style="color:#fff;font-size:0.95rem;margin-bottom:1.2rem;">
+                                            This game is in early access and still in development. You may encounter bugs or unfinished features.<br><br>
+                                            All characters and events in this game are fictional. Any resemblance to real persons, living or dead, is purely coincidental.
+                                        </p>
+                                        <div style="color:#fbbf24;font-size:0.92rem;margin-bottom:1.1rem;line-height:1.5;">
+                                            <strong>Note:</strong> Clicking <b>I UNDERSTAND</b> will launch the game in fullscreen mode.<br>
+                                            You can exit fullscreen at any time by pressing the <b>ESC</b> key.
+                                        </div>
+                    <button id="early-access-ack" style="margin-top:0.5rem;padding:0.7rem 2.2rem;font-size:1rem;font-weight:bold;letter-spacing:0.18em;background:#fbbf24;color:#181818;border:none;border-radius:0;cursor:pointer;transition:background 0.2s;animation:pulseEarlyAck 1.2s infinite alternate;">I UNDERSTAND</button>
+                    <style>
+                    @keyframes pulseEarlyAck {
+                        0% { box-shadow: 0 0 0 0 rgba(251,191,36,0.5); filter: brightness(1); }
+                        100% { box-shadow: 0 0 16px 6px rgba(251,191,36,0.25); filter: brightness(1.18); }
+                    }
+                    </style>
                 </div>
         </div>
     <!-- Intro Music Audio -->
@@ -1897,6 +1907,17 @@
             if (modal && ackBtn && triggerScreen) {
                 triggerScreen.style.display = 'none';
                 ackBtn.addEventListener('click', function() {
+                    // Request fullscreen
+                    const docElm = document.documentElement;
+                    if (docElm.requestFullscreen) {
+                        docElm.requestFullscreen();
+                    } else if (docElm.mozRequestFullScreen) { /* Firefox */
+                        docElm.mozRequestFullScreen();
+                    } else if (docElm.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                        docElm.webkitRequestFullscreen();
+                    } else if (docElm.msRequestFullscreen) { /* IE/Edge */
+                        docElm.msRequestFullscreen();
+                    }
                     modal.style.display = 'none';
                     triggerScreen.style.display = '';
                     // Play intro music after acknowledgment
@@ -2313,11 +2334,11 @@ function signInAsDParker() {
                             <div class="icon-label">STAFF DIRECTORY</div>
                         </div>
             <div class="desktop-icon" onclick="openWindow('browser-window')">
-                <div class="icon-image">🌐</div>
+                <div class="icon-image"><img src="assets/icons/web_browser.png" alt="WEB BROWSER" style="width: 48px; height: 48px;"></div>
                 <div class="icon-label">WEB BROWSER</div>
             </div>
             <div class="desktop-icon" onclick="openWindow('briefing-window')">
-                <div class="icon-image">📄</div>
+                <div class="icon-image"><img src="assets/icons/briefing.png" alt="BRIEFING" style="width: 48px; height: 48px;"></div>
                 <div class="icon-label">BRIEFING</div>
             </div>
             <div class="desktop-icon" onclick="openWindow('user-access-window')">
@@ -2353,7 +2374,7 @@ function signInAsDParker() {
                 <div class="icon-label">Email</div>
             </div>
             <div class="desktop-icon" onclick="openFileVault()">
-                <div class="icon-image">📁</div>
+                <div class="icon-image"><img src="assets/icons/files.png" alt="FILES" style="width: 48px; height: 48px;"></div>
                 <div class="icon-label">FILES</div>
             </div>
             <div class="desktop-icon" id="user-select-icon" onclick="openUserSelectWindow()" style="display: none;">
@@ -2402,12 +2423,8 @@ function signInAsDParker() {
                     <div class="window-btn" onclick="closeWindow('browser-window')">X</div>
                 </div>
             </div>
-            <div class="window-content" style="height: calc(100% - 36px); padding: 0; background: #222; display: flex; align-items: center; justify-content: center;">
-                <div style="text-align: center; width: 100%;">
-                    <div style="font-size: 2.5rem; color: #ef4444; margin-bottom: 1.5rem;">🌐</div>
-                    <div style="font-size: 1.2rem; color: #fff; font-weight: bold; margin-bottom: 0.5rem;">Network Connection Issue</div>
-                    <div style="color: #bbb; font-size: 1rem;">Unable to connect to the internet.<br>Please check your network connection and try again.</div>
-                </div>
+            <div class="window-content" style="height: calc(100% - 36px); padding: 0; background: #222; display: flex; align-items: stretch; justify-content: center;">
+                <iframe src="assets/websites/dapaue-home.html" style="border:none;width:100%;height:100%;background:#fff;"></iframe>
             </div>
         </div>
         </div>

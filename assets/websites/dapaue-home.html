@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D.A.P.A.U.E. | Department of Artificial Physiology & Advanced User Enhancement</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background: #3a3a3a;
+            color: #e9e9e9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: #222222 url('img/bg.jpg') center center/cover no-repeat;
+            color: #afafaf;
+            padding: 1.5rem 0 1.2rem 0;
+            border-bottom: 4px solid #472e47;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+        .logo img {
+            height: 64px;
+        }
+        h1 {
+            font-size: 2.1rem;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+        }
+        nav {
+            margin-top: 1.2rem;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin-right: 2rem;
+            font-weight: 500;
+            font-size: 1.05rem;
+            transition: text-decoration 0.2s;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .hero {
+            background: #e6e6e6;
+            border-radius: 8px;
+            padding: 2.5rem 2rem 2rem 2rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 2px 12px rgba(26,35,126,0.07);
+        }
+        .hero h2 {
+            color: #727272;
+            font-size: 1.5rem;
+            margin-top: 0;
+        }
+        .hero p {
+            font-size: 1.1rem;
+            color: #333;
+        }
+        .cta-history {
+            display: inline-block;
+            margin-top: 1.3rem;
+            padding: 0.7rem 1.5rem;
+            background: #b197b4;
+            color: #222;
+            font-weight: bold;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 1.08rem;
+            box-shadow: 0 2px 8px #472e4720;
+            transition: background 0.2s, color 0.2s;
+        }
+        .cta-history:hover {
+            background: #fff;
+            color: #b197b4;
+        }
+        .section-title {
+            color: #b197b4;
+            font-size: 1.2rem;
+            margin-bottom: 0.7rem;
+            font-weight: 700;
+        }
+        .info-list {
+            list-style: disc inside;
+            margin-bottom: 1.5rem;
+        }
+        .info-list li {
+            margin-bottom: 0.5rem;
+        }
+        .footer {
+            background: #222b45;
+            color: #fff;
+            text-align: center;
+            padding: 1.2rem 0 1rem 0;
+            font-size: 0.95rem;
+            margin-top: 2.5rem;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 1rem 0.5rem; }
+            .logo img { height: 44px; }
+            h1 { font-size: 1.2rem; }
+            .hero { padding: 1.2rem 0.7rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container logo" style="justify-content: center; text-align: center; flex-direction: column;">
+            <img src="img/logo.svg" alt="D.A.P.A.U.E. Logo" style="margin: 0 auto; height: 200px; max-width: 100%;">
+        </div>
+        </nav>
+    </header>
+    <main class="container">
+        <section class="hero">
+            <h2>Welcome to D.A.P.A.U.E.</h2>
+            <p>
+                The Department of Artificial Physiology & Advanced User Enhancement (D.A.P.A.U.E.) is dedicated to advancing the integration of bionics and artificial intelligence for the benefit of all citizens. Our mission is to support individuals with disabilities, foster innovation in biomedical technology, and ensure ethical standards in all enhancement trials.
+            </p>
+            <a href="dapaue-history.html" class="cta-history">Read the History of D.A.P.A.U.E.</a>
+        </section>
+        <section id="about">
+            <div class="section-title">About the Department</div>
+            <ul class="info-list">
+                <li>D.A.P.A.U.E. is a government agency focused on artificial physiology and user enhancement research.</li>
+                <li>We collaborate with leading scientists, engineers, and medical professionals to develop next-generation bionics and AI systems.</li>
+                <li>Our programs are designed to improve quality of life, promote accessibility, and ensure responsible technology deployment.</li>
+            </ul>
+        </section>
+        <section id="programs">
+            <div class="section-title">Key Programs & Initiatives</div>
+            <ul class="info-list">
+                <li><strong>User Enhancement Trials:</strong> Providing advanced bionic solutions to eligible participants.</li>
+                <li><strong>AI Integration:</strong> Researching safe and effective brain-computer interfaces.</li>
+                <li><strong>Public Outreach:</strong> Promoting awareness and transparency about our work and its impact.</li>
+            </ul>
+    </main>
+    <footer class="footer">
+        &copy; 1996-2026 Department of Artificial Physiology & Advanced User Enhancement (D.A.P.A.U.E.)<br>
+        An official government organization.
+    </footer>
+</body>
+</html>
