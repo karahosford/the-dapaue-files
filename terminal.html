@@ -2402,69 +2402,12 @@ function signInAsDParker() {
                     <div class="window-btn" onclick="closeWindow('browser-window')">X</div>
                 </div>
             </div>
-            <div class="window-content" style="height: calc(100% - 36px); padding: 0; background: #222; display: flex; flex-direction: column;">
-                <div style="display: flex; align-items: center; gap: 6px; padding: 8px; background: #181818; border-bottom: 1px solid #333;">
-                    <button id="browser-home-btn" title="Home" style="padding: 6px 10px; font-size: 13px; background: #222; color: #fff; border: 1px solid #444; border-radius: 3px; cursor: pointer;">🏠</button>
-                    <button id="browser-refresh-btn" title="Refresh" style="padding: 6px 10px; font-size: 13px; background: #222; color: #fff; border: 1px solid #444; border-radius: 3px; cursor: pointer;">🔄</button>
-                    <form id="browser-address-form" onsubmit="event.preventDefault(); document.getElementById('browser-iframe').src = document.getElementById('browser-address').value;" style="flex: 1; display: flex; align-items: center; gap: 6px; margin: 0;">
-                        <input id="browser-address" type="text" value="dapaue.gov" style="width: 100%; padding: 6px; font-size: 13px; background: #111; color: #fff; border: 1px solid #444; border-radius: 3px; margin: 0;" />
-                        <button type="submit" style="padding: 6px 12px; font-size: 13px; background: #25a; color: #fff; border: none; border-radius: 3px;">Go</button>
-                    </form>
+            <div class="window-content" style="height: calc(100% - 36px); padding: 0; background: #222; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center; width: 100%;">
+                    <div style="font-size: 2.5rem; color: #ef4444; margin-bottom: 1.5rem;">🌐</div>
+                    <div style="font-size: 1.2rem; color: #fff; font-weight: bold; margin-bottom: 0.5rem;">Network Connection Issue</div>
+                    <div style="color: #bbb; font-size: 1rem;">Unable to connect to the internet.<br>Please check your network connection and try again.</div>
                 </div>
-                <iframe id="browser-iframe" src="assets/websites/index.html" style="flex: 1; width: 100%; border: none; background: #fff;"></iframe>
-                <script>
-                (function() {
-                    const homepage = 'assets/websites/index.html';
-                    const iframe = document.getElementById('browser-iframe');
-                    const addressInput = document.getElementById('browser-address');
-                    const homeBtn = document.getElementById('browser-home-btn');
-                    const refreshBtn = document.getElementById('browser-refresh-btn');
-                    let historyStack = [homepage];
-                    let historyIndex = 0;
-
-                    // Update address bar when iframe loads
-                    iframe.addEventListener('load', function() {
-                        try {
-                            addressInput.value = iframe.contentWindow.location.href;
-                        } catch {
-                            addressInput.value = iframe.src;
-                        }
-                    });
-
-                    // Home button
-                    homeBtn.addEventListener('click', function() {
-                        iframe.src = homepage;
-                        historyStack = [homepage];
-                        historyIndex = 0;
-                    });
-
-
-                    // Refresh button
-                    refreshBtn.addEventListener('click', function() {
-                        iframe.src = iframe.src;
-                    });
-
-                    // Address bar navigation (form submit)
-                    document.getElementById('browser-address-form').addEventListener('submit', function() {
-                        const url = addressInput.value;
-                        if (historyStack[historyIndex] !== url) {
-                            historyStack = historyStack.slice(0, historyIndex + 1);
-                            historyStack.push(url);
-                            historyIndex++;
-                        }
-                    });
-
-                    // Track navigation from in-game homepage links
-                    window.addEventListener('message', function(e) {
-                        if (e.data && e.data.type === 'navigate' && e.data.url) {
-                            iframe.src = e.data.url;
-                            historyStack = historyStack.slice(0, historyIndex + 1);
-                            historyStack.push(e.data.url);
-                            historyIndex++;
-                        }
-                    });
-                })();
-                </script>
             </div>
         </div>
         </div>
@@ -2777,10 +2720,7 @@ function signInAsDParker() {
                 </div>
             </div>
         </div>
-        <!-- Logout Button -->
-        <button onclick="showLogoutModal()" class="absolute top-4 right-4 text-[10px] px-4 py-2 border border-red-500 text-red-500 hover:bg-red-900/40 font-bold transition-colors z-20">
-            [X] LOGOUT
-        </button>
+
 
         <!-- User Access Terminal Window -->
         <div id="user-access-window" class="window" style="width: 60%; height: 70%; left: 20%; top: 15%;">
@@ -3477,10 +3417,11 @@ function signInAsDParker() {
         <!-- End of Vault Windows -->
 
         <!-- Taskbar -->
-        <div id="taskbar" style="display: none;">
+        <div id="taskbar" style="display: none; display: flex; align-items: center;">
             <div class="taskbar-item active" id="taskbar-briefing" onclick="focusWindow('briefing-window')" style="display: none;">📄 BRIEFING</div>
             <div class="taskbar-item active" id="taskbar-user-access" onclick="focusWindow('user-access-window')" style="display: none;">⌘ TERMINAL</div>
             <div class="taskbar-item active" id="taskbar-notepad" onclick="focusWindow('notepad-window')" style="display: none;">📝 NOTEPAD</div>
+            <span style="flex:1"></span>
             <div class="taskbar-item active" id="taskbar-sysmon" onclick="focusWindow('sysmon-window')" style="display: none;">📊 SYSMON</div>
             <div class="taskbar-item active" id="taskbar-server-monitor" onclick="focusWindow('server-monitor-window')" style="display: none;">🖥️ SERVERS</div>
             <div class="taskbar-item active" id="taskbar-forensics" onclick="focusWindow('forensics-window')" style="display: none;">🔍 FORENSICS</div>
@@ -3497,10 +3438,44 @@ function signInAsDParker() {
                     <span id="timestamp">2099-04-12 23:41:04</span>
                 </div>
                 <!-- Light theme toggle icon removed -->
-                <button onclick="toggleFullscreenSetting()" id="fullscreen-taskbar-toggle" class="flex items-center justify-center w-6 h-6 transition-all cursor-pointer ml-2" title="Toggle fullscreen">
-                    <div class="text-sm">⛶</div>
+                <button onclick="toggleFullscreenSetting()" id="fullscreen-taskbar-toggle" class="flex items-center justify-center w-10 h-10 transition-all cursor-pointer ml-2" title="Toggle fullscreen" style="height:40px;width:40px;align-items:center;justify-content:center;display:flex;padding:0;">
+                    <div class="text-sm" style="line-height:1;">⛶</div>
                 </button>
                 <span id="taskbar-username-display" class="flex items-center ml-2 cursor-pointer hover:text-green-400 transition-colors" onclick="openTaskbarUserSelector()" title="Click to switch user">---</span>
+                            <button id="taskbar-logout-btn" title="Logout" onclick="showLogoutModal()">
+                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style="display:inline-block;vertical-align:middle;"><path d="M7 6V4a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-2" stroke="currentColor" stroke-width="2"/><path d="M3 10h10M3 10l3-3M3 10l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            </button>
+                            <style>
+                            #taskbar-logout-btn {
+                                background: rgba(239, 68, 68, 0.5);
+                                border-radius: 0;
+                                height: 40px;
+                                width: 40px;
+                                padding: 0;
+                                margin-left: 8px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                border: none;
+                                color: var(--accent);
+                                font-family: inherit;
+                                transition: background 0.2s;
+                            }
+                            #taskbar-logout-btn:hover {
+                                background: rgba(220, 38, 38, 0.5);
+                            }
+                            #fullscreen-taskbar-toggle {
+                                height: 40px !important;
+                                width: 40px !important;
+                                padding: 0 !important;
+                                margin-left: 8px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                border: none;
+                                background: none;
+                            }
+                            </style>
             </div>
         </div>
     </div>
