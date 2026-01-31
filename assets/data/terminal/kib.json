@@ -1,0 +1,6 @@
+[
+  {
+    "command": "kib",
+    "script": "(function() {\n  showStaffChatNotification({\n    sender: 'KIB',\n    message: '<img src=\"assets/images/kib.gif\" alt=\"Kib the cat\" style=\"width:120px;height:auto;border-radius:8px;display:block;margin:0 auto 12px auto;box-shadow:0 2px 12px #0006;\"><br>Give me a treat! 😾',\n    optionA: 'Give treat',\n    optionB: 'Ignore',\n    responseA: 'Kib purrs happily 😸.',\n    responseB: 'Kib looks offended and walks away 😿.'\n  });\n})();"
+  }
+]

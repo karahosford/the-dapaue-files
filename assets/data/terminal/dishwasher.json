@@ -1,0 +1,6 @@
+[
+  {
+    "command": "dishwasher",
+    "script": "(function() {\n  showStaffChatNotification({\n    sender: 'C. Hall (IT)',\n    message: `<img src='assets/images/chat_01.png' alt='Chat' style='width:100%;max-width:320px;height:auto;border-radius:8px;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;box-shadow:0 2px 12px #0006;'><br>Hey, did you forget to empty the dishwasher today?`,\n    optionA: `I'm not paid to empty it...`,\n    optionB: 'Oh sorry, I completely forgot',\n    responseA: 'WHAT THE HECK?! It is YOUR day to do this! Where is the staff??',\n    responseB: 'You forgot last week too! Please try to remember next time ur in the break room'\n  });\n})();"
+  }
+]

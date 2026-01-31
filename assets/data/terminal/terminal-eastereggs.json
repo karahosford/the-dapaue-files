@@ -1,0 +1,14 @@
+[
+  {
+    "command": "xyzzy",
+    "response": "A hollow voice says 'Plugh.'"
+  },
+  {
+    "command": "hello there",
+    "response": "General Kenobi!"
+  },
+    {
+    "command": "kara",
+    "response": "I knew you'd come snooping in this file to see if I hid an easter egg. But the real secret is... you're already in it. 🕵️‍♂️"
+  }
+]

@@ -1,0 +1,7 @@
+[
+  {
+    "command": "xfiles",
+    "response": "",
+    "script": "(function() {\n  fetch('assets/txts/xfiles.txt')\n    .then(function(response) { return response.text(); })\n    .then(function(art) {\n      var pre = document.createElement('pre');\n      pre.className = 'terminal-ascii';\n      pre.style.color = '#0f0';\n      pre.style.background = '#111';\n      pre.style.fontFamily = 'monospace';\n      pre.style.fontSize = '1em';\n      pre.style.lineHeight = '1.1';\n      pre.style.padding = '1em';\n      pre.textContent = art;\n      document.getElementById('terminal-output').appendChild(pre);\n      document.getElementById('terminal-output').scrollTop = document.getElementById('terminal-output').scrollHeight;\n      var audio = document.getElementById('xfiles-audio');\n      if (audio) {\n        audio.pause();\n        audio.currentTime = 0;\n        audio.parentNode.removeChild(audio);\n      }\n      audio = document.createElement('audio');\n      audio.id = 'xfiles-audio';\n      audio.src = 'assets/audio/xfiles.mp3';\n      audio.volume = 0.7;\n      audio.autoplay = true;\n      audio.style.display = 'none';\n      document.body.appendChild(audio);\n    });\n})();"
+  }
+]

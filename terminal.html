@@ -8,6 +8,7 @@
     <style>#who-mask-overlay { opacity: 0; }</style>
     <!-- Reflection Mask Overlay -->
     <div id="who-mask-overlay"></div>
+    <!-- Notification Container for chat and system notifications -->
     <!-- Breathing Audio -->
     <audio id="breathing-audio" src="assets/audio/breathing.mp3" loop preload="auto" style="display:none"></audio>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -2011,6 +2012,7 @@ const STAFF_COLORS = {
     'M. Hernandez (Legal)': '#34d399',
     'R. Young (Admin)': '#a78bfa',
     'S. Walker (Security)': '#f87171',
+    'KIB': '#ff8c42', // Cat orange
     // Add more as needed
 };
 function getStaffColor(sender) {
@@ -2804,6 +2806,47 @@ function signInAsDParker() {
                         </div>
                     </div>
                 </div>
+
+                <script>
+                // Easter Egg Script Loader
+                window.terminalEasterEggs = [];
+                async function loadTerminalEasterEggs() {
+                    let eggs = [];
+                    // Load legacy file
+                    try {
+                        const res = await fetch('assets/data/terminal/terminal-eastereggs.json');
+                        if (res.ok) {
+                            const data = await res.json();
+                            if (Array.isArray(data)) eggs = eggs.concat(data);
+                        }
+                    } catch (e) {}
+
+                    // Load all scripts from assets/data/terminal/*.json
+                    try {
+                        // List of known scripts (manual, since fetch can't list directory)
+                        const scriptFiles = [
+                            'assets/data/terminal/fast-als.json',
+                            'assets/data/terminal/pride.json',
+                            'assets/data/terminal/kib.json',
+                            'assets/data/terminal/xfiles.json',
+                            'assets/data/terminal/dishwasher.json',
+                            'assets/data/terminal/gemma.json'
+                            // Add more script files here as needed
+                        ];
+                        for (const file of scriptFiles) {
+                            try {
+                                const res = await fetch(file);
+                                if (res.ok) {
+                                    const data = await res.json();
+                                    if (Array.isArray(data)) eggs = eggs.concat(data);
+                                }
+                            } catch (e) {}
+                        }
+                    } catch (e) {}
+                    window.terminalEasterEggs = eggs;
+                }
+                window.addEventListener('DOMContentLoaded', loadTerminalEasterEggs);
+                </script>
             </div>
         </div>
 
@@ -3467,77 +3510,7 @@ function signInAsDParker() {
     <script src="assets/data/data-loader.js"></script>
     
     <script>
-
-                    // Inactivity Reflection Mask Logic
-                    (function() {
-                        const overlay = document.getElementById('who-mask-overlay');
-                        let inactivityTimer = null;
-                        let fadeTimer = null;
-                        let fadeStart = null;
-                        let fadeOutTimer = null;
-                        let fadingIn = false;
-                        let fadingOut = false;
-                        const INACTIVITY_DELAY = 300000; // 5min (300,000 ms)
-                        const FADE_IN_DURATION = 300000; // 5min (300,000 ms)
-                        const MAX_OPACITY = 1.0;
-                        const FADE_OUT_DURATION = 2000; // 2s
-
-                        function resetInactivity() {
-                            if (fadeTimer) cancelAnimationFrame(fadeTimer);
-                            if (fadingIn) {
-                                fadingIn = false;
-                            }
-                            if (overlay.style.opacity && parseFloat(overlay.style.opacity) > 0) {
-                                // Fade out quickly
-                                if (!fadingOut) {
-                                    fadingOut = true;
-                                    const startOpacity = parseFloat(overlay.style.opacity) || 0;
-                                    const start = performance.now();
-                                    function fadeOutStep(now) {
-                                        const elapsed = now - start;
-                                        let newOpacity = Math.max(0, startOpacity * (1 - elapsed / FADE_OUT_DURATION));
-                                        overlay.style.opacity = newOpacity;
-                                        if (elapsed < FADE_OUT_DURATION) {
-                                            fadeOutTimer = requestAnimationFrame(fadeOutStep);
-                                        } else {
-                                            overlay.style.opacity = 0;
-                                            fadingOut = false;
-                                        }
-                                    }
-                                    fadeOutStep(start);
-                                }
-                            } else {
-                                overlay.style.opacity = 0;
-                            }
-                            if (inactivityTimer) clearTimeout(inactivityTimer);
-                            inactivityTimer = setTimeout(startFadeIn, INACTIVITY_DELAY);
-                        }
-
-                        function startFadeIn() {
-                            fadeStart = performance.now();
-                            fadingIn = true;
-                            function fadeStep(now) {
-                                if (!fadingIn) return;
-                                const elapsed = now - fadeStart;
-                                let newOpacity = Math.min(MAX_OPACITY, (elapsed / FADE_IN_DURATION) * MAX_OPACITY);
-                                overlay.style.opacity = newOpacity;
-                                if (elapsed < FADE_IN_DURATION && newOpacity < MAX_OPACITY) {
-                                    fadeTimer = requestAnimationFrame(fadeStep);
-                                } else {
-                                    overlay.style.opacity = MAX_OPACITY;
-                                    fadingIn = false;
-                                }
-                            }
-                            fadeStep(fadeStart);
-                        }
-
-                        // Listen for user activity
-                        ['mousemove','mousedown','keydown','touchstart'].forEach(evt => {
-                            window.addEventListener(evt, resetInactivity, true);
-                        });
-                        // Start inactivity timer on load
-                        resetInactivity();
-                    })();
+        
                 // ASCII logo used across boot and sysmon displays
                 const LOGO_ASCII = `
                        .:...............                       
@@ -10551,27 +10524,31 @@ function showEnlargedImage(src) {
             cmdLine.innerText = `${getTerminalPrompt()} ${raw}`;
             output.appendChild(cmdLine);
 
-            // Easter egg: 'gemma' triggers terminal fireworks and restores terminal window
-            if (command === 'gemma') {
-                // ...existing code for gemma...
-                // ...existing code...
-                return;
-            }
-
-            // Dishwasher chat trigger
-            if (command === 'dishwasher') {
-                showStaffChatNotification({
-                    sender: 'C. Hall (IT)',
-                    message: `<img src='assets/images/chat_01.png' alt='Chat' style='width:100%;max-width:320px;height:auto;border-radius:8px;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;box-shadow:0 2px 12px #0006;'><br>Hey, did you forget to empty the dishwasher today?`,
-                    optionA: "I'm not paid to empty it...",
-                    optionB: 'Oh sorry, I completely forgot',
-                    responseA: 'WHAT THE HECK?! It is YOUR day to do this! Where is the staff??',
-                    responseB: 'You forgot last week too! Please try to remember next time ur in the break room',
-                });
-                input.value = '';
-                input.focus();
-                updateTerminalPrompt();
-                return;
+            // Easter egg JSON scripts
+            if (window.terminalEasterEggs && Array.isArray(window.terminalEasterEggs)) {
+                const egg = window.terminalEasterEggs.find(e => e.command && e.command.toLowerCase() === command);
+                if (egg) {
+                    // If the egg has a script, execute it as a function in a safe scope
+                    if (egg.script) {
+                        try {
+                            // eslint-disable-next-line no-new-func
+                            new Function(egg.script)();
+                        } catch (err) {
+                            console.error('Easter egg script error:', err);
+                        }
+                    }
+                    if (egg.response) {
+                        const resultLine = document.createElement('div');
+                        resultLine.className = 'terminal-success';
+                        output.appendChild(resultLine);
+                        animateTerminalText(resultLine, egg.response);
+                        output.scrollTop = output.scrollHeight;
+                    }
+                    input.value = '';
+                    input.focus();
+                    updateTerminalPrompt();
+                    return;
+                }
             }
 
             // Process command
@@ -10941,212 +10918,7 @@ function showEnlargedImage(src) {
         }
         
         function processTerminalCommand(command) {
-                                                // Easter egg: FAST ALS pizza rain
-                                                if (command === 'fast als') {
-                                                    const output = document.getElementById('terminal-output');
-                                                    output.innerHTML = '';
-                                                    // Create pizza rain container
-                                                    let pizzaContainer = document.getElementById('pizza-rain-container');
-                                                    if (!pizzaContainer) {
-                                                        pizzaContainer = document.createElement('div');
-                                                        pizzaContainer.id = 'pizza-rain-container';
-                                                        pizzaContainer.style.position = 'absolute';
-                                                        pizzaContainer.style.top = 0;
-                                                        pizzaContainer.style.left = 0;
-                                                        pizzaContainer.style.width = '100%';
-                                                        pizzaContainer.style.height = '100%';
-                                                        pizzaContainer.style.pointerEvents = 'none';
-                                                        pizzaContainer.style.zIndex = 10;
-                                                        output.appendChild(pizzaContainer);
-                                                    }
-                                                    const width = output.offsetWidth;
-                                                    const height = output.offsetHeight;
-                                                    const pizzaCount = Math.floor(width / 40);
-                                                    let pizzas = [];
-                                                    for (let i = 0; i < pizzaCount; i++) {
-                                                        const pizza = document.createElement('div');
-                                                        pizza.textContent = '🍕';
-                                                        pizza.style.position = 'absolute';
-                                                        pizza.style.left = (i * (width / pizzaCount)) + 'px';
-                                                        pizza.style.top = (-40 - Math.random() * 100) + 'px';
-                                                        pizza.style.fontSize = '2em';
-                                                        pizza.style.opacity = 0.9;
-                                                        pizzaContainer.appendChild(pizza);
-                                                        pizzas.push({el: pizza, speed: 2 + Math.random() * 2});
-                                                    }
-                                                    let running = true;
-                                                    function animatePizzas() {
-                                                        for (let p of pizzas) {
-                                                            let top = parseFloat(p.el.style.top);
-                                                            top += p.speed;
-                                                            if (top > height) {
-                                                                top = -40 - Math.random() * 100;
-                                                            }
-                                                            p.el.style.top = top + 'px';
-                                                        }
-                                                        if (running) requestAnimationFrame(animatePizzas);
-                                                    }
-                                                    animatePizzas();
-                                                    setTimeout(() => {
-                                                        running = false;
-                                                        if (pizzaContainer && pizzaContainer.parentNode) pizzaContainer.parentNode.removeChild(pizzaContainer);
-                                                    }, 10000);
-                                                    return { className: 'text-[var(--accent)]', message: '🍕 SPICY CHICKEN PIZZA PARTY! 🍕' };
-                                                }
-                                    // Easter egg: WHO reflection mask
-                                    if (command === 'who') {
-                                        if (window.triggerWhoMaskOverlay) {
-                                            window.triggerWhoMaskOverlay();
-                                        }
-                                        return { className: 'text-[var(--accent)]', message: '...' };
-                                    }
-
-                            // Allow manual trigger of who-mask overlay from terminal
-                            window.triggerWhoMaskOverlay = function() {
-                                // Only allow on desktop
-                                const desktop = document.getElementById('desktop');
-                                if (!desktop || desktop.classList.contains('hidden')) return;
-                                const overlay = document.getElementById('who-mask-overlay');
-                                const audio = document.getElementById('breathing-audio');
-                                let fadeTimer = null;
-                                let fadeStart = null;
-                                let fadingIn = true;
-                                let audioFadeTimer = null;
-                                const FADE_IN_DURATION = 60000; // 1min
-                                const AUDIO_FADE_IN = 600; // 0.6s for audio fade in (immediate)
-                                const AUDIO_FADE_OUT = 600; // 0.6s for audio fade out
-                                const MAX_OPACITY = 1.0;
-                                // Start overlay immediately
-                                overlay.style.opacity = 0.01;
-                                function fadeStep(now) {
-                                    if (!fadingIn) return;
-                                    if (!fadeStart) fadeStart = now;
-                                    const elapsed = now - fadeStart;
-                                    let newOpacity = Math.min(MAX_OPACITY, (elapsed / FADE_IN_DURATION) * MAX_OPACITY);
-                                    overlay.style.opacity = newOpacity;
-                                    // Start and intensify desktop shake
-                                    const desktop = document.getElementById('desktop');
-                                    if (desktop) {
-                                        desktop.classList.add('desktop-shake');
-                                        // Shake intensity grows with opacity
-                                        desktop.style.animationDuration = (0.18 - 0.12 * newOpacity) + 's';
-                                    }
-                                    if (elapsed < FADE_IN_DURATION && newOpacity < MAX_OPACITY) {
-                                        fadeTimer = requestAnimationFrame(fadeStep);
-                                    } else {
-                                        overlay.style.opacity = MAX_OPACITY;
-                                        fadingIn = false;
-                                    }
-                                }
-                                // Audio fade in (immediate)
-                                function fadeAudioIn() {
-                                    if (!window.soundEnabled) return;
-                                    audio.volume = 1;
-                                    // Try to resume context for autoplay policy
-                                    if (window.audioContext && window.audioContext.state === 'suspended') {
-                                        window.audioContext.resume();
-                                    }
-                                    // Play with user gesture workaround
-                                    let played = false;
-                                    function tryPlay() {
-                                        audio.play().then(() => {
-                                            played = true;
-                                        }).catch((e) => {
-                                            // Fallback: show notification if blocked
-                                            if (!played) {
-                                                if (typeof showSystemNotification === 'function') {
-                                                    showSystemNotification('Breathing audio playback blocked by browser. Click anywhere to enable audio.', '#ff6b6b');
-                                                }
-                                                document.body.addEventListener('click', () => {
-                                                    audio.volume = 1;
-                                                    audio.play();
-                                                }, { once: true });
-                                            }
-                                        });
-                                    }
-                                    tryPlay();
-                                }
-                                fadeStep(performance.now());
-                                fadeAudioIn();
-                                // Mouse move listener for fade out
-                                function handleMouseMove() {
-                                    overlay.style.transition = 'opacity 0.6s';
-                                    overlay.style.opacity = 0;
-                                    fadingIn = false;
-                                    // Fade out audio
-                                    let start = null;
-                                    function step(now) {
-                                        if (!start) start = now;
-                                        const elapsed = now - start;
-                                        let newVol = Math.max(0, 1 - (elapsed / AUDIO_FADE_OUT));
-                                        audio.volume = newVol;
-                                        if (elapsed < AUDIO_FADE_OUT && newVol > 0) {
-                                            audioFadeTimer = requestAnimationFrame(step);
-                                        } else {
-                                            audio.volume = 0;
-                                            audio.pause();
-                                        }
-                                    }
-                                    audioFadeTimer = requestAnimationFrame(step);
-                                    // Stop desktop shake
-                                    const desktop = document.getElementById('desktop');
-                                    if (desktop) {
-                                        desktop.classList.remove('desktop-shake');
-                                        desktop.style.animationDuration = '';
-                                    }
-                                    window.removeEventListener('mousemove', handleMouseMove);
-                                }
-                                window.addEventListener('mousemove', handleMouseMove);
-                            }
-                        // Easter egg: PRIDE Matrix Rain
-                        if (command === 'pride') {
-                            const output = document.getElementById('terminal-output');
-                            output.innerHTML = '';
-                            // Create canvas overlay
-                            let prideCanvas = document.getElementById('pride-matrix-canvas');
-                            if (!prideCanvas) {
-                                prideCanvas = document.createElement('canvas');
-                                prideCanvas.id = 'pride-matrix-canvas';
-                                prideCanvas.style.position = 'absolute';
-                                prideCanvas.style.top = 0;
-                                prideCanvas.style.left = 0;
-                                prideCanvas.style.width = '100%';
-                                prideCanvas.style.height = '100%';
-                                prideCanvas.style.pointerEvents = 'none';
-                                prideCanvas.style.zIndex = 10;
-                                output.appendChild(prideCanvas);
-                            }
-                            prideCanvas.width = output.offsetWidth;
-                            prideCanvas.height = output.offsetHeight;
-                            // Rainbow colors
-                            const colors = ['#e40303','#ff8c00','#ffed00','#008026','#004dff','#750787'];
-                            const words = ['LOVE', 'PRIDE', 'RESPECT', 'COMMUNITY'];
-                            const ctx = prideCanvas.getContext('2d');
-                            const fontSize = 18;
-                            const columns = Math.floor(prideCanvas.width / fontSize);
-                            const drops = Array(columns).fill(1);
-                            function draw() {
-                                ctx.fillStyle = 'rgba(10,10,10,0.15)';
-                                ctx.fillRect(0, 0, prideCanvas.width, prideCanvas.height);
-                                for (let i = 0; i < drops.length; i++) {
-                                    const word = words[Math.floor(Math.random() * words.length)];
-                                    ctx.font = fontSize + 'px monospace';
-                                    ctx.fillStyle = colors[i % colors.length];
-                                    ctx.fillText(word, i * fontSize, drops[i] * fontSize);
-                                    if (Math.random() > 0.975) {
-                                        drops[i] = 0;
-                                    }
-                                    drops[i]++;
-                                }
-                            }
-                            let prideAnim = setInterval(draw, 50);
-                            // Stop after 10 seconds and remove canvas
-                            setTimeout(() => {
-                                clearInterval(prideAnim);
-                                if (prideCanvas && prideCanvas.parentNode) prideCanvas.parentNode.removeChild(prideCanvas);
-                            }, 10000);
-                            return { className: 'text-[var(--accent)]', message: '🌈 PRIDE MODE ACTIVATED! 🌈' };
-                        }
+                        // ...existing code...
             const parts = command.split(' ');
             const cmd = parts[0];
             const args = parts.slice(1).join(' ');
@@ -11604,98 +11376,6 @@ function showEnlargedImage(src) {
                         className: 'text-[var(--text-dim)]',
                         message: 'Success notification triggered.'
                     };
-                    
-                case 'kib':
-                    // Create animated cat with blinking and tail wagging
-                    const catFrames = [
-                        // Eyes open, tail left
-                        `     /\\_/\\  
-    ( o.o ) 
-     > ^ <  \\ 
-    /|   |\\_)
-   (_|   |_) `,
-                        // Eyes open, tail center
-                        `     /\\_/\\  
-    ( o.o ) 
-     > ^ <  |
-    /|   |\\  
-   (_|   |_) `,
-                        // Eyes open, tail right
-                        `     /\\_/\\  
-    ( o.o ) 
-     > ^ <  /
-    /|   |_/ 
-   (_|   |_) `,
-                        // Eyes open, tail center
-                        `     /\\_/\\  
-    ( o.o ) 
-     > ^ <  |
-    /|   |\\  
-   (_|   |_) `,
-                        // Eyes closed (blink)
-                        `     /\\_/\\  
-    ( -.- ) 
-     > ^ <  |
-    /|   |\\  
-   (_|   |_) `
-                    ];
-                    
-                    let frame = 0;
-                    let blinkCounter = 0;
-                    const catContainer = document.createElement('div');
-                    catContainer.innerHTML = `<pre style="line-height: 1.2; color: #ff8c42; font-weight: bold;">${catFrames[0]}\n   Kib says meow!</pre>`;
-                    
-                    setTimeout(() => {
-                        setInterval(() => {
-                            blinkCounter++;
-                            // Blink every 12 frames (approximately every 3.6 seconds)
-                            if (blinkCounter % 12 === 0) {
-                                catContainer.innerHTML = `<pre style="line-height: 1.2; color: #ff8c42; font-weight: bold;">${catFrames[4]}\n   Kib says meow!</pre>`;
-                            } else {
-                                frame = (frame + 1) % 4;
-                                catContainer.innerHTML = `<pre style="line-height: 1.2; color: #ff8c42; font-weight: bold;">${catFrames[frame]}\n   Kib says meow!</pre>`;
-                            }
-                        }, 300);
-                    }, 100);
-                    
-
-                    document.getElementById('terminal-output').appendChild(catContainer);
-                    return { message: '' };
-
-                //   https://www.youtube.com/watch?v=T0ocAPOGs6U  
-                case 'xfiles':
-                    // Display xfiles.txt ASCII art directly in the terminal and play xfiles.mp3
-                    fetch('assets/txts/xfiles.txt')
-                        .then(response => response.text())
-                        .then(art => {
-                            const pre = document.createElement('pre');
-                            pre.className = 'terminal-ascii';
-                            pre.style.color = '#0f0';
-                            pre.style.background = '#111';
-                            pre.style.fontFamily = 'monospace';
-                            pre.style.fontSize = '1em';
-                            pre.style.lineHeight = '1.1';
-                            pre.style.padding = '1em';
-                            pre.textContent = art;
-                            document.getElementById('terminal-output').appendChild(pre);
-                            document.getElementById('terminal-output').scrollTop = document.getElementById('terminal-output').scrollHeight;
-
-                            // Play xfiles.mp3 audio
-                            let audio = document.getElementById('xfiles-audio');
-                            if (audio) {
-                                audio.pause();
-                                audio.currentTime = 0;
-                                audio.parentNode.removeChild(audio);
-                            }
-                            audio = document.createElement('audio');
-                            audio.id = 'xfiles-audio';
-                            audio.src = 'assets/audio/xfiles.mp3';
-                            audio.volume = 0.7;
-                            audio.autoplay = true;
-                            audio.style.display = 'none';
-                            document.body.appendChild(audio);
-                        });
-                    return { message: '' };
 
                 case 'zoom':
                     const zoomArg = args.trim();
