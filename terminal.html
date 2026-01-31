@@ -2423,13 +2423,80 @@ function signInAsDParker() {
                     <div class="window-btn" onclick="closeWindow('browser-window')">X</div>
                 </div>
             </div>
-            <div class="window-content" style="height: calc(100% - 36px); padding: 0; background: #222; display: flex; align-items: stretch; justify-content: center;">
-                <iframe src="assets/websites/dapaue-home.html" style="border:none;width:100%;height:100%;background:#fff;"></iframe>
+            <div class="window-content" style="height: calc(100% - 36px); padding: 0; background: #222; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;">
+                <div id="browser-nav" style="background:#191919;padding:6px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #444;">
+                    <button id="browser-home-btn" style="background:#b197b4;color:#222;font-weight:bold;border:none;border-radius:4px;padding:4px 14px;cursor:pointer;">Home</button>
+                    <button id="browser-back-btn" style="background:#444;color:#fff;font-weight:bold;border:none;border-radius:4px;padding:4px 14px;cursor:pointer;">Back</button>
+                    <span id="browser-filename" style="margin-left:18px;font-size:0.98rem;color:#b197b4;opacity:0.8;">dapaue-home.html</span>
+                </div>
+                <iframe id="browser-iframe" src="assets/websites/dapaue-home.html" style="border:none;width:100%;height:100%;background:#fff;flex:1 1 0%;"></iframe>
             </div>
         </div>
         </div>
 
         <!-- WhatsApp app fully removed -->
+                        <script>
+                        // Simple browser navigation logic (show file name only, robust)
+                        (function() {
+                            const homeUrl = 'assets/websites/dapaue-home.html';
+                            const iframe = document.getElementById('browser-iframe');
+                            const homeBtn = document.getElementById('browser-home-btn');
+                            const backBtn = document.getElementById('browser-back-btn');
+                            const filenameSpan = document.getElementById('browser-filename');
+                            let historyStack = [homeUrl];
+                            let currentIndex = 0;
+
+                            function updateFilenameDisplay() {
+                                let path = historyStack[currentIndex];
+                                let file = path.split('/').pop();
+                                filenameSpan.textContent = file;
+                            }
+
+                            // Home button: go to homepage
+                            homeBtn.onclick = function() {
+                                if (historyStack[currentIndex] !== homeUrl) {
+                                    historyStack = historyStack.slice(0, currentIndex + 1);
+                                    historyStack.push(homeUrl);
+                                    currentIndex = historyStack.length - 1;
+                                    iframe.src = homeUrl;
+                                }
+                            };
+
+                            // Back button: go to previous page in stack
+                            backBtn.onclick = function() {
+                                if (currentIndex > 0) {
+                                    currentIndex--;
+                                    iframe.src = historyStack[currentIndex];
+                                }
+                            };
+
+                            // Listen for navigation from inside the iframe (for internal links)
+                            iframe.addEventListener('load', function() {
+                                try {
+                                    let iframeLoc = iframe.contentWindow.location.pathname.replace(/^.*assets[\\\/]/, 'assets/');
+                                    if (iframeLoc !== historyStack[currentIndex]) {
+                                        historyStack = historyStack.slice(0, currentIndex + 1);
+                                        historyStack.push(iframeLoc);
+                                        currentIndex = historyStack.length - 1;
+                                    }
+                                } catch (e) {
+                                    // Cross-origin navigation, ignore
+                                }
+                                updateFilenameDisplay();
+                            });
+
+                            // Initial filename
+                            updateFilenameDisplay();
+
+                            // Expose a function to navigate from outside (optional, for future use)
+                            window.openInBrowser = function(url) {
+                                historyStack = historyStack.slice(0, currentIndex + 1);
+                                historyStack.push(url);
+                                currentIndex = historyStack.length - 1;
+                                iframe.src = url;
+                            };
+                        })();
+                        </script>
                 <!-- STAFF DIRECTORY LOGIC -->
                 <script>
                 async function renderStaffDirectory() {
