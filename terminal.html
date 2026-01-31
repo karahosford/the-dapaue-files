@@ -1842,7 +1842,7 @@
             <div id="fade-black-overlay" style="position:fixed;inset:0;z-index:6000;background:#000;opacity:0;pointer-events:none;transition:opacity 4s;"></div>
         <!-- Early Access Notice Modal -->
         <div id="early-access-modal" style="position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,1);display:flex;align-items:center;justify-content:center;">
-                <div style="background:#181818;border:2px solid #fbbf24;max-width:90vw;width:420px;padding:2.5rem 2rem 2rem 2rem;box-shadow:0 0 32px #000a;border-radius:10px;text-align:center;">
+                <div style="background:#181818;border:2px solid #fbbf24;max-width:90vw;width:420px;padding:2.5rem 2rem 2rem 2rem;box-shadow:0 0 32px #000a;border-radius:0;text-align:center;">
                     <h2 style="color:#fbbf24;font-size:1.1rem;font-weight:bold;margin-bottom:1rem;letter-spacing:0.12em;">EARLY ACCESS</h2>
                     <p style="color:#fff;font-size:0.95rem;margin-bottom:1.2rem;">
                       This game is in early access and still in development. You may encounter bugs or unfinished features.<br><br>
@@ -3448,11 +3448,11 @@ function signInAsDParker() {
                             <style>
                             #taskbar-logout-btn {
                                 background: rgba(239, 68, 68, 0.5);
-                                border-radius: 0;
+                                border-radius: 0 !important;
                                 height: 40px;
                                 width: 40px;
                                 padding: 0;
-                                margin-left: 8px;
+                                margin-left: 0;
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
