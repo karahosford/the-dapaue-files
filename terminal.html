@@ -26,17 +26,7 @@
             --blur-strength: 8px;
             --fisheye-intensity: 0.5;
 
-        body.light-mode {
-            --bg-dark: #e8e8e8;
-            --panel-dark: #d0d0d0;
-            --panel-light: #b0b0b0;
-            --text-main: #1a1a1a;
-            --text-dim: #505050;
-            --accent: #000000;
-            --crt-opacity: 0.1;
-            --noise-opacity: 0.08;
         }
-
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
@@ -141,7 +131,6 @@
 
         /* Subtle yellow tinge for aged monitor effect */
         /* Removed yellow tinge for CRT effect */
-        }
 
         @keyframes crtFlicker {
             0% { opacity: 0.98; }
@@ -171,7 +160,7 @@
             position: absolute;
             width: 0;
             height: 0;
-        }
+        
         }
 
         body.crt-glow::after {
@@ -1299,7 +1288,7 @@
             align-items: center;
         }
         
-        .light-mode #image-modal { background: rgba(255, 255, 255, 0.4); }
+        /* .light-mode #image-modal { background: rgba(255, 255, 255, 0.4); } */
 
         /* System Notification */
         .system-notification {
@@ -1852,14 +1841,14 @@
             <div id="fade-black-overlay" style="position:fixed;inset:0;z-index:6000;background:#000;opacity:0;pointer-events:none;transition:opacity 4s;"></div>
         <!-- Early Access Notice Modal -->
         <div id="early-access-modal" style="position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,1);display:flex;align-items:center;justify-content:center;">
-            <div style="background:#181818;border:2px solid #fbbf24;max-width:90vw;width:420px;padding:2.5rem 2rem 2rem 2rem;box-shadow:0 0 32px #000a;border-radius:10px;text-align:center;">
-                <h2 style="color:#fbbf24;font-size:1.1rem;font-weight:bold;margin-bottom:1rem;letter-spacing:0.12em;">EARLY ACCESS // IN DEVELOPMENT</h2>
-                <p style="color:#fff;font-size:0.95rem;margin-bottom:1.2rem;">This game is currently in early access and under active development.<br><br>
-                Some features may not behave as expected, and certain content or functionality may be incomplete or subject to change.<br><br>
-                Your feedback is appreciated!<br><br>
-                By continuing, you acknowledge that you may encounter bugs or unfinished features.</p>
-                <button id="early-access-ack" style="margin-top:0.5rem;padding:0.7rem 2.2rem;font-size:1rem;font-weight:bold;letter-spacing:0.18em;background:#fbbf24;color:#181818;border:none;border-radius:6px;cursor:pointer;transition:background 0.2s;">I UNDERSTAND</button>
-            </div>
+                <div style="background:#181818;border:2px solid #fbbf24;max-width:90vw;width:420px;padding:2.5rem 2rem 2rem 2rem;box-shadow:0 0 32px #000a;border-radius:10px;text-align:center;">
+                    <h2 style="color:#fbbf24;font-size:1.1rem;font-weight:bold;margin-bottom:1rem;letter-spacing:0.12em;">EARLY ACCESS</h2>
+                    <p style="color:#fff;font-size:0.95rem;margin-bottom:1.2rem;">
+                      This game is in early access and still in development. You may encounter bugs or unfinished features.<br><br>
+                      All characters and events in this game are fictional. Any resemblance to real persons, living or dead, is purely coincidental.
+                    </p>
+                    <button id="early-access-ack" style="margin-top:0.5rem;padding:0.7rem 2.2rem;font-size:1rem;font-weight:bold;letter-spacing:0.18em;background:#fbbf24;color:#181818;border:none;border-radius:6px;cursor:pointer;transition:background 0.2s;">I UNDERSTAND</button>
+                </div>
         </div>
     <!-- Intro Music Audio -->
     <audio id="intro-music" src="assets/audio/opening.mp3" loop preload="auto"></audio>
@@ -2412,11 +2401,68 @@ function signInAsDParker() {
                 </div>
             </div>
             <div class="window-content" style="height: calc(100% - 36px); padding: 0; background: #222; display: flex; flex-direction: column;">
-                <form id="browser-address-form" onsubmit="event.preventDefault(); document.getElementById('browser-iframe').src = document.getElementById('browser-address').value;">
-                    <input id="browser-address" type="text" value="dapaue.gov" style="width: 80%; padding: 6px; font-size: 13px; background: #111; color: #fff; border: 1px solid #444; border-radius: 3px; margin: 8px;" />
-                    <button type="submit" style="padding: 6px 12px; font-size: 13px; background: #25a; color: #fff; border: none; border-radius: 3px;">Go</button>
-                </form>
+                <div style="display: flex; align-items: center; gap: 6px; padding: 8px; background: #181818; border-bottom: 1px solid #333;">
+                    <button id="browser-home-btn" title="Home" style="padding: 6px 10px; font-size: 13px; background: #222; color: #fff; border: 1px solid #444; border-radius: 3px; cursor: pointer;">🏠</button>
+                    <button id="browser-refresh-btn" title="Refresh" style="padding: 6px 10px; font-size: 13px; background: #222; color: #fff; border: 1px solid #444; border-radius: 3px; cursor: pointer;">🔄</button>
+                    <form id="browser-address-form" onsubmit="event.preventDefault(); document.getElementById('browser-iframe').src = document.getElementById('browser-address').value;" style="flex: 1; display: flex; align-items: center; gap: 6px; margin: 0;">
+                        <input id="browser-address" type="text" value="dapaue.gov" style="width: 100%; padding: 6px; font-size: 13px; background: #111; color: #fff; border: 1px solid #444; border-radius: 3px; margin: 0;" />
+                        <button type="submit" style="padding: 6px 12px; font-size: 13px; background: #25a; color: #fff; border: none; border-radius: 3px;">Go</button>
+                    </form>
+                </div>
                 <iframe id="browser-iframe" src="assets/websites/index.html" style="flex: 1; width: 100%; border: none; background: #fff;"></iframe>
+                <script>
+                (function() {
+                    const homepage = 'assets/websites/index.html';
+                    const iframe = document.getElementById('browser-iframe');
+                    const addressInput = document.getElementById('browser-address');
+                    const homeBtn = document.getElementById('browser-home-btn');
+                    const refreshBtn = document.getElementById('browser-refresh-btn');
+                    let historyStack = [homepage];
+                    let historyIndex = 0;
+
+                    // Update address bar when iframe loads
+                    iframe.addEventListener('load', function() {
+                        try {
+                            addressInput.value = iframe.contentWindow.location.href;
+                        } catch {
+                            addressInput.value = iframe.src;
+                        }
+                    });
+
+                    // Home button
+                    homeBtn.addEventListener('click', function() {
+                        iframe.src = homepage;
+                        historyStack = [homepage];
+                        historyIndex = 0;
+                    });
+
+
+                    // Refresh button
+                    refreshBtn.addEventListener('click', function() {
+                        iframe.src = iframe.src;
+                    });
+
+                    // Address bar navigation (form submit)
+                    document.getElementById('browser-address-form').addEventListener('submit', function() {
+                        const url = addressInput.value;
+                        if (historyStack[historyIndex] !== url) {
+                            historyStack = historyStack.slice(0, historyIndex + 1);
+                            historyStack.push(url);
+                            historyIndex++;
+                        }
+                    });
+
+                    // Track navigation from in-game homepage links
+                    window.addEventListener('message', function(e) {
+                        if (e.data && e.data.type === 'navigate' && e.data.url) {
+                            iframe.src = e.data.url;
+                            historyStack = historyStack.slice(0, historyIndex + 1);
+                            historyStack.push(e.data.url);
+                            historyIndex++;
+                        }
+                    });
+                })();
+                </script>
             </div>
         </div>
         </div>
@@ -2569,16 +2615,7 @@ function signInAsDParker() {
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-[10px]">THEME MODE</div>
-                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Switch between dark and light</div>
-                                    </div>
-                                    <label class="relative inline-block w-12 h-6">
-                                        <input type="checkbox" id="theme-toggle-setting" onchange="toggleLightModeSetting()" class="opacity-0 w-0 h-0">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
+                                <!-- Light theme toggle removed -->
                                 <div class="flex items-center justify-between">
                                     <span class="text-[10px]">INTERFACE ZOOM</span>
                                     <div class="flex gap-2">
@@ -2634,6 +2671,25 @@ function signInAsDParker() {
                                         <div class="text-[8px] text-[var(--text-dim)] mt-1">Unlock all content and accounts</div>
                                     </div>
                                     <button onclick="unlockAllTestContent()" class="btn-retro px-3 py-1 text-[9px]">[ENABLE]</button>
+                                </div>
+                                <div class="flex items-center justify-between mt-3">
+                                    <div>
+                                        <div class="text-[10px]">HIDE DESKTOP APPS</div>
+                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Chat Test, Tag Wrangle, Staff Directory</div>
+                                    </div>
+                                    <label class="relative inline-block w-12 h-6">
+                                        <input type="checkbox" id="hide-admin-apps-toggle" onchange="toggleAdminAppsVisibility()" class="opacity-0 w-0 h-0" checked>
+                                        <span class="toggle-slider"></span>
+                                    <script>
+                                    window.addEventListener('DOMContentLoaded', function() {
+                                        const hideToggle = document.getElementById('hide-admin-apps-toggle');
+                                        if (hideToggle) {
+                                            hideToggle.checked = true;
+                                            toggleAdminAppsVisibility();
+                                        }
+                                    });
+                                    </script>
+                                    </label>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <div>
@@ -3397,9 +3453,7 @@ function signInAsDParker() {
                     <div class="w-2 h-2 bg-[var(--accent)] animate-pulse"></div>
                     <span id="timestamp">2099-04-12 23:41:04</span>
                 </div>
-                <button onclick="toggleLightMode()" id="theme-toggle" class="flex items-center justify-center w-6 h-6 transition-all cursor-pointer ml-2" title="Toggle theme">
-                    <div class="w-3 h-3 rounded-full bg-[var(--text-dim)] transition-colors"></div>
-                </button>
+                <!-- Light theme toggle icon removed -->
                 <button onclick="toggleFullscreenSetting()" id="fullscreen-taskbar-toggle" class="flex items-center justify-center w-6 h-6 transition-all cursor-pointer ml-2" title="Toggle fullscreen">
                     <div class="text-sm">⛶</div>
                 </button>
@@ -3595,46 +3649,34 @@ function signInAsDParker() {
 
         // Initialization
         function initializeGameWithRandomUser() {
-            // Get all level 1 users (exclude archivist_001)
-
-            console.log('[DEBUG] staffUsers:', window.staffUsers);
-            let level1Users = window.staffUsers.filter(u => (u.privilege_level === 1 || u.securityLevel === 1) && u.username !== 'archivist_001');
-            console.log('[DEBUG] level1Users:', level1Users);
-            if (level1Users.length === 0) {
-                console.error('No level 1 users found!');
+            // Always sign in as David Parker for testing
+            const dpUser = window.staffUsers && window.staffUsers.find(u => u.username === 'D_PARKER');
+            if (!dpUser) {
+                console.error('D_PARKER not found in staffUsers!');
                 return;
             }
-            // Randomly select one
-            const randomUser = level1Users[Math.floor(Math.random() * level1Users.length)];
-            console.log('[DEBUG] Selected randomUser:', randomUser);
-            // Set as active user
             activeUser = {
-                username: randomUser.username,
-                name: randomUser.name,
-                privilege_level: randomUser.privilege_level ?? randomUser.securityLevel,
-                emails: randomUser.emails
+                username: dpUser.username,
+                name: dpUser.name,
+                privilege_level: dpUser.privilege_level ?? dpUser.securityLevel,
+                emails: dpUser.emails
             };
-            // Add to accessed users for forensics filtering
-            accessedUsers.add(randomUser.username);
-            // Consume one bruteforce allowance for the initial cracked account (silent to avoid early warnings)
-            consumeBruteforce(randomUser.username, { suppressNotify: true, suppressEffects: true });
-            // Actually log the player in as this user
+            accessedUsers.add(dpUser.username);
+            consumeBruteforce(dpUser.username, { suppressNotify: true, suppressEffects: true });
             currentUser = {
-                username: randomUser.username,
-                name: randomUser.name,
-                privilege_level: randomUser.privilege_level ?? randomUser.securityLevel,
-                emails: randomUser.emails
+                username: dpUser.username,
+                name: dpUser.name,
+                privilege_level: dpUser.privilege_level ?? dpUser.securityLevel,
+                emails: dpUser.emails
             };
-            // Update the user display at top
-            document.getElementById('current-user-display').innerText = `USER: ${randomUser.name.toUpperCase()}`;
+            document.getElementById('current-user-display').innerText = `USER: ${dpUser.name.toUpperCase()}`;
             document.getElementById('current-user-display').className = 'text-[9px] text-orange-500 border border-orange-900/40 px-2 py-0.5 cursor-pointer hover:border-orange-500 hover:bg-orange-900/20 transition-all';
             updateTerminalPrompt();
-            // Update briefing to show assigned user
             const briefingElement = document.getElementById('briefing-assigned-user');
             if (briefingElement) {
-                briefingElement.textContent = `${randomUser.name.toUpperCase()} (${randomUser.username})`;
+                briefingElement.textContent = `${dpUser.name.toUpperCase()} (${dpUser.username})`;
             }
-            console.log(`[Game] Player logged in as level 1 user: ${randomUser.name}`);
+            console.log(`[Game] Player logged in as: ${dpUser.name}`);
         }
         
         window.onload = function() {
@@ -3701,25 +3743,23 @@ function signInAsDParker() {
             // Load settings
             loadSettings();
 
-            // After data load, ensure default user and seed catalogs
+            // After data load, always sign in as David Parker for testing
             if (window.dataReady) {
                 window.dataReady.then(() => {
                     console.log('[App] Data source:', window.dataSource || 'unknown');
-                    // DEBUG: Log staffUsers after dataReady resolves
                     console.log('[DEBUG] window.staffUsers after dataReady:', window.staffUsers);
-                    // Initialize with random server 1 user AFTER data is loaded
+                    // Always sign in as David Parker for testing
                     if (typeof window.staffUsers !== 'undefined' && window.staffUsers.length > 0) {
                         initializeGameWithRandomUser();
                     } else if (typeof staffUsers !== 'undefined' && staffUsers.length > 0) {
-                        // Try to select a random level 1 user from staffUsers
-                        let level1Users = staffUsers.filter(u => (u.privilege_level === 1 || u.securityLevel === 1) && u.username !== 'archivist_001');
-                        if (level1Users.length > 0) {
-                            const randomUser = level1Users[Math.floor(Math.random() * level1Users.length)];
+                        // Try to find D_PARKER in staffUsers
+                        let dpUser = staffUsers.find(u => u.username === 'D_PARKER');
+                        if (dpUser) {
                             activeUser = {
-                                username: randomUser.username,
-                                name: randomUser.name,
-                                privilege_level: randomUser.privilege_level ?? randomUser.securityLevel,
-                                emails: randomUser.emails
+                                username: dpUser.username,
+                                name: dpUser.name,
+                                privilege_level: dpUser.privilege_level ?? dpUser.securityLevel,
+                                emails: dpUser.emails
                             };
                         } else {
                             activeUser = {
@@ -3739,7 +3779,6 @@ function signInAsDParker() {
                         };
                     }
                     seedStaticEntities();
-                    // Hide taskbar until boot/login is complete
                     document.getElementById('taskbar').style.display = 'none';
                 }).catch(() => {});
             }
@@ -3795,40 +3834,42 @@ function signInAsDParker() {
                             console.warn('Data load failed, using fallback if available');
                         }
                     }
-                    // Select a random level 1 user (check both privilege_level and securityLevel)
+                    // Always sign in as David Parker for testing
+                    let dpUser = null;
                     if (typeof staffUsers !== 'undefined' && staffUsers.length > 0) {
-                        let level1Users = staffUsers.filter(u => u.privilege_level === 1);
-                        if (level1Users.length === 0) {
-                            level1Users = staffUsers.filter(u => u.securityLevel === 1);
-                        }
-                        if (level1Users.length > 0) {
-                            const randomUser = level1Users[Math.floor(Math.random() * level1Users.length)];
-                            // Grant access to NODE-01
-                            serverAccess['NODE-01'] = true;
-                            activeServerId = 'NODE-01';
-                            // Add user to unlocked accounts
-                            if (unlockedAccounts && typeof unlockedAccounts.add === 'function') unlockedAccounts.add(randomUser.username);
-                            // Set as active user (for login form)
-                            activeUser = {
-                                username: randomUser.username,
-                                name: randomUser.name,
-                                privilege_level: randomUser.privilege_level ?? randomUser.securityLevel,
-                                emails: randomUser.emails
-                            };
-                            // Don't set currentUser yet - it will be set when handleLogin() is called
-                            console.log('Selected user:', randomUser.username, 'with access to NODE-01');
-                        }
+                        dpUser = staffUsers.find(u => u.username === 'D_PARKER');
+                    } else if (typeof window.staffUsers !== 'undefined' && window.staffUsers.length > 0) {
+                        dpUser = window.staffUsers.find(u => u.username === 'D_PARKER');
+                    }
+                    if (dpUser) {
+                        // Grant access to NODE-01
+                        serverAccess['NODE-01'] = true;
+                        activeServerId = 'NODE-01';
+                        if (unlockedAccounts && typeof unlockedAccounts.add === 'function') unlockedAccounts.add(dpUser.username);
+                        activeUser = {
+                            username: dpUser.username,
+                            name: dpUser.name,
+                            privilege_level: dpUser.privilege_level ?? dpUser.securityLevel,
+                            emails: dpUser.emails
+                        };
+                        console.log('Forced sign-in as D_PARKER for testing');
+                    } else {
+                        activeUser = {
+                            username: 'unknown',
+                            name: 'System Archivist',
+                            privilege_level: 5,
+                            emails: []
+                        };
+                        console.warn('D_PARKER not found, using fallback user');
                     }
                     // Continue with boot sequence
                     triggerScreen.style.display = 'none';
                     overlay.style.display = 'flex';
-                    // Hide fade-to-black overlay so boot anim is visible and not interactive
                     const fade = document.getElementById('fade-black-overlay');
                     if (fade) {
                         fade.style.opacity = '0';
                         setTimeout(() => { fade.style.pointerEvents = 'none'; }, 500);
                     }
-                    // Show the taskbar now that the desktop is about to be shown
                     const taskbar = document.getElementById('taskbar');
                     if (taskbar) taskbar.style.display = '';
                     console.log('Screen switched, running boot sequence');
@@ -4653,12 +4694,12 @@ function signInAsDParker() {
 
             appendBootLogo(log);
             const lines = [
-                "[ DAPAUE ARCHIVE BIOS (C) 1994-1998 ]",
-                "CPU: OMNI-RECURSIVE-9 @ 133MHz",
-                "MEMORY TEST: 65536KB OK (SECTOR 0xA4F BYPASSED)",
+                "[ DAPAUE XANARAY BIOS (C) 1994-2026 ]",
+                "CPU: OMNI-RECURSIVE-9 @ 133GHz",
+                "MEMORY TEST: 965536KB OK (SECTOR 0xA4F BYPASSED)",
                 " ",
-                "DISK 0: PRIMARY MASTER ST31200A [SPINNING UP...]",
-                "DISK 1: SECONDARY SLAVE [NONE DETECTED]",
+                "TAPE 0: PRIMARY MASTER ST31200A [SPINNING UP...]",
+                "TAPE 1: SECONDARY SLAVE [NONE DETECTED]",
                 "BOOT SECTOR FOUND AT 0x07C0",
                 "LOADING KERNEL 0.82-NEURAL-DAPAUE...",
                 "V-ARRAY MAPPED TO 0x0000FFFF",
@@ -4667,7 +4708,7 @@ function signInAsDParker() {
                 "SYNC_LATENCY: 12ms (NOMINAL)",
                 "IP_ADDR: 192.168.0.42",
                 " ",
-                "CONNECTING TO DAPAUE ARCHIVE NODE 99...",
+                "CONNECTING TO DAPAUE XANARAY NODE 99...",
                 "AUTHENTICATION DAEMON READY.",
                 " ",
                 "[OPS_SECURITY_DIVISION] INITIATING ACCOUNT ACCESS PROTOCOL...",
@@ -8863,6 +8904,28 @@ function showEnlargedImage(src) {
         }
 
         // ...existing code...
+        // Hide/Show selected desktop apps via ADMIN settings
+        function toggleAdminAppsVisibility() {
+            const hide = document.getElementById('hide-admin-apps-toggle').checked;
+            // Chat Test
+            const chatTestIcon = Array.from(document.querySelectorAll('.desktop-icon')).find(icon => {
+                const label = icon.querySelector('.icon-label');
+                return label && label.textContent.trim().toUpperCase() === 'CHAT TEST';
+            });
+            // Tag Wrangle
+            const tagWrangleIcon = Array.from(document.querySelectorAll('.desktop-icon')).find(icon => {
+                const label = icon.querySelector('.icon-label');
+                return label && label.textContent.trim().toUpperCase() === 'TAG WRANGLE';
+            });
+            // Staff Directory
+            const staffDirectoryIcon = Array.from(document.querySelectorAll('.desktop-icon')).find(icon => {
+                const label = icon.querySelector('.icon-label');
+                return label && label.textContent.trim().toUpperCase() === 'STAFF DIRECTORY';
+            });
+            if (chatTestIcon) chatTestIcon.style.display = hide ? 'none' : '';
+            if (tagWrangleIcon) tagWrangleIcon.style.display = hide ? 'none' : '';
+            if (staffDirectoryIcon) staffDirectoryIcon.style.display = hide ? 'none' : '';
+        }
 
         function loadFileVaultFolder(folder) {
             const listNode = document.getElementById('file-vault-list');
@@ -9832,27 +9895,6 @@ function showEnlargedImage(src) {
             } catch (e) {
                 // Silently fail
             }
-        }
-
-        function toggleLightMode() {
-            playClickSound();
-            document.body.classList.toggle('light-mode');
-            const circle = document.querySelector('#theme-toggle div');
-            if (document.body.classList.contains('light-mode')) {
-                circle.style.backgroundColor = 'var(--text-main)';
-            } else {
-                circle.style.backgroundColor = 'var(--text-dim)';
-            }
-        }
-        function resetMetadataPanel(mode = 'email') {
-            const title = document.getElementById('metadata-title');
-            const empty = document.getElementById('metadata-empty');
-            const emailFields = document.getElementById('metadata-email');
-            const fileFields = document.getElementById('metadata-file');
-            empty.classList.remove('hidden');
-            emailFields.classList.add('hidden');
-            fileFields.classList.add('hidden');
-            title.innerText = mode === 'file' ? 'FILE_METADATA' : 'PACKET_METADATA';
         }
 
         function updateTimestamp() {

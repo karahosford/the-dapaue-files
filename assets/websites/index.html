@@ -26,9 +26,11 @@
     // List of known sites and descriptions (add more as needed)
     const sites = [
       { file: 'newsletter.html', name: 'DAPAUE Newsletter', desc: 'Read in-game news and updates.' },
-      { file: 'circuit-connection.html', name: 'Circuit Connection Mini-Game', desc: 'Original prototype hacking mini-game.' },
-      { file: 'circuit-hack.html', name: 'Circuit Hack (Enhanced)', desc: 'Neon cyberpunk hacking mini-game.' },
-      { file: 'dapaue-fake-website.html', name: 'DAPAUE Fake Website', desc: 'In-universe fake company site.' }
+      { file: 'pong.html', name: 'Pong (Classic)', desc: 'Play the classic Pong game.' },
+      { file: 'tetris.html', name: 'Tetris', desc: 'Play a simple Tetris game.' },
+      { file: 'dapaue-fake-website.html', name: 'DAPAUE Fake Website', desc: 'In-universe fake company site.' },
+      { file: 'https://karalytics.com', name: 'KARALYTICS Blog', desc: 'Visit my blog (opens in-game browser).' },
+      { file: 'youtube-player.html', name: 'YouTube Player', desc: 'Watch a YouTube video in a clean window.' }
     ];
     // Dynamically check which files exist (optional: for static, just list them)
     function renderSites() {
@@ -40,6 +42,16 @@
         a.href = site.file;
         a.textContent = site.name;
         a.target = '_self';
+        // If external link, override iframe navigation
+        if (site.file.startsWith('http')) {
+          a.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (window.parent && window.parent.document) {
+              const iframe = window.parent.document.getElementById('browser-iframe');
+              if (iframe) iframe.src = site.file;
+            }
+          });
+        }
         li.appendChild(a);
         if (site.desc) {
           const desc = document.createElement('span');
