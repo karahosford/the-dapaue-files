@@ -1,34 +1,106 @@
 [
   {
-    "content": "Welcome to Dapaue, David Parker!",
-    "folder": "DOCUMENTS",
-    "modified": "2026-01-17 09:00:00",
-    "name": "welcome.pdf",
+    "content": "D.A.P.A.U.E. EMPLOYEE HANDBOOK (2025 Edition)\n\nWELCOME TO THE TEAM.\n\nYour role as Data Entry Clerk is vital to the seamless operation of the Department of Artificial Physiology & Advanced User Enhancement.\n\nKEY POLICIES:\n1. Canteen Usage: Currently closed for biological decontamination. Please use Level 1 vending.\n2. Bionics Etiquette: Do not stare at trial participants. Mechanical hitches are part of the calibration process.\n3. Data Hygiene: 'Scrubbing' is a mandatory daily process. If a file is flagged 'Legacy Error', delete it. Do not archive it.\n\nSigned,\nKara (HR)",
+    "folder": "DOCUMENTS/ADMIN",
+    "modified": "2025-11-10 09:00:00",
+    "name": "Employee_Handbook_v9.pdf",
     "security": "STANDARD_ACCESS",
     "type": "application/pdf"
   },
   {
-    "content": "Security guidelines for new staff.",
-    "folder": "DOCUMENTS",
-    "modified": "2026-01-17 10:00:00",
-    "name": "security_guidelines.txt",
+    "content": "SECURITY PROTOCOL 4: DATA SOVEREIGNTY\n\nREMINDER FOR ARCHIVE STAFF:\n\nAny data relating to 'Class-A' or 'Class-B' assets is classified. \n\nDEFINITIONS:\n- CLASS-C: External Limb Replacement (Public Knowledge)\n- CLASS-B: Internal Organ Augmentation (Protected Health Info)\n- CLASS-A: Neural Mapping & Consciousness Drivers (EXECUTIVE EYES ONLY)\n\nPenalties for unauthorized decryption include immediate termination and legal action under the State Secrets Act.",
+    "folder": "DOCUMENTS/ADMIN",
+    "modified": "2025-11-10 10:15:00",
+    "name": "Security_Briefing_Sec4.txt",
     "security": "STANDARD_ACCESS",
     "type": "text/plain"
   },
   {
-    "content": "Project X: Initial notes and ideas.",
-    "folder": "PROJECT X",
-    "modified": "2026-01-17 11:00:00",
-    "name": "project_notes.txt",
+    "content": "BATCH 402 - RECONCILIATION LOG\n\nentry_id | subject_name | public_status | internal_flag\n-----------------------------------------------------\n402-098  | T. Smith     | Active        | MONITORING\n402-099  | J. Doe       | Withdrawn     | RECLAIMED_SCRAP\n402-100  | S. Jenkins   | Late/Missed   | CLASS-A_READY [ERROR: MISMATCH]\n402-101  | B. Yilmaz    | Active        | MONITORING\n\nNOTE: System will not let me clear the error on S. Jenkins (402-100). The timestamp for 'Late Appointment' matches a 'Mercenary Deployment' invoice in the shared drive. Flagging to Mitchell.",
+    "folder": "WORK_LOGS/BATCH_402",
+    "modified": "2025-12-05 14:30:00",
+    "name": "Batch_402_Discrepancies.xls",
     "security": "STANDARD_ACCESS",
+    "type": "application/vnd.ms-excel"
+  },
+  {
+    "content": "OBSERVATION LOG - 4TH STREET BUS STOP\n\nTheory: It's a Collection Node. \n\nDate: Jan 20, 2026\n17:04 - Subject (Green Jacket, leg brace) stops walking. Stares blankly.\n17:08 - Subject shakes head, boards bus immediately. Duration: 4m 00s.\n\nDate: Jan 21, 2026\n08:50 - Three subjects waiting. All three freeze simultaneously.\n08:54 - All three move simultaneously. Duration: 4m 00s.\n\nIt's a data burst. They are uploading the maps via the local wifi node disguised as a billboard.",
+    "folder": "DOCUMENTS/PERSONAL",
+    "modified": "2026-01-21 17:55:00",
+    "name": "bus_stop_timings.txt",
+    "security": "ENCRYPTED",
     "type": "text/plain"
   },
   {
-    "content": "[BINARY DATA]",
+    "content": "SCENARIO DEVELOPMENT - FAILURE CONDITIONS (Unauthorized Copy)\n\n...To ensure user remains stationary during data upload, the 'Limper' protocol introduces a phantom cramp or mechanical lock in the lower servo-motors.\n\nDeveloper Note (A_WHITE): 'If they look scared, it's working. Fear spikes the adrenaline, which actually speeds up the neural mapping process. Do not patch this bug.'...",
     "folder": "DOWNLOADS",
-    "modified": "2026-01-17 12:00:00",
-    "name": "downloaded_tool.exe",
+    "modified": "2026-01-25 11:20:00",
+    "name": "Scenario_Dev_Internal_Memo.pdf",
+    "security": "RESTRICTED",
+    "type": "application/pdf"
+  },
+  {
+    "content": "[ENCRYPTED ARCHIVE - PASSWORD REQUIRED]\n\nContains:\n- S_Jenkins_Neural_Map.dat\n- Extraction_Order_Signed_D_ALLEN.jpg\n- Audio_Recording_Lobby_Jan20.mp3\n\nMETADATA: Copied from Workstation 4 (Mitchell) before deletion.",
+    "folder": "BACKUPS/ARCHIVE_7",
+    "modified": "2026-01-31 16:45:00",
+    "name": "The_Blue_Notebook_Backup.zip",
+    "security": "HIGH_SECURITY",
+    "type": "application/zip"
+  },
+  {
+    "content": "Sarah,\n\nI know you're probably not reading this. I know they told you it was just a check-up. \n\nI found your file. They aren't trying to fix the limp. They are mapping the way your brain compensates for it so they can put that code into the androids. You're just training data to them.\n\nRun.\n\n- A Friend.",
+    "folder": "TRASH",
+    "modified": "2026-01-27 19:00:00",
+    "name": "Warning_Letter_Draft.txt",
     "security": "STANDARD_ACCESS",
-    "type": "application/octet-stream"
+    "type": "text/plain"
+  },
+  {
+    "content": "INVENTORY MANIFEST - RECLAMATION UNIT (Dec 2025)\n\nItem ID | Description | Source | Condition | Action\n----------------------------------------------------\nLMB-992 | Left Arm (Hydraulic) | Subj 884 | Damaged | Refurbish\nORG-112 | Kidney (Synth-Filter)| Subj 902 | Viable  | Sterilise & Restock\nOPT-331 | Eye Unit (Zeiss-X)   | Subj 902 | Crushed | SCRAP\nBIO-001 | Biomass (General)    | Subj 884 | N/A     | Incinerate\n\nNotes: High volume of 'BIO-001' this month. Incinerator B requires maintenance. Please remind staff not to log 'Personal Effects' (rings, watches) in the biological chute.",
+    "folder": "WORK_LOGS/INVENTORY",
+    "modified": "2025-12-15 08:30:00",
+    "name": "Reclamation_Manifest_Dec25.csv",
+    "security": "STANDARD_ACCESS",
+    "type": "text/csv"
+  },
+  {
+    "content": "PRESS RELEASE DRAFT - 'THE NEW NORMAL'\n\nHeadline: D.A.P.A.U.E. Announces 10,000th Success Story!\n\nBody: 'Thanks to the advanced benevolence of the Department, citizens like [INSERT NAME] are finding their feet again. Our proprietary Co-Pilot AI ensures that your body knows what you want before you do!'\n\nINTERNAL NOTE (S_CLARK): Ensure we use a subject with high compliance scores for the photoshoot. Subject 402-100 (S. Jenkins) was suggested, but she has a gait hitch. Find someone smoother. We need the 'miracle' angle, not the 'cyborg' angle.",
+    "folder": "SHARED/MARKETING",
+    "modified": "2026-01-10 14:00:00",
+    "name": "PR_Campaign_Spring2026_DRAFT.docx",
+    "security": "STANDARD_ACCESS",
+    "type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  },
+  {
+    "content": "TECHNICAL BULLETIN: Co-Pilot v4.2 Patch Notes\n\nFixes:\n- Smoothed out 'tremors' caused by user resistance to AI pathfinding.\n- Increased 'Nudge' authority: AI can now override micro-movements to prevent falls.\n\nKnown Issues:\n- 'Ghost Limbs': Users report feeling pain in limbs that were replaced years ago. This is a software desync. \n- Workaround: Increase dosage of Suppressant-B. Do not admit software fault.",
+    "folder": "DOCUMENTS/MANUALS",
+    "modified": "2025-11-28 09:15:00",
+    "name": "CoPilot_Patch_Notes_v4.2.txt",
+    "security": "STANDARD_ACCESS",
+    "type": "text/plain"
+  },
+  {
+    "content": "To-Do List (David)\n\nNov:\n[x] Get ID badge from Mike\n[x] Read safety manual (boring)\n[x] Learn the coffee machine quirks\n\nDec:\n[x] Finish Batch 400 entry\n[ ] Ask Mitchell about the missing files in Batch 401\n[ ] Buy sister a birthday card\n\nJan:\n[ ] Why did the bus stop pattern happen again?\n[ ] Find out what 'Class-A' actually means\n[ ] CHECK ARCHIVE 7 (Mike said the code is 8821)",
+    "folder": "DESKTOP",
+    "modified": "2026-01-30 17:00:00",
+    "name": "scratchpad.txt",
+    "security": "STANDARD_ACCESS",
+    "type": "text/plain"
+  },
+  {
+    "content": "INVOICE #9921 - Mercenary Services Group (MSG)\n\nBill To: D.A.P.A.U.E. Operations\nDate: Jan 12, 2026\n\nLine Items:\n- Urban Tracking (Sector 4): £4,500\n- Asset Retrieval (Class-A Protocol): £12,000\n- Disposal Fee (Bio-Hazard): £1,500\n- Hush Fee (Local Law Enforcement): £5,000\n\nTotal: £23,000\nStatus: PAID",
+    "folder": "SHARED/FINANCE/INVOICES",
+    "modified": "2026-01-15 11:00:00",
+    "name": "MSG_Invoice_Jan26.pdf",
+    "security": "RESTRICTED",
+    "type": "application/pdf"
+  },
+  {
+    "content": "AUDIO TRANSCRIPT - BREAK ROOM (Auto-Generated)\n\nSpeaker A (Unknown): ...did you see the enzyme levels on the new intake?\nSpeaker B (M_ROBINSON): Yeah. It's the rejection loop. The body knows the metal isn't supposed to be there.\nSpeaker A: But the report says 'flu symptoms.'\nSpeaker B: Look, do you want to keep your pension? It's the flu. It's always the flu. If they die, it's 'complications from pneumonia.' Just update the spreadsheet.\n\n[End of Transcript - Keyword 'PENSION' flagged for review]",
+    "folder": "WORK_LOGS/TRANSCRIPTS",
+    "modified": "2026-01-22 13:45:00",
+    "name": "AutoLog_Mic_BreakRoom2.txt",
+    "security": "STANDARD_ACCESS",
+    "type": "text/plain"
   }
 ]
