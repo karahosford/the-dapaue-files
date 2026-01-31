@@ -2078,6 +2078,57 @@ function showStaffChatNotification(messageObj) {
 function handleStaffChatResponse(btn, which) {
     const notif = btn.closest('.system-notification');
     if (!notif) return;
+    // Special effect: If Kib and Ignore (option B) is chosen, rain 😾 for 10s
+    if (notif.dataset.sender === 'KIB' && which === 'B') {
+        rainAngryCatEmoji();
+    }
+    // --- Raining emoji effect for Kib Ignore ---
+    function rainAngryCatEmoji() {
+        const emoji = '😾';
+        const count = 32;
+        const duration = 10000;
+        const container = document.createElement('div');
+        container.style.position = 'fixed';
+        container.style.left = '0';
+        container.style.top = '0';
+        container.style.width = '100vw';
+        container.style.height = '100vh';
+        container.style.pointerEvents = 'none';
+        container.style.zIndex = '99999';
+        document.body.appendChild(container);
+        let running = true;
+        function spawnOne() {
+            if (!running) return;
+            const span = document.createElement('span');
+            span.textContent = emoji;
+            span.style.position = 'absolute';
+            span.style.left = Math.random() * 98 + 'vw';
+            span.style.top = '-2em';
+            span.style.fontSize = (Math.random() * 32 + 32) + 'px';
+            span.style.opacity = '0.92';
+            // Slow down: increase fall duration to 2.2s
+            span.style.transition = 'transform 2.2s linear, opacity 0.7s linear';
+            container.appendChild(span);
+            // Animate falling
+            setTimeout(() => {
+                span.style.transform = `translateY(${window.innerHeight + 80}px)`;
+                span.style.opacity = '0.7';
+            }, 10);
+            // Remove after fall
+            setTimeout(() => {
+                span.remove();
+            }, 2400);
+        }
+        // Spawn many at intervals
+        let interval = setInterval(() => {
+            for (let i = 0; i < 4; ++i) spawnOne();
+        }, 120);
+        setTimeout(() => {
+            running = false;
+            clearInterval(interval);
+            setTimeout(() => container.remove(), 2000);
+        }, duration);
+    }
     // Remove buttons after selection
     const btns = notif.querySelectorAll('button');
     btns.forEach(b => b.disabled = true);
