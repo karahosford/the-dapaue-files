@@ -29,6 +29,7 @@
             --noise-opacity: 0.05;
             --blur-strength: 8px;
             --fisheye-intensity: 0.5;
+            --wallpaper: none;
 
         }
         body {
@@ -40,6 +41,10 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
             cursor: auto;
+            background-image: var(--wallpaper) !important;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         /* Bloom effect on text */
@@ -49,6 +54,15 @@
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
+        }
+
+        #wallpaper-select {
+            color: #000 !important;
+            background: #fff !important;
+        }
+        #wallpaper-select option {
+            color: #000 !important;
+            background: #fff !important;
         }
 
         /* --- CRT FX --- */
@@ -2591,16 +2605,15 @@ function signInAsDParker() {
                                     <button onclick="toggleFullscreenSetting()" id="fullscreen-toggle" class="btn-retro px-3 py-1 text-[9px]">[TOGGLE]</button>
                                 </div>
                                 <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-[10px]">CRT GLOW & HAZE</div>
-                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Green cathode ray glow effect</div>
-                                    </div>
-                                    <label class="relative inline-block w-12 h-6">
-                                        <input type="checkbox" id="crt-glow-toggle" onchange="toggleCRTGlow()" class="opacity-0 w-0 h-0">
-                                        <span class="toggle-slider"></span>
-                                    </label>
                                 </div>
-                                <!-- Light theme toggle removed -->
+                                <!-- Wallpaper Selection -->
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-[10px]">DESKTOP WALLPAPER</div>
+                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Change the desktop background</div>
+                                    </div>
+                                    <select id="wallpaper-select" class="btn-retro px-3 py-1 text-[9px]" onchange="changeWallpaper(this.value)"></select>
+                                </div>
                                 <div class="flex items-center justify-between">
                                     <span class="text-[10px]">INTERFACE ZOOM</span>
                                     <div class="flex gap-2">
@@ -2611,6 +2624,46 @@ function signInAsDParker() {
                                 </div>
                             </div>
                         </div>
+                        <script>
+                        // Wallpaper logic for settings
+                        function loadWallpaperOptions() {
+                            const wallpaperSelect = document.getElementById('wallpaper-select');
+                            if (wallpaperSelect) {
+                                const wallpapers = [
+                                    { name: 'Default (No Wallpaper)', value: '' },
+                                    { name: 'Purple', value: 'url(assets/images/desktop_wallpaper/purple.jpg)' },
+                                    { name: 'Leaves', value: 'url(assets/images/desktop_wallpaper/leaves.svg)' },
+                                    { name: 'Flowers', value: 'url(assets/images/desk`top_wallpaper/flowers.svg)' }
+                                ];
+                                wallpaperSelect.innerHTML = wallpapers.map(w => `<option value="${w.value}">${w.name}</option>`).join('');
+                                // Set current
+                                const saved = localStorage.getItem('dapaue-wallpaper') || '';
+                                wallpaperSelect.value = saved;
+                            }
+                        }
+
+                        function changeWallpaper(val) {
+                            if (val) {
+                                document.documentElement.style.setProperty('--wallpaper', val);
+                                localStorage.setItem('dapaue-wallpaper', val);
+                            } else {
+                                document.documentElement.style.setProperty('--wallpaper', 'none');
+                                localStorage.removeItem('dapaue-wallpaper');
+                            }
+                        }
+
+                        // On DOMContentLoaded, set wallpaper and load options
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Apply saved wallpaper
+                            const savedWallpaper = localStorage.getItem('dapaue-wallpaper');
+                            if (savedWallpaper) {
+                                document.documentElement.style.setProperty('--wallpaper', savedWallpaper);
+                            } else {
+                                document.documentElement.style.setProperty('--wallpaper', 'none');
+                            }
+                            loadWallpaperOptions();
+                        });
+                        </script>
                         
                         <!-- System Settings -->
                         <div class="border-b border-[var(--panel-light)] pb-4">
@@ -2792,16 +2845,6 @@ function signInAsDParker() {
                 window.terminalEasterEggs = [];
                 async function loadTerminalEasterEggs() {
                     let eggs = [];
-                    // Load legacy file
-                    try {
-                        const res = await fetch('assets/data/terminal/terminal-eastereggs.json');
-                        if (res.ok) {
-                            const data = await res.json();
-                            if (Array.isArray(data)) eggs = eggs.concat(data);
-                        }
-                    } catch (e) {}
-
-                    // Load all scripts from assets/data/terminal/*.json
                     try {
                         // List of known scripts (manual, since fetch can't list directory)
                         const scriptFiles = [
