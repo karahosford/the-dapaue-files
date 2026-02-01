@@ -14,6 +14,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="apps/briefingApp.js"></script>
     <script src="apps/sysmonApp.js"></script>
+    <script src="apps/pongEasterEgg.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap');
 
@@ -10854,6 +10855,12 @@ function showEnlargedImage(src) {
             const args = parts.slice(1).join(' ');
             
             switch(cmd) {
+                case 'tennis':
+                    if (window.triggerPongEasterEgg) window.triggerPongEasterEgg();
+                    return {
+                        className: 'terminal-success',
+                        message: `<span style="color:#fff">🎾 TENNIS MODE ACTIVATED!<br>Use <b>W/S</b> or <b>↑/↓</b> to play. First to 5 wins!<br>Press <b>ESC</b> to exit.</span>`
+                    };
                 case 'help':
                     return {
                         className: 'text-[var(--text-dim)] space-y-1',
