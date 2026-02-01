@@ -37,11 +37,17 @@
 
         // Exit button and close logic
         let exitButton = null;
+        let pongActive = true;
         function closePong() {
+            pongActive = false;
             document.removeEventListener('keydown', pongKeyHandler);
             window.removeEventListener('resize', resizeCanvas);
             if (exitButton) exitButton.remove();
             if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            let notif = document.getElementById('pong-end-notification');
+            if (notif) notif.remove();
+            let emojiRain = document.querySelector('#pong-end-notification ~ div');
+            if (emojiRain) emojiRain.remove();
         }
         // Always show Exit button
         function showExitButton() {
@@ -441,11 +447,12 @@
         });
         // Main loop
         function loop() {
+            if (!pongActive) return;
             w = canvas.width = window.innerWidth;
             h = canvas.height = window.innerHeight;
             update();
             draw();
-            if (!gameOver || fireworks.length > 0) requestAnimationFrame(loop);
+            if (pongActive && (!gameOver || fireworks.length > 0)) requestAnimationFrame(loop);
         }
         loop();
     };
