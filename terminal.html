@@ -559,15 +559,13 @@
             background: linear-gradient(135deg, transparent 40%, #fbbf24 100%);
         }
 
-        /* Forensics sits above other apps, below notepad */
+        /* Forensics window */
         #forensics-window {
             z-index: 900;
-            border-color: #fbbf24 !important;
         }
 
         #forensics-window.active {
             z-index: 900;
-            border-color: #fbbf24 !important;
         }
 
         #notepad-window {
@@ -663,13 +661,6 @@
             max-width: 100vw;
         }
 
-        #forensics-window .forensics-top-bar {
-            height: 8px;
-            background: #fbbf24;
-            width: 100%;
-            flex: 0 0 auto;
-        }
-
         /* Forensics slide-in fullscreen animation */
         #forensics-window {
             transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
@@ -687,6 +678,69 @@
             opacity: 1;
         }
 
+        /* Forensics Window Specific Styling */
+        #forensics-window .window-titlebar {
+            background: var(--panel-light);
+        }
+
+        #forensics-window.active .window-titlebar {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        #forensics-window .window-titlebar .window-title {
+            font-size: 12px;
+            letter-spacing: 0.05em;
+        }
+
+        /* Forensics Control Bar */
+        #forensics-window .border-b-2 {
+            border-color: var(--panel-light) !important;
+        }
+
+        #forensics-window input[type="text"] {
+            background: var(--panel-dark);
+            border-color: var(--panel-light);
+            color: var(--text-main);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        #forensics-window input[type="text"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
+            outline: none;
+        }
+
+        #forensics-window input[type="text"]::placeholder {
+            color: var(--text-dim);
+        }
+
+        /* Forensics Sidebar */
+        #forensics-window > .window-content > div > div > div:first-of-type {
+            /* Tag Sidebar */
+            border-right: 2px solid var(--panel-light);
+        }
+
+        #forensics-window #forensics-tag-cloud {
+            gap: 8px;
+            padding: 8px !important;
+        }
+
+        /* Board Container */
+        #board-container {
+            background-image: repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(100, 100, 100, 0.1) 24px, rgba(100, 100, 100, 0.1) 25px), repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(100, 100, 100, 0.1) 24px, rgba(100, 100, 100, 0.1) 25px) !important;
+            background-color: rgba(26, 26, 26, 0.05);
+        }
+
+        /* Card Details Panel */
+        #card-details-panel {
+            border-left: 2px solid var(--panel-light);
+        }
+
+        #card-details-panel > div:first-child {
+            border-bottom: 1px solid var(--panel-light);
+        }
+
         /* Evidence Card Styles */
         .evidence-card {
             position: absolute;
@@ -695,18 +749,20 @@
             border: 1px solid var(--panel-light);
             cursor: move;
             user-select: none;
-            transition: box-shadow 0.2s, border-color 0.2s;
+            transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
             z-index: 10;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
         }
 
         .evidence-card:hover {
             border-color: var(--accent);
-            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+            transform: translateY(-2px);
         }
 
         .evidence-card.selected {
             border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            box-shadow: 0 0 18px rgba(0, 255, 255, 0.6), inset 0 0 8px rgba(0, 255, 255, 0.1);
             z-index: 20;
         }
 
@@ -727,6 +783,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 9px;
+            font-weight: bold;
         }
 
         .card-type {
@@ -772,27 +830,33 @@
         .evidence-tag {
             font-size: 7px;
             padding: 2px 5px;
-            background: rgba(0, 255, 255, 0.1);
-            border: 1px solid rgba(0, 255, 255, 0.3);
+            background: rgba(0, 255, 255, 0.12);
+            border: 1px solid rgba(0, 255, 255, 0.35);
             cursor: pointer;
             transition: all 0.2s;
+            border-radius: 2px;
+            white-space: nowrap;
         }
 
         .evidence-tag:hover {
-            background: rgba(0, 255, 255, 0.2);
+            background: rgba(0, 255, 255, 0.25);
             border-color: var(--accent);
+            box-shadow: 0 0 4px rgba(0, 255, 255, 0.3);
         }
 
         .evidence-tag.filtered {
             background: var(--accent);
             color: var(--bg-dark);
+            border-color: var(--accent);
+            font-weight: bold;
         }
 
         /* Connection Line Styles */
         .connection-line {
             stroke-width: 2;
             opacity: 0.7;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, stroke-width 0.2s;
+            filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
         }
 
         .connection-line.type-related {
@@ -810,29 +874,35 @@
         .connection-line:hover {
             opacity: 1;
             stroke-width: 3;
+            filter: drop-shadow(0 0 6px currentColor);
         }
 
         /* Tag Cloud Styles */
         .tag-cloud-item {
-            padding: 4px 8px;
-            background: rgba(0, 255, 255, 0.05);
-            border: 1px solid rgba(0, 255, 255, 0.2);
+            padding: 6px 8px;
+            background: rgba(0, 255, 255, 0.08);
+            border: 1px solid rgba(0, 255, 255, 0.25);
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-radius: 2px;
+            font-size: 9px;
         }
 
         .tag-cloud-item:hover {
-            background: rgba(0, 255, 255, 0.15);
+            background: rgba(0, 255, 255, 0.18);
             border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.2);
         }
 
         .tag-cloud-item.active {
             background: var(--accent);
             color: var(--bg-dark);
             border-color: var(--accent);
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.4);
+            font-weight: bold;
         }
 
         .tag-frequency {
@@ -3093,9 +3163,12 @@ function signInAsDParker() {
 
         <!-- FORENSICS Investigation Board Window -->
         <div id="forensics-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 7.5%;">
+            <div class="window-resize-handle"></div>
+            <div class="window-titlebar" onmousedown="startDrag(event, 'forensics-window')" ontouchstart="startDrag(event, 'forensics-window')">
+                <span class="window-title">FORENSICS // EVIDENCE_BOARD</span>
+            </div>
             <div class="window-content">
                 <div class="w-full h-full bg-[var(--bg-dark)] flex flex-col">
-                    <div class="forensics-top-bar"></div>
                     <!-- Search & Control Bar -->
                     <div class="border-b-2 border-[var(--panel-light)] bg-[var(--panel-dark)] p-2 flex items-center gap-3">
                         <div class="flex items-center gap-2 flex-1">
@@ -3133,7 +3206,7 @@ function signInAsDParker() {
                         <!-- Evidence Board Canvas -->
                         <div class="flex-1 flex flex-col overflow-hidden">
                             <div id="board-container" class="flex-1 relative overflow-auto bg-[var(--panel-dark)]" style="background-image: repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(0,0,0,0.05) 24px, rgba(0,0,0,0.05) 25px), repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(0,0,0,0.05) 24px, rgba(0,0,0,0.05) 25px);">
-                                <div id="board-canvas" class="relative" style="width: 3000px; height: 2000px; min-width: 100%; min-height: 100%;">
+                                <div id="board-canvas" class="relative" style="width: 3000px; height: 2000px; min-width: 100%; min-height: 100%; opacity: 0.8;">
                                     <!-- Evidence cards will be dynamically placed here -->
                                     <svg id="board-connections" class="absolute inset-0 pointer-events-none" style="width: 100%; height: 100%; z-index: 1;">
                                         <!-- Connection lines drawn here -->
@@ -9968,6 +10041,13 @@ function showEnlargedImage(src) {
             // Close modal with Escape
             if (e.key === 'Escape' && isModalOpen) {
                 closeModal();
+                return;
+            }
+
+            // F2 opens/closes forensics window
+            if (e.key === 'F2') {
+                e.preventDefault();
+                toggleForensicsLift();
                 return;
             }
             
