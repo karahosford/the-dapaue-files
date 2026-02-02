@@ -15,6 +15,7 @@
     <script src="apps/briefingApp.js"></script>
     <script src="apps/sysmonApp.js"></script>
     <script src="apps/pongEasterEgg.js"></script>
+    <script src="apps/slackApp.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap');
 
@@ -411,6 +412,102 @@
             min-width: 100px;
         }
 
+        /* Confirmation Modal Styling */
+        @keyframes confirmModalFadeIn {
+            from {
+                background: rgba(0,0,0,0);
+            }
+            to {
+                background: rgba(0,0,0,0.85);
+            }
+        }
+
+        .confirm-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: confirmModalFadeIn 0.5s ease;
+        }
+
+        .confirm-modal-content {
+            background: var(--bg-dark);
+            border: 2px solid var(--panel-light);
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .confirm-modal-header {
+            background: var(--panel-dark);
+            border-bottom: 1px solid var(--panel-light);
+            padding: 12px 16px;
+            font-weight: bold;
+            color: var(--text-main);
+            font-size: 11px;
+            letter-spacing: 0.05em;
+        }
+
+        .confirm-modal-body {
+            padding: 20px;
+            color: var(--text-main);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .confirm-modal-footer {
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--panel-light);
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .confirm-modal-footer .btn-retro {
+            min-width: 100px;
+            padding: 8px 16px;
+            font-size: 10px;
+            background: transparent;
+            border: 1px solid var(--panel-light);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: bold;
+        }
+
+        .confirm-modal-footer .btn-retro:hover {
+            background: var(--panel-light);
+            box-shadow: 0 0 8px rgba(255,255,255,0.2);
+        }
+
+        .confirm-modal-footer .btn-confirm {
+            border-color: var(--text-main);
+            color: var(--text-main);
+        }
+
+        .confirm-modal-footer .btn-confirm:hover {
+            background: var(--text-main);
+            color: var(--bg-dark);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .confirm-modal-footer .btn-danger {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .confirm-modal-footer .btn-danger:hover {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+        }
+
         .scrollbar-hidden::-webkit-scrollbar { display: none; }
         
         /* Custom Scrollbar for email content */
@@ -785,6 +882,36 @@
             align-items: center;
             font-size: 9px;
             font-weight: bold;
+            position: relative;
+        }
+
+        .card-delete-btn {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 16px;
+            height: 16px;
+            background: #ef4444;
+            border: 1px solid #dc2626;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+
+        .evidence-card:hover .card-delete-btn {
+            opacity: 1;
+        }
+
+        .card-delete-btn:hover {
+            background: #dc2626;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
         }
 
         .card-type {
@@ -2097,25 +2224,44 @@ function stopIntroMusic() {
 
 // === Narrative Chat Notification Prototype ===
 // Preload chat notification and click sounds
-let staffChatAudio = null;
-let staffClickAudio = null;
+let staffChatAudio = new Audio('assets/audio/notification.mp3');
+staffChatAudio.volume = 0.5;
+staffChatAudio.preload = 'auto';
+
+let staffClickAudio = new Audio('assets/audio/desktop.mp3');
+staffClickAudio.volume = 0.5;
+staffClickAudio.preload = 'auto';
+
+let forensicsOpenAudio = new Audio('assets/audio/board_open.mp3');
+forensicsOpenAudio.volume = 0.6;
+forensicsOpenAudio.preload = 'auto';
+
+let forensicsCloseAudio = new Audio('assets/audio/board_close.mp3');
+forensicsCloseAudio.volume = 0.6;
+forensicsCloseAudio.preload = 'auto';
+
 function playStaffChatSound() {
     if (!soundEnabled) return; // Respect sound settings
-    if (!staffChatAudio) {
-        staffChatAudio = new Audio('assets/audio/notification.mp3');
-        staffChatAudio.volume = 0.5;
-    }
     staffChatAudio.currentTime = 0;
     staffChatAudio.play().catch(e => console.log('Chat sound playback failed:', e));
 }
+
 function playStaffClickSound() {
     if (!soundEnabled) return; // Respect sound settings
-    if (!staffClickAudio) {
-        staffClickAudio = new Audio('assets/audio/desktop.mp3'); // Use desktop.mp3 as click
-        staffClickAudio.volume = 0.5;
-    }
     staffClickAudio.currentTime = 0;
     staffClickAudio.play().catch(e => console.log('Click sound playback failed:', e));
+}
+
+function playForensicsOpenSound() {
+    if (!soundEnabled) return; // Respect sound settings
+    forensicsOpenAudio.currentTime = 0;
+    forensicsOpenAudio.play().catch(e => console.log('Forensics open sound playback failed:', e));
+}
+
+function playForensicsCloseSound() {
+    if (!soundEnabled) return; // Respect sound settings
+    forensicsCloseAudio.currentTime = 0;
+    forensicsCloseAudio.play().catch(e => console.log('Forensics close sound playback failed:', e));
 }
 // Assign a color to each staff member (by sender string)
 const STAFF_COLORS = {
@@ -2491,6 +2637,10 @@ function signInAsDParker() {
             <div class="desktop-icon" onclick="window.injectSysmonWindow()">
                 <div class="icon-image">📊</div>
                 <div class="icon-label">SYSMON</div>
+            </div>
+            <div class="desktop-icon" onclick="openSlackComms()">
+                <div class="icon-image">💬</div>
+                <div class="icon-label">SLACK COMMS</div>
             </div>
             <div class="desktop-icon" onclick="openWindow('server-monitor-window'); renderServerMonitor();">
                 <div class="icon-image">🖥️</div>
@@ -3581,6 +3731,7 @@ function signInAsDParker() {
                 <div class="taskbar-item active" id="taskbar-user-access" onclick="focusWindow('user-access-window')" style="display: none;">⌘ TERMINAL</div>
                 <div class="taskbar-item active" id="taskbar-notepad" onclick="focusWindow('notepad-window')" style="display: none;">📝 NOTEPAD</div>
                 <div class="taskbar-item active" id="taskbar-sysmon" onclick="focusWindow('sysmon-window')" style="display: none;">📊 SYSMON</div>
+                <div class="taskbar-item active" id="taskbar-slack" onclick="focusWindow('slack-window')" style="display: none;">💬 SLACK</div>
                 <div class="taskbar-item active" id="taskbar-server-monitor" onclick="focusWindow('server-monitor-window')" style="display: none;">🖥️ SERVERS</div>
                 <div class="taskbar-item active" id="taskbar-tag-wrangle" onclick="focusWindow('tag-wrangle-window')" style="display: none;">🕸 TAG WRANGLE</div>
                 <div class="taskbar-item active" id="taskbar-user-select" onclick="focusWindow('user-select-window')" style="display: none;">👤 USER_SELECT</div>
@@ -5141,6 +5292,7 @@ function signInAsDParker() {
                     ${card.tags.map(tag => `<span class="evidence-tag ${boardState.activeFilters.has(tag) ? 'filtered' : ''}" onclick="event.stopPropagation(); toggleTagFilter('${tag}')">${tag}</span>`).join('')}
                     <span class="evidence-tag" style="opacity: 0.5;" onclick="event.stopPropagation(); addTagToCard('${card.id}')">+</span>
                 </div>
+                <div class="card-delete-btn" onclick="event.stopPropagation(); confirmRemoveCard('${card.id}')">×</div>
             `;
             
             // Drag events
@@ -5617,6 +5769,80 @@ function signInAsDParker() {
                 }
                 showSystemNotification(`Tag "${cleaned}" added`);
             }
+        }
+
+        function showConfirmModal(message, onConfirm, options = {}) {
+            const {
+                title = '[ CONFIRMATION REQUIRED ]',
+                confirmText = '[CONFIRM]',
+                cancelText = '[CANCEL]',
+                isDanger = false
+            } = options;
+
+            const modal = document.createElement('div');
+            modal.className = 'confirm-modal';
+            modal.innerHTML = `
+                <div class="confirm-modal-content" onclick="event.stopPropagation()">
+                    <div class="confirm-modal-header">${title}</div>
+                    <div class="confirm-modal-body">${message}</div>
+                    <div class="confirm-modal-footer">
+                        <button class="btn-retro" id="modal-cancel">${cancelText}</button>
+                        <button class="btn-retro ${isDanger ? 'btn-danger' : 'btn-confirm'}" id="modal-confirm">${confirmText}</button>
+                    </div>
+                </div>
+            `;
+
+            const closeModal = () => document.body.removeChild(modal);
+            
+            modal.onclick = closeModal;
+            modal.querySelector('#modal-cancel').onclick = closeModal;
+            modal.querySelector('#modal-confirm').onclick = () => {
+                onConfirm();
+                closeModal();
+            };
+
+            document.body.appendChild(modal);
+        }
+
+        function confirmRemoveCard(cardId) {
+            const card = boardState.cards.find(c => c.id === cardId);
+            if (!card) return;
+            
+            const subject = card.data?.subject || 'this card';
+            showConfirmModal(
+                `Remove "<span style="color: var(--text-main);">${subject}</span>" from the investigation board?<br><br><span style="font-size: 9px; color: var(--text-dim);">This will also remove all connections to this evidence card.</span>`,
+                () => removeCardFromBoard(cardId),
+                {
+                    title: '[ REMOVE EVIDENCE CARD ]',
+                    confirmText: '[REMOVE]',
+                    isDanger: true
+                }
+            );
+        }
+
+        function removeCardFromBoard(cardId) {
+            // Remove card from boardState
+            boardState.cards = boardState.cards.filter(c => c.id !== cardId);
+            
+            // Remove any connections to/from this card
+            boardState.connections = boardState.connections.filter(conn => 
+                conn.from !== cardId && conn.to !== cardId
+            );
+            
+            // Clear selection if this card was selected
+            if (boardState.selectedCard === cardId) {
+                boardState.selectedCard = null;
+            }
+            
+            // Remove from tag entity refs
+            entityDatabase.tags.forEach((tagData, tagName) => {
+                tagData.refs = tagData.refs.filter(ref => ref.id !== cardId);
+            });
+            
+            saveBoardState();
+            renderInvestigationBoard();
+            updateTagCloud();
+            showSystemNotification('Card removed from board');
         }
 
         function updateCardDetailsPanel(cardId) {
@@ -8094,6 +8320,7 @@ function signInAsDParker() {
             const isOpen = win.style.display === 'flex';
 
             if (isOpen) {
+                playForensicsCloseSound();
                 // Close: slide down and fade out while taskbar returns
                 win.style.opacity = '0';
                 win.style.transform = 'translateY(100vh)';
@@ -8105,6 +8332,7 @@ function signInAsDParker() {
                     win.style.transform = '';
                 }, 600);
             } else {
+                playForensicsOpenSound();
                 // Open: position forensics below top taskbar, slide up while taskbar moves to top
                 win.style.display = 'flex';
                 win.style.opacity = '0';
