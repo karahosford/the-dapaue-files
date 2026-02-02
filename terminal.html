@@ -422,6 +422,28 @@
             }
         }
 
+        @keyframes windowFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes windowFadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+
         .confirm-modal {
             position: fixed;
             inset: 0;
@@ -508,6 +530,104 @@
             box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
         }
 
+        /* Prompt Modal Styling */
+        .prompt-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: confirmModalFadeIn 0.5s ease;
+        }
+
+        .prompt-modal-content {
+            background: var(--bg-dark);
+            border: 2px solid var(--panel-light);
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .prompt-modal-header {
+            background: var(--panel-dark);
+            border-bottom: 1px solid var(--panel-light);
+            padding: 12px 16px;
+            font-weight: bold;
+            color: var(--text-main);
+            font-size: 11px;
+            letter-spacing: 0.05em;
+        }
+
+        .prompt-modal-body {
+            padding: 20px;
+        }
+
+        .prompt-modal-label {
+            color: var(--text-main);
+            font-size: 11px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .prompt-modal-input {
+            width: 100%;
+            background: var(--panel-dark);
+            border: 1px solid var(--panel-light);
+            color: var(--text-main);
+            padding: 10px 12px;
+            font-family: monospace;
+            font-size: 11px;
+            outline: none;
+            transition: border 0.2s;
+            box-sizing: border-box;
+        }
+
+        .prompt-modal-input:focus {
+            border-color: var(--text-main);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        }
+
+        .prompt-modal-footer {
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid var(--panel-light);
+            padding: 12px 16px;
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .prompt-modal-footer .btn-retro {
+            min-width: 100px;
+            padding: 8px 16px;
+            font-size: 10px;
+            background: transparent;
+            border: 1px solid var(--panel-light);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: bold;
+        }
+
+        .prompt-modal-footer .btn-retro:hover {
+            background: var(--panel-light);
+            box-shadow: 0 0 8px rgba(255,255,255,0.2);
+        }
+
+        .prompt-modal-footer .btn-submit {
+            border-color: var(--text-main);
+            color: var(--text-main);
+        }
+
+        .prompt-modal-footer .btn-submit:hover {
+            background: var(--text-main);
+            color: var(--bg-dark);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+
         .scrollbar-hidden::-webkit-scrollbar { display: none; }
         
         /* Custom Scrollbar for email content */
@@ -533,6 +653,7 @@
             background-image: 
                 repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px),
                 repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px);
+            transition: opacity 1s ease;
         }
 
         #desktop-icons {
@@ -618,6 +739,14 @@
             max-height: 90vh;
             overflow: visible;
             /* Make room for resize handle */
+        }
+
+        .window.fade-in {
+            animation: windowFadeIn 0.3s ease forwards;
+        }
+
+        .window.fade-out {
+            animation: windowFadeOut 0.25s ease forwards;
         }
 
         .window-resize-handle {
@@ -760,8 +889,8 @@
 
         /* Forensics slide-in fullscreen animation */
         #forensics-window {
-            transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-                        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 1s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         #forensics-window.forensics-slide {
@@ -1120,7 +1249,7 @@
             padding: 0 10px;
             gap: 8px;
             z-index: 1000;
-            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
             overflow: hidden;
         }
 
@@ -3309,8 +3438,6 @@ function signInAsDParker() {
             </div>
         </div>
 
-// ...existing code...
-
         <!-- FORENSICS Investigation Board Window -->
         <div id="forensics-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 7.5%;">
             <div class="window-resize-handle"></div>
@@ -5100,9 +5227,9 @@ function signInAsDParker() {
                         return accessedUsers.has(email.receiver) || accessedUsers.has(email.sender);
                     });
                     
-                    // Clear all tags from cards
+                    // Ensure all cards have a tags array
                     boardState.cards.forEach(card => {
-                        card.tags = [];
+                        if (!card.tags) card.tags = [];
                     });
                     
                     // Clean up connections that reference removed cards
@@ -5186,28 +5313,42 @@ function signInAsDParker() {
             
             cardsContainer.innerHTML = '';
             
-            // Filter cards based on active filters
-            let displayedCards = boardState.cards;
-            if (boardState.activeFilters.size > 0) {
-                displayedCards = boardState.cards.filter(card => 
-                    card.tags.some(tag => boardState.activeFilters.has(tag))
-                );
-            }
+            // Render all cards, but fade those not matching active filters
+            const hasActiveFilters = boardState.activeFilters.size > 0;
+            let matchingCardsCount = 0;
 
-            if (displayedCards.length === 0) {
+            if (boardState.cards.length === 0) {
                 const empty = document.createElement('div');
                 empty.className = 'absolute inset-0 flex items-center justify-center text-[10px] text-[var(--text-dim)]';
-                empty.innerHTML = boardState.activeFilters.size > 0
-                    ? 'No cards match current filters. <button class="btn-retro px-2 py-1 ml-2" onclick="clearBoardFilters()">[CLEAR FILTERS]</button>'
-                    : 'No evidence on board yet.';
+                empty.textContent = 'No evidence on board yet.';
                 cardsContainer.appendChild(empty);
+            } else {
+                // Render each evidence card
+                boardState.cards.forEach(card => {
+                    const cardEl = createEvidenceCard(card);
+                    
+                    // Check if card matches active filters
+                    const matchesFilter = !hasActiveFilters || card.tags.some(tag => boardState.activeFilters.has(tag));
+                    
+                    if (matchesFilter) {
+                        matchingCardsCount++;
+                        cardEl.style.opacity = '1';
+                    } else {
+                        cardEl.style.opacity = '0.15';
+                        cardEl.style.pointerEvents = 'none';
+                    }
+                    
+                    cardsContainer.appendChild(cardEl);
+                });
+                
+                // Show message if filters active but no matches
+                if (hasActiveFilters && matchingCardsCount === 0) {
+                    const empty = document.createElement('div');
+                    empty.className = 'absolute inset-0 flex items-center justify-center text-[10px] text-[var(--text-dim)] pointer-events-none';
+                    empty.innerHTML = 'No cards match current filters. <button class="btn-retro px-2 py-1 ml-2 pointer-events-auto" onclick="clearBoardFilters()">[CLEAR FILTERS]</button>';
+                    cardsContainer.appendChild(empty);
+                }
             }
-            
-            // Render each evidence card
-            displayedCards.forEach(card => {
-                const cardEl = createEvidenceCard(card);
-                cardsContainer.appendChild(cardEl);
-            });
             
             // Render connections
             renderConnections();
@@ -5315,10 +5456,6 @@ function signInAsDParker() {
                 if (!boardState.dragState && !e.target.classList.contains('evidence-tag')) {
                     selectCard(card.id);
                 }
-            };
-            el.ondblclick = (e) => {
-                e.stopPropagation();
-                openOriginalSource(card);
             };
             el.oncontextmenu = (e) => {
                 e.preventDefault();
@@ -5536,7 +5673,7 @@ function signInAsDParker() {
                 if (conn.label) {
                     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                     text.setAttribute('x', midX + wobble);
-                    text.setAttribute('y', midY + droop + weight - 10);
+                    text.setAttribute('y', midY + droop + weight + 3);
                     text.setAttribute('fill', 'var(--text-dim)');
                     text.setAttribute('font-size', '9');
                     text.setAttribute('text-anchor', 'middle');
@@ -5732,43 +5869,51 @@ function signInAsDParker() {
         }
 
         function addTagToCard(cardId) {
-            const tagName = prompt('Enter tag name:');
-            if (!tagName) return;
-            
-            const cleaned = tagName.trim().toUpperCase().replace(/\s+/g, '_');
-            if (!cleaned) return;
-            
-            const card = boardState.cards.find(c => c.id === cardId);
-            if (!card) return;
-            
-            if (!card.tags.includes(cleaned)) {
-                card.tags.push(cleaned);
-                
-                // Also add to entityDatabase
-                if (!entityDatabase.tags.has(cleaned)) {
-                    entityDatabase.tags.set(cleaned, {
-                        color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
-                        refs: []
-                    });
+            showPromptModal(
+                'Enter a tag name to add to this evidence card:',
+                (tagName) => {
+                    const cleaned = tagName.trim().toUpperCase().replace(/\s+/g, '_');
+                    if (!cleaned) return;
+                    
+                    const card = boardState.cards.find(c => c.id === cardId);
+                    if (!card) return;
+                    
+                    if (!card.tags.includes(cleaned)) {
+                        card.tags.push(cleaned);
+                        
+                        // Also add to entityDatabase
+                        if (!entityDatabase.tags.has(cleaned)) {
+                            entityDatabase.tags.set(cleaned, {
+                                color: `#${Math.floor(Math.random()*16777215).toString(16)}`,
+                                refs: []
+                            });
+                        }
+                        
+                        const entry = entityDatabase.tags.get(cleaned);
+                        if (!entry.refs.some(r => r.id === cardId)) {
+                            entry.refs.push({
+                                type: card.data?.type || 'card',
+                                id: cardId,
+                                label: card.data.subject
+                            });
+                        }
+                        
+                        saveBoardState();
+                        renderInvestigationBoard();
+                        updateTagCloud();
+                        if (boardState.selectedCard === cardId) {
+                            updateCardDetailsPanel(cardId);
+                        }
+                        showSystemNotification(`Tag "${cleaned}" added`);
+                    } else {
+                        showSystemNotification('Tag already exists on this card', '#ff6b6b');
+                    }
+                },
+                {
+                    title: '[ ADD TAG TO CARD ]',
+                    placeholder: 'TAG_NAME'
                 }
-                
-                const entry = entityDatabase.tags.get(cleaned);
-                if (!entry.refs.some(r => r.id === cardId)) {
-                    entry.refs.push({
-                        type: card.data?.type || 'card',
-                        id: cardId,
-                        label: card.data.subject
-                    });
-                }
-                
-                saveBoardState();
-                renderInvestigationBoard();
-                updateTagCloud();
-                if (boardState.selectedCard === cardId) {
-                    updateCardDetailsPanel(cardId);
-                }
-                showSystemNotification(`Tag "${cleaned}" added`);
-            }
+            );
         }
 
         function showConfirmModal(message, onConfirm, options = {}) {
@@ -5802,6 +5947,61 @@ function signInAsDParker() {
             };
 
             document.body.appendChild(modal);
+        }
+
+        function showPromptModal(message, onSubmit, options = {}) {
+            const {
+                title = '[ INPUT REQUIRED ]',
+                submitText = '[SUBMIT]',
+                cancelText = '[CANCEL]',
+                defaultValue = '',
+                placeholder = ''
+            } = options;
+
+            const modal = document.createElement('div');
+            modal.className = 'prompt-modal';
+            modal.innerHTML = `
+                <div class="prompt-modal-content" onclick="event.stopPropagation()">
+                    <div class="prompt-modal-header">${title}</div>
+                    <div class="prompt-modal-body">
+                        <div class="prompt-modal-label">${message}</div>
+                        <input type="text" class="prompt-modal-input" id="prompt-input" value="${defaultValue}" placeholder="${placeholder}">
+                    </div>
+                    <div class="prompt-modal-footer">
+                        <button class="btn-retro" id="prompt-cancel">${cancelText}</button>
+                        <button class="btn-retro btn-submit" id="prompt-submit">${submitText}</button>
+                    </div>
+                </div>
+            `;
+
+            const closeModal = () => document.body.removeChild(modal);
+            const input = modal.querySelector('#prompt-input');
+            
+            modal.onclick = closeModal;
+            modal.querySelector('#prompt-cancel').onclick = closeModal;
+            modal.querySelector('#prompt-submit').onclick = () => {
+                const value = input.value.trim();
+                if (value) {
+                    onSubmit(value);
+                    closeModal();
+                }
+            };
+
+            // Submit on Enter key
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const value = input.value.trim();
+                    if (value) {
+                        onSubmit(value);
+                        closeModal();
+                    }
+                }
+            });
+
+            document.body.appendChild(modal);
+            
+            // Focus input after a brief delay to ensure modal is rendered
+            setTimeout(() => input.focus(), 100);
         }
 
         function confirmRemoveCard(cardId) {
@@ -5904,12 +6104,6 @@ function signInAsDParker() {
                         }).join('')}
                         `
                     }
-                </div>
-                
-                <div class="mt-4 pt-3 border-t border-[var(--panel-light)] space-y-1">
-                    <button class="btn-retro w-full py-1 text-[8px]" onclick="promptAddTagToCard('${cardId}')">[ADD TAG]</button>
-                    <button class="btn-retro w-full py-1 text-[8px]" onclick="promptCreateConnection('${cardId}')">[CREATE CONNECTION]</button>
-                    <button class="btn-retro w-full py-1 text-[8px] border-red-500 text-red-500" onclick="openRemoveCardModal('${cardId}')">[REMOVE CARD]</button>
                 </div>
             `;
         }
@@ -7976,31 +8170,42 @@ function signInAsDParker() {
         }
 
         function renameTag(oldName) {
-            const newName = prompt(`Rename tag "${oldName}" to:`, oldName);
-            if (!newName || newName.trim() === oldName) return;
-            const cleanName = newName.trim();
-            
-            if (entityDatabase.tags.has(cleanName)) {
-                alert('A tag with that name already exists!');
-                return;
-            }
-            
-            const tagData = entityDatabase.tags.get(oldName);
-            entityDatabase.tags.delete(oldName);
-            entityDatabase.tags.set(cleanName, tagData);
-            
-            // Update manual links
-            const newLinks = new Set();
-            entityDatabase.tagLinks.forEach(link => {
-                const [a, b] = link.split(':');
-                const newA = a === oldName ? cleanName : a;
-                const newB = b === oldName ? cleanName : b;
-                newLinks.add(newA + ':' + newB);
-            });
-            entityDatabase.tagLinks = newLinks;
-            
-            updateForensicsTags();
-            updateForensicsConnections();
+            showPromptModal(
+                `Rename tag "<span style="color: var(--text-main);">${oldName}</span>" to:`,
+                (newName) => {
+                    const cleanName = newName.trim();
+                    
+                    if (cleanName === oldName) return;
+                    
+                    if (entityDatabase.tags.has(cleanName)) {
+                        showSystemNotification('A tag with that name already exists!', '#ff6b6b');
+                        return;
+                    }
+                    
+                    const tagData = entityDatabase.tags.get(oldName);
+                    entityDatabase.tags.delete(oldName);
+                    entityDatabase.tags.set(cleanName, tagData);
+                    
+                    // Update manual links
+                    const newLinks = new Set();
+                    entityDatabase.tagLinks.forEach(link => {
+                        const [a, b] = link.split(':');
+                        const newA = a === oldName ? cleanName : a;
+                        const newB = b === oldName ? cleanName : b;
+                        newLinks.add(newA + ':' + newB);
+                    });
+                    entityDatabase.tagLinks = newLinks;
+                    
+                    updateForensicsTags();
+                    updateForensicsConnections();
+                    showSystemNotification(`Tag renamed to "${cleanName}"`);
+                },
+                {
+                    title: '[ RENAME TAG ]',
+                    defaultValue: oldName,
+                    submitText: '[RENAME]'
+                }
+            );
         }
 
         function deleteTag(tagName) {
@@ -8092,16 +8297,24 @@ function signInAsDParker() {
         }
 
         function tagImage(imagePath, imageWidth = null, imageHeight = null) {
-            const tag = prompt('Enter tag for image:');
-            if (!tag) return;
-            addTag(tag, {
-                type: 'image',
-                sourceKey: `image:${imagePath}`,
-                label: imagePath,
-                meta: { imagePath, width: imageWidth, height: imageHeight }
-            });
-            updateForensicsTags();
-            if (!document.getElementById('forensics-connections').classList.contains('hidden')) updateForensicsConnections();
+            showPromptModal(
+                'Enter a tag for this image:',
+                (tag) => {
+                    addTag(tag, {
+                        type: 'image',
+                        sourceKey: `image:${imagePath}`,
+                        label: imagePath,
+                        meta: { imagePath, width: imageWidth, height: imageHeight }
+                    });
+                    updateForensicsTags();
+                    if (!document.getElementById('forensics-connections').classList.contains('hidden')) updateForensicsConnections();
+                    showSystemNotification(`Image tagged with "${tag}"`);
+                },
+                {
+                    title: '[ TAG IMAGE ]',
+                    placeholder: 'TAG_NAME'
+                }
+            );
         }
 
         async function revealLoginForm() {
@@ -8290,6 +8503,13 @@ function signInAsDParker() {
         function openWindow(windowId) {
             playClickSound();
             const win = document.getElementById(windowId);
+            
+            // Skip fade animation for forensics (has custom lift animation)
+            if (windowId !== 'forensics-window') {
+                win.classList.remove('fade-out');
+                win.classList.add('fade-in');
+            }
+            
             win.style.display = 'flex';
             focusWindow(windowId);
             
@@ -8313,14 +8533,25 @@ function signInAsDParker() {
         }
 
         function toggleForensicsLift() {
+            // Prevent rapid toggling while animating
+            if (window.forensicsAnimating) return;
+            window.forensicsAnimating = true;
+            
             const win = document.getElementById('forensics-window');
             const taskbar = document.getElementById('taskbar');
-            if (!win || !taskbar) return;
+            if (!win || !taskbar) {
+                window.forensicsAnimating = false;
+                return;
+            }
 
             const isOpen = win.style.display === 'flex';
 
+            const desktop = document.getElementById('desktop');
+
             if (isOpen) {
                 playForensicsCloseSound();
+                // Restore desktop opacity
+                if (desktop) desktop.style.opacity = '1';
                 // Close: slide down and fade out while taskbar returns
                 win.style.opacity = '0';
                 win.style.transform = 'translateY(100vh)';
@@ -8330,9 +8561,12 @@ function signInAsDParker() {
                     win.classList.remove('fullscreen');
                     win.style.opacity = '';
                     win.style.transform = '';
-                }, 600);
+                    window.forensicsAnimating = false;
+                }, 1000);
             } else {
                 playForensicsOpenSound();
+                // Fade desktop to 10%
+                if (desktop) desktop.style.opacity = '0.1';
                 // Open: position forensics below top taskbar, slide up while taskbar moves to top
                 win.style.display = 'flex';
                 win.style.opacity = '0';
@@ -8360,13 +8594,31 @@ function signInAsDParker() {
                 if (typeof initializeInvestigationBoard === 'function') {
                     initializeInvestigationBoard();
                 }
+                
+                // Reset flag after animation completes
+                setTimeout(() => {
+                    window.forensicsAnimating = false;
+                }, 1000);
             }
         }
         
         function closeWindow(windowId) {
             playClickSound();
             const win = document.getElementById(windowId);
-            win.style.display = 'none';
+            
+            // Skip fade animation for forensics (has custom lift animation)
+            if (windowId !== 'forensics-window') {
+                win.classList.remove('fade-in');
+                win.classList.add('fade-out');
+                
+                // Wait for animation to complete before hiding
+                setTimeout(() => {
+                    win.style.display = 'none';
+                    win.classList.remove('fade-out');
+                }, 250); // Match animation duration
+            } else {
+                win.style.display = 'none';
+            }
             
             // Clear terminal cache when closing user-access-window
             if (windowId === 'user-access-window') {
