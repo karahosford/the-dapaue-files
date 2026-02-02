@@ -7810,11 +7810,11 @@ function signInAsDParker() {
             const btn = document.getElementById('login-btn');
             btn.classList.remove('opacity-10', 'cursor-default');
             btn.classList.add('hover:brightness-125', 'cursor-pointer', 'opacity-100');
-            // Simulate button press after a short delay for 'hacked' effect
+            // Simulate button press after a short delay for 'breaching' effect
             setTimeout(() => {
                 btn.classList.add('active');
                 btn.disabled = true;
-                btn.innerText = 'HACKING...';
+                btn.innerText = 'BREACHING...';
                 setTimeout(() => {
                     handleLogin();
                 }, 1200); // 1.2s to show the effect
