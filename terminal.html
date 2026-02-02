@@ -549,13 +549,25 @@
             border-color: var(--accent);
         }
 
+        #forensics-window .window-resize-handle {
+            background: linear-gradient(135deg, transparent 60%, #fbbf24 100%);
+            border-left: 1px solid #fbbf24;
+            border-top: 1px solid #fbbf24;
+        }
+
+        #forensics-window .window-resize-handle:hover {
+            background: linear-gradient(135deg, transparent 40%, #fbbf24 100%);
+        }
+
         /* Forensics sits above other apps, below notepad */
         #forensics-window {
             z-index: 900;
+            border-color: #fbbf24 !important;
         }
 
         #forensics-window.active {
             z-index: 900;
+            border-color: #fbbf24 !important;
         }
 
         #notepad-window {
@@ -653,7 +665,7 @@
 
         #forensics-window .forensics-top-bar {
             height: 8px;
-            background: #ffffff;
+            background: #fbbf24;
             width: 100%;
             flex: 0 0 auto;
         }
@@ -2018,20 +2030,22 @@ function stopIntroMusic() {
 let staffChatAudio = null;
 let staffClickAudio = null;
 function playStaffChatSound() {
+    if (!soundEnabled) return; // Respect sound settings
     if (!staffChatAudio) {
         staffChatAudio = new Audio('assets/audio/notification.mp3');
         staffChatAudio.volume = 0.5;
     }
     staffChatAudio.currentTime = 0;
-    staffChatAudio.play();
+    staffChatAudio.play().catch(e => console.log('Chat sound playback failed:', e));
 }
 function playStaffClickSound() {
+    if (!soundEnabled) return; // Respect sound settings
     if (!staffClickAudio) {
         staffClickAudio = new Audio('assets/audio/desktop.mp3'); // Use desktop.mp3 as click
         staffClickAudio.volume = 0.5;
     }
     staffClickAudio.currentTime = 0;
-    staffClickAudio.play();
+    staffClickAudio.play().catch(e => console.log('Click sound playback failed:', e));
 }
 // Assign a color to each staff member (by sender string)
 const STAFF_COLORS = {
@@ -2413,7 +2427,7 @@ function signInAsDParker() {
                 <div class="icon-label">SERVERS</div>
             </div>
             <div class="desktop-icon" onclick="openWindow('forensics-window')" style="display: none;">
-                <div class="icon-image">🔍</div>
+                <div class="icon-image">📒</div>
                 <div class="icon-label">FORENSICS</div>
             </div>
             <div class="desktop-icon" onclick="openWindow('tag-wrangle-window'); updateTagWrangleGraph();">
@@ -3085,7 +3099,7 @@ function signInAsDParker() {
                     <!-- Search & Control Bar -->
                     <div class="border-b-2 border-[var(--panel-light)] bg-[var(--panel-dark)] p-2 flex items-center gap-3">
                         <div class="flex items-center gap-2 flex-1">
-                            <span class="text-[9px] text-[var(--text-dim)]">🔍</span>
+                            <span class="text-[9px] text-[var(--text-dim)]">📒</span>
                             <input id="forensics-search" type="text" placeholder="SEARCH EVIDENCE..." class="flex-1 bg-[var(--panel-dark)] border border-[var(--panel-light)] px-3 py-1 text-[10px] font-mono outline-none" onkeyup="performForensicsSearch(event)">
                             <button class="btn-retro px-2 py-1 text-[8px]" onclick="clearForensicsSearch()">[CLEAR]</button>
                         </div>
@@ -3510,7 +3524,7 @@ function signInAsDParker() {
                 </div>
                 <!-- Forensics Icon Button -->
                 <button onclick="toggleForensicsLift()" id="forensics-icon-btn" class="flex items-center justify-center w-10 h-10 transition-all cursor-pointer ml-2" title="Open Forensics" style="height:40px;width:40px;align-items:center;justify-content:center;display:flex;padding:0;background:rgba(0,255,65,0.1);border:1px solid var(--panel-light);">
-                    <div class="text-sm" style="line-height:1;">🔍</div>
+                    <div class="text-sm" style="line-height:1;">📒</div>
                 </button>
                 <!-- Light theme toggle icon removed -->
                 <button onclick="toggleFullscreenSetting()" id="fullscreen-taskbar-toggle" class="flex items-center justify-center w-10 h-10 transition-all cursor-pointer ml-2" title="Toggle fullscreen" style="height:40px;width:40px;align-items:center;justify-content:center;display:flex;padding:0;">
@@ -4445,7 +4459,7 @@ function signInAsDParker() {
             }
             
             // Play error sound for error notifications, regular notification sound for others
-            if (message) {
+            if (message && soundEnabled) {
                 if (progressColor === '#ff6b6b' || message.includes('✗') || message.includes('ERROR') || message.includes('FAILED')) {
                     try {
                         const errorAudio = new Audio('assets/audio/error.mp3');
@@ -5813,12 +5827,14 @@ function signInAsDParker() {
             console.log('Opening forensics with card:', cardId);
             
             // Play notification sound
-            try {
-                const notifAudio = new Audio('assets/audio/notification.mp3');
-                notifAudio.volume = 0.5;
-                notifAudio.play().catch(e => console.log('Notification audio playback failed:', e));
-            } catch (e) {
-                console.log('Notification audio error:', e);
+            if (soundEnabled) {
+                try {
+                    const notifAudio = new Audio('assets/audio/notification.mp3');
+                    notifAudio.volume = 0.5;
+                    notifAudio.play().catch(e => console.log('Notification audio playback failed:', e));
+                } catch (e) {
+                    console.log('Notification audio error:', e);
+                }
             }
             
             // Close all notifications
