@@ -519,6 +519,7 @@
             min-height: 200px;
             max-width: 90vw;
             max-height: 90vh;
+            overflow: visible;
             /* Make room for resize handle */
         }
 
@@ -546,6 +547,23 @@
         .window.active {
             z-index: 200;
             border-color: var(--accent);
+        }
+
+        /* Forensics sits above other apps, below notepad */
+        #forensics-window {
+            z-index: 900;
+        }
+
+        #forensics-window.active {
+            z-index: 900;
+        }
+
+        #notepad-window {
+            z-index: 950;
+        }
+
+        #notepad-window.active {
+            z-index: 950;
         }
 
         .window-titlebar {
@@ -611,6 +629,50 @@
 
         .window.fullscreen .window-content {
             height: calc(100vh - 80px) !important;
+        }
+
+        /* Forensics fullscreen should fill below taskbar */
+        #forensics-window.fullscreen .window-content {
+            height: calc(100vh - 40px) !important;
+        }
+
+        #forensics-window {
+            z-index: 900;
+        }
+
+        #forensics-window.fullscreen {
+            top: 40px !important;
+            height: calc(100vh - 40px) !important;
+            max-height: calc(100vh - 40px) !important;
+        }
+
+        #forensics-window.fullscreen {
+            max-height: 100vh;
+            max-width: 100vw;
+        }
+
+        #forensics-window .forensics-top-bar {
+            height: 8px;
+            background: #ffffff;
+            width: 100%;
+            flex: 0 0 auto;
+        }
+
+        /* Forensics slide-in fullscreen animation */
+        #forensics-window {
+            transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        #forensics-window.forensics-slide {
+            transition: transform 0.35s ease, opacity 0.35s ease;
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        #forensics-window.forensics-slide.forensics-slide-in {
+            transform: translateX(0);
+            opacity: 1;
         }
 
         /* Evidence Card Styles */
@@ -843,11 +905,34 @@
             height: 40px;
             background: var(--panel-dark);
             border-top: 2px solid var(--panel-light);
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr auto;
             align-items: center;
             padding: 0 10px;
             gap: 8px;
             z-index: 1000;
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            overflow: hidden;
+        }
+
+        #forensics-icon-btn,
+        #taskbar-logout-btn {
+            box-sizing: border-box;
+            height: 36px !important;
+            width: 36px !important;
+            align-self: center;
+            line-height: 1;
+        }
+
+        #taskbar-apps {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+            min-width: 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            justify-content: flex-start;
         }
 
         .taskbar-item {
@@ -874,10 +959,10 @@
         }
 
         #system-info {
-            margin-left: auto;
             display: flex;
             gap: 10px;
             font-size: 11px;
+            justify-self: end;
         }
 
         /* Hacking Terminal */
@@ -2327,7 +2412,7 @@ function signInAsDParker() {
                 <div class="icon-image">🖥️</div>
                 <div class="icon-label">SERVERS</div>
             </div>
-            <div class="desktop-icon" onclick="openWindow('forensics-window')">
+            <div class="desktop-icon" onclick="openWindow('forensics-window')" style="display: none;">
                 <div class="icon-image">🔍</div>
                 <div class="icon-label">FORENSICS</div>
             </div>
@@ -2994,17 +3079,9 @@ function signInAsDParker() {
 
         <!-- FORENSICS Investigation Board Window -->
         <div id="forensics-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 7.5%;">
-            <div class="window-resize-handle"></div>
-            <div class="window-titlebar" onmousedown="startDrag(event, 'forensics-window')" ontouchstart="startDrag(event, 'forensics-window')">
-                <span class="window-title">FORENSICS // INVESTIGATION_BOARD</span>
-                <div class="window-controls">
-                    <div class="window-btn" onclick="minimizeWindow('forensics-window')">_</div>
-                    <div class="window-btn" onclick="toggleWindowFullscreen('forensics-window')" title="Fullscreen">□</div>
-                    <div class="window-btn" onclick="closeWindow('forensics-window')">X</div>
-                </div>
-            </div>
             <div class="window-content">
                 <div class="w-full h-full bg-[var(--bg-dark)] flex flex-col">
+                    <div class="forensics-top-bar"></div>
                     <!-- Search & Control Bar -->
                     <div class="border-b-2 border-[var(--panel-light)] bg-[var(--panel-dark)] p-2 flex items-center gap-3">
                         <div class="flex items-center gap-2 flex-1">
@@ -3411,26 +3488,30 @@ function signInAsDParker() {
         <!-- End of Vault Windows -->
 
         <!-- Taskbar -->
-        <div id="taskbar" style="display: none; display: flex; align-items: center;">
-            <div class="taskbar-item active" id="taskbar-briefing" onclick="focusWindow('briefing-window')" style="display: none;">📄 BRIEFING</div>
-            <div class="taskbar-item active" id="taskbar-user-access" onclick="focusWindow('user-access-window')" style="display: none;">⌘ TERMINAL</div>
-            <div class="taskbar-item active" id="taskbar-notepad" onclick="focusWindow('notepad-window')" style="display: none;">📝 NOTEPAD</div>
-            <span style="flex:1"></span>
-            <div class="taskbar-item active" id="taskbar-sysmon" onclick="focusWindow('sysmon-window')" style="display: none;">📊 SYSMON</div>
-            <div class="taskbar-item active" id="taskbar-server-monitor" onclick="focusWindow('server-monitor-window')" style="display: none;">🖥️ SERVERS</div>
-            <div class="taskbar-item active" id="taskbar-forensics" onclick="focusWindow('forensics-window')" style="display: none;">🔍 FORENSICS</div>
-            <div class="taskbar-item active" id="taskbar-tag-wrangle" onclick="focusWindow('tag-wrangle-window')" style="display: none;">🕸 TAG WRANGLE</div>
-            <div class="taskbar-item active" id="taskbar-user-select" onclick="focusWindow('user-select-window')" style="display: none;">👤 USER_SELECT</div>
-            <div class="taskbar-item active" id="taskbar-browser" onclick="focusWindow('browser-window')" style="display: none;">🌐 WEB BROWSER</div>
-            <div class="taskbar-item active" id="taskbar-settings" onclick="focusWindow('settings-window')" style="display: none;">⚙️ SETTINGS</div>
-            <div class="taskbar-item active" id="taskbar-archive" onclick="focusWindow('archive-window')" style="display: none;">📧 <span id="taskbar-archive-label">ARCHIVE_99</span></div>
-            <div class="taskbar-item active" id="taskbar-email-vault" onclick="focusWindow('email-vault-window')" style="display: none;">📬 Email</div>
-            <div class="taskbar-item active" id="taskbar-file-vault" onclick="focusWindow('file-vault-window')" style="display: none;">📁 FILES</div>
+        <div id="taskbar" style="display: none;">
+            <div id="taskbar-apps">
+                <div class="taskbar-item active" id="taskbar-briefing" onclick="focusWindow('briefing-window')" style="display: none;">📄 BRIEFING</div>
+                <div class="taskbar-item active" id="taskbar-user-access" onclick="focusWindow('user-access-window')" style="display: none;">⌘ TERMINAL</div>
+                <div class="taskbar-item active" id="taskbar-notepad" onclick="focusWindow('notepad-window')" style="display: none;">📝 NOTEPAD</div>
+                <div class="taskbar-item active" id="taskbar-sysmon" onclick="focusWindow('sysmon-window')" style="display: none;">📊 SYSMON</div>
+                <div class="taskbar-item active" id="taskbar-server-monitor" onclick="focusWindow('server-monitor-window')" style="display: none;">🖥️ SERVERS</div>
+                <div class="taskbar-item active" id="taskbar-tag-wrangle" onclick="focusWindow('tag-wrangle-window')" style="display: none;">🕸 TAG WRANGLE</div>
+                <div class="taskbar-item active" id="taskbar-user-select" onclick="focusWindow('user-select-window')" style="display: none;">👤 USER_SELECT</div>
+                <div class="taskbar-item active" id="taskbar-browser" onclick="focusWindow('browser-window')" style="display: none;">🌐 WEB BROWSER</div>
+                <div class="taskbar-item active" id="taskbar-settings" onclick="focusWindow('settings-window')" style="display: none;">⚙️ SETTINGS</div>
+                <div class="taskbar-item active" id="taskbar-archive" onclick="focusWindow('archive-window')" style="display: none;">📧 <span id="taskbar-archive-label">ARCHIVE_99</span></div>
+                <div class="taskbar-item active" id="taskbar-email-vault" onclick="focusWindow('email-vault-window')" style="display: none;">📬 Email</div>
+                <div class="taskbar-item active" id="taskbar-file-vault" onclick="focusWindow('file-vault-window')" style="display: none;">📁 FILES</div>
+            </div>
             <div id="system-info">
                 <div class="flex items-center gap-2">
                     <div class="w-2 h-2 bg-[var(--accent)] animate-pulse"></div>
                     <span id="timestamp">2099-04-12 23:41:04</span>
                 </div>
+                <!-- Forensics Icon Button -->
+                <button onclick="toggleForensicsLift()" id="forensics-icon-btn" class="flex items-center justify-center w-10 h-10 transition-all cursor-pointer ml-2" title="Open Forensics" style="height:40px;width:40px;align-items:center;justify-content:center;display:flex;padding:0;background:rgba(0,255,65,0.1);border:1px solid var(--panel-light);">
+                    <div class="text-sm" style="line-height:1;">🔍</div>
+                </button>
                 <!-- Light theme toggle icon removed -->
                 <button onclick="toggleFullscreenSetting()" id="fullscreen-taskbar-toggle" class="flex items-center justify-center w-10 h-10 transition-all cursor-pointer ml-2" title="Toggle fullscreen" style="height:40px;width:40px;align-items:center;justify-content:center;display:flex;padding:0;">
                     <div class="text-sm" style="line-height:1;">⛶</div>
@@ -5652,18 +5733,7 @@ function signInAsDParker() {
             // Check if card already exists
             const existingCard = boardState.cards.find(c => c.id === selectedEmail.id);
             if (existingCard) {
-                showSystemNotification(`"${selectedEmail.subject}" already on investigation board`);
-                // Open forensics window to show it
-                openWindow('forensics-window');
-                // Highlight the existing card
-                setTimeout(() => {
-                    selectCard(existingCard.id);
-                    // Scroll to card
-                    const cardEl = document.getElementById(`card-${existingCard.id}`);
-                    if (cardEl) {
-                        cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }, 300);
+                showForensicsNotification(`"${selectedEmail.subject}" already on investigation board`, existingCard.id);
                 return;
             }
             
@@ -5685,12 +5755,95 @@ function signInAsDParker() {
             });
             
             saveBoardState();
-            showSystemNotification(`📌 "${selectedEmail.subject}" sent to investigation board`);
-            
-            // Open forensics window
-            openWindow('forensics-window');
+            showForensicsNotification(`📌 "${selectedEmail.subject}" sent to investigation board`, selectedEmail.id);
         }
 
+        function openForensicsWithCard(cardId, message) {
+            console.log('Opening forensics with card:', cardId);
+            
+            // Play notification sound
+            try {
+                const notifAudio = new Audio('assets/audio/notification.mp3');
+                notifAudio.volume = 0.5;
+                notifAudio.play().catch(e => console.log('Notification audio playback failed:', e));
+            } catch (e) {
+                console.log('Notification audio error:', e);
+            }
+            
+            // Close all notifications
+            document.querySelectorAll('.system-notification').forEach(n => {
+                n.classList.add('hiding');
+                setTimeout(() => n.remove(), 500);
+            });
+            notificationHistory.splice(0, notificationHistory.length);
+            
+            console.log('Calling toggleForensicsLift');
+            // Toggle forensics with proper timing
+            toggleForensicsLift();
+            
+            // Wait for animation and board render
+            setTimeout(() => {
+                console.log('After delay, trying to select card:', cardId);
+                if (cardId && typeof selectCard === 'function') {
+                    selectCard(cardId);
+                    setTimeout(() => {
+                        const el = document.getElementById('card-' + cardId);
+                        console.log('Looking for element card-' + cardId, el);
+                        if (el) {
+                            el.scrollIntoView({behavior: 'smooth', block: 'center'});
+                        }
+                    }, 100);
+                } else {
+                    console.log('selectCard not available or no cardId');
+                }
+            }, 550);
+        }
+
+        function showForensicsNotification(message, cardId) {
+            const container = document.getElementById('notification-container') || getOrCreateNotificationContainer();
+            if (!container) return;
+            
+            const notif = document.createElement('div');
+            notif.className = 'system-notification';
+            notif.innerHTML = `
+                <div class="notification-header">
+                    <div class="notification-title">⚡ SYSTEM NOTICE</div>
+                    <div class="notification-close" style="user-select:none;" onclick="closeNotification(this.closest('.system-notification'), '${message.replace(/'/g, "\\'")}')">✕</div>
+                </div>
+                <div class="notification-body">
+                    <p style="margin-bottom: 6px; color: var(--accent);">${message}</p>
+                    <button class="open-board-btn" data-card-id="${cardId}" style="padding: 4px 8px; background: var(--accent); color: var(--bg-dark); border: none; cursor: pointer; font-size: 10px; white-space: nowrap; font-weight: bold;">[OPEN BOARD]</button>
+                </div>
+                <div class="notification-progress">
+                    <div class="notification-progress-bar" style="background: var(--accent);"></div>
+                </div>
+            `;
+            container.appendChild(notif);
+            notificationHistory.push(message);
+            
+            // Add click handler to button
+            const btn = notif.querySelector('.open-board-btn');
+            if (btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const cid = this.getAttribute('data-card-id');
+                    openForensicsWithCard(cid, message);
+                });
+            }
+            
+            // Start fade-out at 14.5 seconds for smooth transition
+            setTimeout(() => {
+                notif.classList.add('hiding');
+            }, 14500);
+            
+            // Remove after full 15 seconds
+            setTimeout(() => {
+                notif.remove();
+                const idx = notificationHistory.indexOf(message);
+                if (idx !== -1) notificationHistory.splice(idx, 1);
+            }, 15000);
+        }
+        
         function sendFileToInvestigationBoard() {
             const nameEl = document.getElementById('file-preview-name');
             const userEl = document.getElementById('file-preview-user');
@@ -5709,15 +5862,7 @@ function signInAsDParker() {
             // Check if card already exists
             const existingCard = boardState.cards.find(c => c.id === fileId);
             if (existingCard) {
-                showSystemNotification(`"${fileName}" already on investigation board`);
-                openWindow('forensics-window');
-                setTimeout(() => {
-                    selectCard(existingCard.id);
-                    const cardEl = document.getElementById(`card-${existingCard.id}`);
-                    if (cardEl) {
-                        cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }, 300);
+                showForensicsNotification(`"${fileName}" already on investigation board`, fileId);
                 return;
             }
             
@@ -5745,10 +5890,7 @@ function signInAsDParker() {
             });
             
             saveBoardState();
-            showSystemNotification(`📌 File "${fileName}" sent to investigation board`);
-            
-            // Open forensics window
-            openWindow('forensics-window');
+            showForensicsNotification(`📌 File "${fileName}" sent to investigation board`, fileId);
         }
 
         function openConnectionModal(fromId, toId, callback) {
@@ -7803,6 +7945,55 @@ function signInAsDParker() {
             const taskbarItem = document.getElementById(taskbarId);
             if (taskbarItem) taskbarItem.style.display = 'block';
         }
+
+        function toggleForensicsLift() {
+            const win = document.getElementById('forensics-window');
+            const taskbar = document.getElementById('taskbar');
+            if (!win || !taskbar) return;
+
+            const isOpen = win.style.display === 'flex';
+
+            if (isOpen) {
+                // Close: slide down and fade out while taskbar returns
+                win.style.opacity = '0';
+                win.style.transform = 'translateY(100vh)';
+                taskbar.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    win.style.display = 'none';
+                    win.classList.remove('fullscreen');
+                    win.style.opacity = '';
+                    win.style.transform = '';
+                }, 600);
+            } else {
+                // Open: position forensics below top taskbar, slide up while taskbar moves to top
+                win.style.display = 'flex';
+                win.style.opacity = '0';
+                win.classList.add('fullscreen');
+                win.style.width = '100%';
+                win.style.height = 'calc(100vh - 40px)';
+                win.style.left = '0';
+                win.style.top = '40px';
+                win.style.zIndex = '900';
+                win.style.transform = 'translateY(100vh)';
+
+                // Force reflow
+                void win.offsetHeight;
+
+                // Slide in forensics and move taskbar to top smoothly
+                requestAnimationFrame(() => {
+                    taskbar.style.transform = 'translateY(calc(-100vh + 40px))';
+                    win.style.transform = 'translateY(0)';
+                    win.style.opacity = '1';
+                });
+
+                focusWindow('forensics-window');
+
+                // Initialize investigation board when forensics opens
+                if (typeof initializeInvestigationBoard === 'function') {
+                    initializeInvestigationBoard();
+                }
+            }
+        }
         
         function closeWindow(windowId) {
             playClickSound();
@@ -8650,18 +8841,7 @@ function showEnlargedImage(src) {
             // Check if card already exists on board
             const existingCard = boardState.cards.find(c => c.id === cardId);
             if (existingCard) {
-                showSystemNotification(`"${email.subject}" already on investigation board`, '#fbbf24');
-                // Open forensics window to show it
-                openWindow('forensics-window');
-                // Highlight the existing card
-                setTimeout(() => {
-                    selectCard(existingCard.id);
-                    // Scroll to card
-                    const cardEl = document.getElementById(`card-${existingCard.id}`);
-                    if (cardEl) {
-                        cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                }, 300);
+                showForensicsNotification(`"${email.subject}" already on investigation board`, existingCard.id);
                 return;
             }
             
@@ -8700,16 +8880,7 @@ function showEnlargedImage(src) {
             if (email.receiver) accessedUsers.add(email.receiver);
             
             renderInvestigationBoard();
-            openWindow('forensics-window');
-            // Focus the new card after render
-            setTimeout(() => {
-                selectCard(cardId);
-                const cardEl = document.getElementById(`card-${cardId}`);
-                if (cardEl) {
-                    cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }, 150);
-            showSystemNotification(`📌 "${email.subject}" sent to investigation board`, '#22c55e');
+            showForensicsNotification(`📌 "${email.subject}" sent to investigation board`, cardId);
         }
 
         function openEmailVaultUserSelector() {
@@ -8978,13 +9149,7 @@ function showEnlargedImage(src) {
             const cardId = `file:${username}:${file.name}`;
             const existingCard = boardState.cards.find(c => c.id === cardId);
             if (existingCard) {
-                showSystemNotification(`"${file.name}" already on investigation board`, '#fbbf24');
-                openWindow('forensics-window');
-                setTimeout(() => {
-                    selectCard(existingCard.id);
-                    const cardEl = document.getElementById(`card-${existingCard.id}`);
-                    if (cardEl) cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
+                showForensicsNotification(`"${file.name}" already on investigation board`, existingCard.id);
                 return;
             }
             const cardData = {
@@ -9012,13 +9177,7 @@ function showEnlargedImage(src) {
             saveBoardState();
             if (username) accessedUsers.add(username);
             renderInvestigationBoard();
-            openWindow('forensics-window');
-            setTimeout(() => {
-                selectCard(cardId);
-                const cardEl = document.getElementById(`card-${cardId}`);
-                if (cardEl) cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }, 150);
-            showSystemNotification(`📌 "${file.name}" sent to investigation board`, '#22c55e');
+            showForensicsNotification(`📌 "${file.name}" sent to investigation board`, cardId);
         }
 
         function openFileVaultUserSelector() {
