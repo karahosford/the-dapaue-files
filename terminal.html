@@ -2482,9 +2482,9 @@ function signInAsDParker() {
                 <div id="browser-nav" style="background:#191919;padding:6px 12px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #444;">
                     <button id="browser-home-btn" style="background:#b197b4;color:#222;font-weight:bold;border:none;border-radius:4px;padding:4px 14px;cursor:pointer;">Home</button>
                     <button id="browser-back-btn" style="background:#444;color:#fff;font-weight:bold;border:none;border-radius:4px;padding:4px 14px;cursor:pointer;">Back</button>
-                    <span id="browser-filename" style="margin-left:18px;font-size:0.98rem;color:#b197b4;opacity:0.8;">dapaue-home.html</span>
+                    <span id="browser-filename" style="margin-left:18px;font-size:0.98rem;color:#b197b4;opacity:0.8;">browser-home.html</span>
                 </div>
-                <iframe id="browser-iframe" src="assets/websites/dapaue-home.html" style="border:none;width:100%;height:100%;background:#fff;flex:1 1 0%;"></iframe>
+                <iframe id="browser-iframe" src="assets/websites/browser-home.html" style="border:none;width:100%;height:100%;background:#fff;flex:1 1 0%;"></iframe>
             </div>
         </div>
         </div>
@@ -2493,7 +2493,7 @@ function signInAsDParker() {
                         <script>
                         // Simple browser navigation logic (show file name only, robust)
                         (function() {
-                            const homeUrl = 'assets/websites/dapaue-home.html';
+                            const homeUrl = 'assets/websites/browser-home.html';
                             const iframe = document.getElementById('browser-iframe');
                             const homeBtn = document.getElementById('browser-home-btn');
                             const backBtn = document.getElementById('browser-back-btn');
@@ -4975,6 +4975,53 @@ function signInAsDParker() {
             renderConnections();
         }
 
+        function openOriginalSource(card) {
+            const data = card.data;
+            const type = data.type || 'email';
+            
+            if (type === 'file') {
+                // Open file vault and find the file
+                openWindow('file-vault-window');
+                setTimeout(() => {
+                    // Extract username and filename from card id
+                    const match = card.id.match(/file:([^:]+):(.+)/);
+                    if (match) {
+                        const username = match[1];
+                        const filename = match[2];
+                        // Trigger file selection in file vault
+                        window.selectedFileVaultFile = { username, file: { name: filename, content: data.body, date: data.date } };
+                        const fileListItems = document.querySelectorAll('#file-vault-list-content li');
+                        fileListItems.forEach(item => {
+                            if (item.textContent.includes(filename)) {
+                                item.click();
+                            }
+                        });
+                    }
+                }, 100);
+            } else if (type === 'note') {
+                // Open notepad with the note content
+                openWindow('notepad-window');
+                setTimeout(() => {
+                    const notepadContent = document.getElementById('notepad-content');
+                    if (notepadContent) {
+                        notepadContent.value = `[${data.subject}]\n\n${data.body}`;
+                    }
+                }, 100);
+            } else {
+                // Open email vault
+                openWindow('email-vault-window');
+                setTimeout(() => {
+                    // Try to find and click the email in the vault
+                    const emailItems = document.querySelectorAll('.email-vault-item');
+                    emailItems.forEach(item => {
+                        if (item.textContent.includes(data.subject)) {
+                            item.click();
+                        }
+                    });
+                }, 100);
+            }
+        }
+        
         function createEvidenceCard(card) {
             const el = document.createElement('div');
             el.className = 'evidence-card';
@@ -5029,6 +5076,10 @@ function signInAsDParker() {
                 if (!boardState.dragState && !e.target.classList.contains('evidence-tag')) {
                     selectCard(card.id);
                 }
+            };
+            el.ondblclick = (e) => {
+                e.stopPropagation();
+                openOriginalSource(card);
             };
             el.oncontextmenu = (e) => {
                 e.preventDefault();

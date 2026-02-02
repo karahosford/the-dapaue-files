@@ -29,13 +29,25 @@
   <script>
     // Fetch the index of posts
     async function fetchPosts() {
-      const res = await fetch('../newsletter/index.json');
-      return res.json();
+      try {
+        const res = await fetch('./newsletter/index.json');
+        if (!res.ok) throw new Error('Failed to fetch index');
+        return res.json();
+      } catch (e) {
+        console.error('Error fetching posts:', e);
+        return [];
+      }
     }
     // Fetch and parse a markdown file
     async function fetchMarkdown(filename) {
-      const res = await fetch('../newsletter/' + filename);
-      return res.text();
+      try {
+        const res = await fetch('./newsletter/' + filename);
+        if (!res.ok) throw new Error('Failed to fetch markdown');
+        return res.text();
+      } catch (e) {
+        console.error('Error fetching markdown:', e);
+        return '# Error\n\nFailed to load newsletter.';
+      }
     }
     // Parse frontmatter (YAML-like)
     function parseFrontmatter(md) {
