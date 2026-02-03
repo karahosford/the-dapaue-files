@@ -18,7 +18,7 @@
         slackDiv.innerHTML = `
             <div class="window-resize-handle"></div>
             <div class="window-titlebar" onmousedown="startDrag(event, 'slack-window')" ontouchstart="startDrag(event, 'slack-window')">
-                <span class="window-title">SLACK_COMMS // MESSAGE_CENTER</span>
+                <span class="window-title">TAPPER // MESSAGE_CENTER</span>
                 <div class="window-controls">
                     <div class="window-btn" onclick="minimizeWindow('slack-window')">_</div>
                     <div class="window-btn" onclick="toggleWindowFullscreen('slack-window')" title="Fullscreen">□</div>
@@ -50,9 +50,10 @@
             </div>
         `;
         container.appendChild(slackDiv);
+        refreshSlackUI();
     }
 
-    function openSlackComms() {
+    function openTapper() {
         injectSlackWindow();
         if (window.openWindow) {
             window.openWindow(SLACK_WINDOW_ID);
@@ -60,6 +61,15 @@
             const win = document.getElementById(SLACK_WINDOW_ID);
             if (win) win.style.display = 'flex';
         }
+        refreshSlackUI();
+        if (window.triggerChatEvents) {
+            window.triggerChatEvents('onTapperOpen');
+        }
+    }
+
+    function refreshSlackUI() {
+        renderChatList();
+        renderSlackMessages();
     }
 
     function getSenderColor(sender) {
@@ -103,8 +113,9 @@
             return;
         }
 
-        messagesContainer.innerHTML = messages.map((msg) => {
+        messagesContainer.innerHTML = messages.map((msg, idx) => {
             const senderColor = getSenderColor(msg.sender);
+            const isPlayer = msg.sender === 'YOU';
             const hexToRgba = (hex, alpha) => {
                 const r = parseInt(hex.slice(1, 3), 16);
                 const g = parseInt(hex.slice(3, 5), 16);
@@ -114,18 +125,47 @@
             const bgColor = hexToRgba(senderColor, 0.08);
             const borderColor = hexToRgba(senderColor, 0.3);
 
-            return `
-                <div class="border border-l-2 p-3 rounded text-[9px]" style="border-left-color: ${senderColor}; border-color: ${borderColor}; background-color: ${bgColor};">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="font-bold" style="color: ${senderColor};">${msg.sender}</span>
-                        <span class="text-[var(--text-dim)] text-[8px]">${msg.timestamp}</span>
+            if (isPlayer) {
+                // Player messages: right-aligned, no sender name
+                return `
+                    <div class="flex justify-end mb-3">
+                        <div class="max-w-[70%] border border-r-2 p-3 rounded text-[9px]" style="border-right-color: ${senderColor}; border-color: ${borderColor}; background-color: ${bgColor};">
+                            <div class="flex justify-end items-center gap-2 mb-2">
+                                <span class="text-[var(--text-dim)] text-[8px]">${msg.timestamp}</span>
+                            </div>
+                            <div class="text-[var(--text-main)] leading-relaxed">${msg.message}</div>
+                        </div>
                     </div>
-                    <div class="text-[var(--text-main)] leading-relaxed">${msg.message}</div>
-                </div>
-            `;
+                `;
+            } else {
+                // Staff messages: left-aligned with sender name
+                const hasOptions = msg.responseOptions && !msg.answered;
+                const optionsHtml = hasOptions ? `
+                    <div style="display:flex; gap:12px; margin-top:12px; width:100%; justify-content:flex-end; max-width:70%;">
+                        <button class="tapper-option btn-retro" data-option="A" data-msg-idx="${idx}" style="flex:0 1 auto; min-width:140px; max-width:70%; border:1px solid #ff8c42; border-right:2px solid #ff8c42; padding:8px 12px; font-size:9px; border-radius:4px; background:rgba(255, 140, 66, 0.08); color:#ff8c42; cursor:pointer;" onmouseover="this.style.background='rgba(255, 140, 66, 0.15)';" onmouseout="this.style.background='rgba(255, 140, 66, 0.08)';" onclick="handleTapperResponse(${idx}, 'A')">[A] ${msg.responseOptions.optionA || 'ACKNOWLEDGE'}</button>
+                        <button class="tapper-option btn-retro" data-option="B" data-msg-idx="${idx}" style="flex:0 1 auto; min-width:140px; max-width:70%; border:1px solid #ff8c42; border-right:2px solid #ff8c42; padding:8px 12px; font-size:9px; border-radius:4px; background:rgba(255, 140, 66, 0.08); color:#ff8c42; cursor:pointer;" onmouseover="this.style.background='rgba(255, 140, 66, 0.15)';" onmouseout="this.style.background='rgba(255, 140, 66, 0.08)';" onclick="handleTapperResponse(${idx}, 'B')">[B] ${msg.responseOptions.optionB || 'DISMISS'}</button>
+                    </div>
+                ` : '';
+                
+                return `
+                    <div class="flex justify-start mb-3 flex-col" style="align-items:flex-start;">
+                        <div class="max-w-[70%] border border-l-2 p-3 rounded text-[9px]" style="border-left-color: ${senderColor}; border-color: ${borderColor}; background-color: ${bgColor};">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="font-bold" style="color: ${senderColor};">${msg.sender}</span>
+                                <span class="text-[var(--text-dim)] text-[8px]">${msg.timestamp}</span>
+                            </div>
+                            <div class="text-[var(--text-main)] leading-relaxed">${msg.message}</div>
+                        </div>
+                        ${optionsHtml}
+                    </div>
+                `;
+            }
         }).join('');
 
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        // Scroll to bottom to show latest messages
+        setTimeout(() => {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 0);
     }
 
     function ensureChat(chatId, name) {
@@ -145,17 +185,42 @@
         window.slackState.activeChatId = chatId;
         renderChatList();
         renderSlackMessages();
+        
+        // Close any notifications for this chat sender
+        const container = document.getElementById('notification-container');
+        if (container) {
+            const notifications = container.querySelectorAll('.system-notification[data-persistent="true"]');
+            notifications.forEach(notif => {
+                // Check if this notification is for the active chat
+                if (notif.dataset.sender === chatId) {
+                    window.closeNotification(notif);
+                }
+            });
+        }
     }
 
-    function addSlackMessage(sender, message, isSystem = false, chatId) {
+    function addSlackMessage(sender, message, isSystem = false, chatId, responseOptions = null) {
         const resolvedChatId = chatId || sender || 'general';
         const chat = ensureChat(resolvedChatId, resolvedChatId);
         const msgObj = {
             sender: sender,
             message: message,
             timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
-            isSystem: isSystem
+            isSystem: isSystem,
+            responseOptions: responseOptions  // { optionA, optionB, responseA, responseB }
         };
+        
+        // Deduplicate: check if the last message is identical (same sender, message, within 2 seconds)
+        const lastMsg = chat.messages[chat.messages.length - 1];
+        if (lastMsg && lastMsg.sender === msgObj.sender && lastMsg.message === msgObj.message) {
+            const lastTime = lastMsg.timestamp;
+            const currentTime = msgObj.timestamp;
+            // If timestamps are the same (within same minute), skip duplicate
+            if (lastTime === currentTime) {
+                return;
+            }
+        }
+        
         chat.messages.push(msgObj);
         if (!window.slackState.activeChatId) {
             window.slackState.activeChatId = resolvedChatId;
@@ -198,6 +263,103 @@
         input.value = '';
     }
 
+    function handleTapperResponse(messageIndex, which) {
+        const state = window.slackState;
+        if (!state || !state.activeChatId || !state.chats[state.activeChatId]) return;
+        
+        const chat = state.chats[state.activeChatId];
+        const msg = chat.messages[messageIndex];
+        if (!msg || !msg.responseOptions || msg.answered) return;
+        
+        const options = msg.responseOptions;
+        const chosenText = which === 'A' ? options.optionA : options.optionB;
+        const response = which === 'A' ? options.responseA : options.responseB;
+        
+        // Find and disable buttons, apply animations
+        const buttonContainer = document.querySelector(`[data-msg-idx="${messageIndex}"]`);
+        if (buttonContainer) {
+            const parentDiv = buttonContainer.parentElement;
+            const buttons = parentDiv.querySelectorAll('.tapper-option');
+            
+            buttons.forEach(btn => {
+                btn.disabled = true;
+                btn.style.pointerEvents = 'none';
+                
+                if (btn.dataset.option === which) {
+                    // Chosen option: slide right
+                    btn.style.animation = 'slideRightOption 0.5s ease-out forwards';
+                } else {
+                    // Unchosen option: fade out
+                    btn.style.animation = 'fadeOutOption 0.5s ease-out forwards';
+                }
+            });
+        }
+        
+        // Wait for animation, then add messages
+        setTimeout(() => {
+            // Special effect: If Kib and Ignore (option B) is chosen, rain 😾 for 10s
+            if (msg.sender === 'KIB' && which === 'B') {
+                rainAngryCatEmoji();
+            }
+            
+            function rainAngryCatEmoji() {
+                const emoji = '😾';
+                const duration = 10000;
+                const container = document.createElement('div');
+                container.style.position = 'fixed';
+                container.style.left = '0';
+                container.style.top = '0';
+                container.style.width = '100vw';
+                container.style.height = '100vh';
+                container.style.pointerEvents = 'none';
+                container.style.zIndex = '99999';
+                document.body.appendChild(container);
+                let running = true;
+                function spawnOne() {
+                    if (!running) return;
+                    const span = document.createElement('span');
+                    span.textContent = emoji;
+                    span.style.position = 'absolute';
+                    span.style.left = Math.random() * 98 + 'vw';
+                    span.style.top = '-2em';
+                    span.style.fontSize = (Math.random() * 32 + 32) + 'px';
+                    span.style.opacity = '0.92';
+                    span.style.transition = 'transform 2.2s linear, opacity 0.7s linear';
+                    container.appendChild(span);
+                    setTimeout(() => {
+                        span.style.transform = `translateY(${window.innerHeight + 80}px)`;
+                        span.style.opacity = '0.7';
+                    }, 10);
+                    setTimeout(() => {
+                        span.remove();
+                    }, 2400);
+                }
+                let interval = setInterval(() => {
+                    for (let i = 0; i < 4; ++i) spawnOne();
+                }, 120);
+                setTimeout(() => {
+                    running = false;
+                    clearInterval(interval);
+                    setTimeout(() => container.remove(), 2000);
+                }, duration);
+            }
+            
+            // Add player response
+            addSlackMessage('YOU', chosenText, false, state.activeChatId);
+            
+            // Add staff response if provided with delay
+            if (response) {
+                setTimeout(() => {
+                    addSlackMessage(msg.sender, response, false, state.activeChatId);
+                }, 1500);
+            }
+            
+            // Mark message as answered
+            msg.answered = true;
+            renderSlackMessages();
+        }, 500);
+    }
+
     function hookStaffChatNotifications() {
         if (typeof window.showStaffChatNotification !== 'function') return false;
         if (window.showStaffChatNotification.__slackHooked) return true;
@@ -205,37 +367,22 @@
         const original = window.showStaffChatNotification;
         window.showStaffChatNotification = function (messageObj) {
             try {
-                addSlackMessage(messageObj.sender || 'SYSTEM', messageObj.message || '', false, messageObj.sender || 'SYSTEM');
-            } catch (e) {
-                // ignore
-            }
-            return original.apply(this, arguments);
-        };
-        window.showStaffChatNotification.__slackHooked = true;
-        return true;
-    }
-
-    function hookStaffChatResponses() {
-        if (typeof window.handleStaffChatResponse !== 'function') return false;
-        if (window.handleStaffChatResponse.__slackHooked) return true;
-
-        const original = window.handleStaffChatResponse;
-        window.handleStaffChatResponse = function (btn, which) {
-            try {
-                const notif = btn.closest('.system-notification');
-                if (notif) {
-                    const sender = notif.dataset.sender || 'SYSTEM';
-                    const response = which === 'A' ? notif.dataset.responseA : notif.dataset.responseB;
-                    const chosenText = (btn && btn.textContent) ? btn.textContent.trim() : 'RESPONSE';
-                    addSlackMessage('YOU', chosenText, false, sender);
-                    if (response) addSlackMessage(sender, response, false, sender);
+                // Only add to TAPPER if this isn't already flagged as coming from TAPPER
+                if (!messageObj.__fromTapper) {
+                    const responseOptions = (messageObj.optionA || messageObj.optionB) ? {
+                        optionA: messageObj.optionA || 'ACKNOWLEDGE',
+                        optionB: messageObj.optionB || 'DISMISS',
+                        responseA: messageObj.responseA || '',
+                        responseB: messageObj.responseB || ''
+                    } : null;
+                    addSlackMessage(messageObj.sender || 'SYSTEM', messageObj.message || '', false, messageObj.sender || 'SYSTEM', responseOptions);
                 }
             } catch (e) {
                 // ignore
             }
             return original.apply(this, arguments);
         };
-        window.handleStaffChatResponse.__slackHooked = true;
+        window.showStaffChatNotification.__slackHooked = true;
         return true;
     }
 
@@ -272,10 +419,11 @@
     function initSlackApp() {
         window.slackState = window.slackState || { chats: {}, chatOrder: [], activeChatId: null };
         window.injectSlackWindow = injectSlackWindow;
-        window.openSlackComms = openSlackComms;
+        window.openTapper = openTapper;
         window.addSlackMessage = addSlackMessage;
         window.sendSlackMessage = sendSlackMessage;
         window.setActiveChat = setActiveChat;
+        window.handleTapperResponse = handleTapperResponse;
 
         loadSlackChats();
 
@@ -284,8 +432,7 @@
         const interval = setInterval(() => {
             attempts += 1;
             const okNotif = hookStaffChatNotifications();
-            const okResp = hookStaffChatResponses();
-            if ((okNotif && okResp) || attempts >= maxAttempts) {
+            if (okNotif || attempts >= maxAttempts) {
                 clearInterval(interval);
             }
         }, 200);

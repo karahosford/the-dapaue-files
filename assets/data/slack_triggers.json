@@ -1,0 +1,149 @@
+{
+  "events": [
+    {
+      "id": "welcome-message",
+      "enabled": true,
+      "triggerOn": "onDesktopLoad",
+      "delayMs": 20000,
+      "once": true,
+      "sender": "C. Hall (IT)",
+      "message": "Hey! I see you're logged into the archive system. Be careful what you dig up.",
+      "chatId": "C. Hall (IT)",
+      "notification": "chat",
+      "optionA": "Thanks for the warning",
+      "optionB": "I know what I'm doing",
+      "responseA": "Just watch your back. Not everyone here is who they claim to be.",
+      "responseB": "Confidence is good. Overconfidence will get you caught."
+    },
+    {
+      "id": "kib-hungry",
+      "enabled": true,
+      "triggerOn": "onDesktopLoad",
+      "delayMs": 120000,
+      "sender": "KIB",
+      "message": "<img src='assets/images/kib.gif' alt='Kib' style='width:120px;height:auto;border-radius:8px;display:block;margin:0 auto 12px auto;box-shadow:0 2px 12px #0006;'><br>I'm hungry! Where's my dinner? 😾",
+      "chatId": "KIB",
+      "notification": "chat",
+      "optionA": "Feed Kib",
+      "optionB": "Later, busy now",
+      "responseA": "*purrs contentedly* 😸 You're the best!",
+      "responseB": "*angry tail swishing* 😾 You'll regret this..."
+    },
+    {
+      "id": "morning-briefing",
+      "enabled": true,
+      "at": "09:00",
+      "repeatDaily": true,
+      "sender": "SYSTEM",
+      "message": "⚡ MORNING BRIEFING: All servers operational. Security clearance verified. Continue investigation.",
+      "chatId": "SYSTEM",
+      "notification": "system",
+      "notificationColor": "#60a5fa"
+    },
+    {
+      "id": "dishwasher-reminder",
+      "enabled": true,
+      "triggerOn": "onDesktopLoad",
+      "delayMs": 180000,
+      "sender": "C. Hall (IT)",
+      "message": "<img src='assets/images/chat_01.png' alt='Dishwasher' style='width:100%;max-width:280px;height:auto;border-radius:8px;margin-bottom:12px;display:block;margin-left:auto;margin-right:auto;box-shadow:0 2px 12px #0006;'><br>Hey, did you remember to empty the dishwasher? It's your turn this week.",
+      "chatId": "C. Hall (IT)",
+      "notification": "chat",
+      "optionA": "I'll do it now",
+      "optionB": "Not my responsibility",
+      "responseA": "Thanks! Appreciate it. Coffee room stays cleaner when we all pitch in.",
+      "responseB": "Really? Check the schedule. You're on for this week. Please handle it."
+    },
+    {
+      "id": "security-sweep",
+      "enabled": true,
+      "triggerOn": "onDesktopLoad",
+      "delayMs": 240000,
+      "sender": "S. Walker (Security)",
+      "message": "Detected unusual login patterns on your account. Running security sweep. Stand by.",
+      "chatId": "S. Walker (Security)",
+      "notification": "system",
+      "notificationColor": "#fbbf24"
+    },
+    {
+      "id": "midnight-alert",
+      "enabled": true,
+      "at": "00:00",
+      "repeatDaily": true,
+      "sender": "SYSTEM",
+      "message": "🌙 NIGHT SHIFT PROTOCOL ACTIVE. Reduced monitoring. Proceed with caution.",
+      "chatId": "SYSTEM",
+      "notification": "system",
+      "notificationColor": "#a78bfa"
+    },
+    {
+      "id": "lunch-time",
+      "enabled": true,
+      "at": "12:00",
+      "repeatDaily": true,
+      "sender": "M. Hernandez (Legal)",
+      "message": "Lunch break. Don't forget to log out of sensitive terminals if you're leaving your desk.",
+      "chatId": "M. Hernandez (Legal)"
+    },
+    {
+      "id": "investigation-tip",
+      "enabled": true,
+      "triggerOn": "onDesktopLoad",
+      "delayMs": 300000,
+      "sender": "A. Davis (Research)",
+      "message": "Pro tip: Check the forensics board. You can connect emails, files, and events to build your case. Cross-reference everything.",
+      "chatId": "A. Davis (Research)",
+      "notification": "chat",
+      "optionA": "Good idea",
+      "optionB": "I've got my own method",
+      "responseA": "That's the spirit. Pattern recognition is key to breaking these cases.",
+      "responseB": "Fair enough. Just make sure you're documenting everything properly."
+    },
+    {
+      "id": "evening-warning",
+      "enabled": true,
+      "at": "18:00",
+      "repeatDaily": true,
+      "sender": "R. Young (Admin)",
+      "message": "End of business hours. Any after-hours access will be flagged for review. Keep that in mind.",
+      "chatId": "R. Young (Admin)",
+      "notification": "system",
+      "notificationColor": "#f87171"
+    },
+    {
+      "id": "data-backup",
+      "enabled": true,
+      "triggerOn": "onDesktopLoad",
+      "delayMs": 420000,
+      "sender": "SYSTEM",
+      "message": "📊 AUTO-BACKUP INITIATED: Your investigation notes and forensics board are being synchronized to local cache.",
+      "chatId": "SYSTEM",
+      "notification": "system",
+      "notificationColor": "#22c55e"
+    },
+    {
+      "id": "coffee-break",
+      "enabled": true,
+      "triggerOn": "onDesktopLoad",
+      "delayMs": 360000,
+      "sender": "J. Martinez (Operations)",
+      "message": "Fresh coffee in the break room. Made it strong today. You look like you could use it.",
+      "chatId": "J. Martinez (Operations)",
+      "notification": "chat",
+      "optionA": "Thanks, I need it",
+      "optionB": "I'm good, thanks",
+      "responseA": "No problem. There's donuts too if you're hungry.",
+      "responseB": "Suit yourself. More for me then! 😄"
+    },
+    {
+      "id": "tapper-welcome",
+      "enabled": false,
+      "triggerOn": "onTapperOpen",
+      "sender": "SYSTEM",
+      "message": "💬 TAPPER MESSAGE CENTER ONLINE. Secure channel established. Staff communications synchronized.",
+      "chatId": "SYSTEM",
+      "notification": "system",
+      "notificationColor": "#60a5fa"
+    }
+  ]
+}

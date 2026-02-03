@@ -1,21 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background-color: #0a0a0a; margin: 0; padding: 0;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, orientation=landscape, user-scalable=no">
     <title>NEURAL-LINK ARCHIVE v4.5 // DAPAUE</title>
-    <link rel="stylesheet" href="who-mask.css">
-    <style>#who-mask-overlay { opacity: 0; }</style>
+    <style>
+        html, body { background-color: #0a0a0a; margin: 0; padding: 0; }
+        #who-mask-overlay { opacity: 0; }
+    </style>
     <!-- Reflection Mask Overlay -->
     <div id="who-mask-overlay"></div>
     <!-- Notification Container for chat and system notifications -->
     <!-- Breathing Audio -->
     <audio id="breathing-audio" src="assets/audio/breathing.mp3" loop preload="auto" style="display:none"></audio>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="apps/notificationSystem.js"></script>
     <script src="apps/briefingApp.js"></script>
     <script src="apps/sysmonApp.js"></script>
     <script src="apps/pongEasterEgg.js"></script>
     <script src="apps/slackApp.js"></script>
+    <script src="apps/chatScheduler.js"></script>
+    <script src="apps/notepadApp.js"></script>
+    <script src="apps/terminalApp.js"></script>
+    <script src="apps/settingsApp.js"></script>
+    <script src="apps/fileVaultApp.js"></script>
+    <script src="apps/emailVaultApp.js"></script>
+    <script src="apps/serversApp.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&display=swap');
 
@@ -794,12 +804,13 @@
             z-index: 900;
         }
 
+        /* Notepad window - above forensics only */
         #notepad-window {
-            z-index: 950;
+            z-index: 910;
         }
 
         #notepad-window.active {
-            z-index: 950;
+            z-index: 910;
         }
 
         .window-titlebar {
@@ -1687,6 +1698,42 @@
             }
         }
         
+        @keyframes breathingGreen {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4), inset 0 0 0 0 rgba(34, 197, 94, 0.1);
+                background-color: rgba(34, 197, 94, 0.05);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(34, 197, 94, 0), inset 0 0 0 2px rgba(34, 197, 94, 0.2);
+                background-color: rgba(34, 197, 94, 0.12);
+            }
+        }
+        
+        /* Response option animations */
+        @keyframes slideRightOption {
+            0% {
+                border-right-color: #ff8c42;
+                border-color: rgba(255, 140, 66, 0.3);
+                background-color: rgba(255, 140, 66, 0.08);
+                color: #ff8c42;
+            }
+            100% {
+                border-right-color: #3b82f6;
+                border-color: rgba(59, 130, 246, 0.3);
+                background-color: rgba(59, 130, 246, 0.08);
+                color: #3b82f6;
+            }
+        }
+        
+        @keyframes fadeOutOption {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+        
         /* Connection line sway animations for physics weight effect */
         @keyframes connection-sway-0 {
             0%, 100% { 
@@ -1746,6 +1793,19 @@
             font-size: 9px;
             line-height: 1.6;
             color: var(--text-main);
+        }
+
+        .system-notification .btn-retro {
+            background: var(--panel-light);
+            border: 1px solid var(--panel-light);
+            color: var(--text-main);
+            transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .system-notification .btn-retro:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg-dark);
         }
         
         .notification-progress {
@@ -2406,18 +2466,37 @@ const STAFF_COLORS = {
 function getStaffColor(sender) {
     return STAFF_COLORS[sender] || '#60a5fa';
 }
+
+// Track last chat notification to prevent duplicates
+let lastChatNotification = { sender: null, message: null, timestamp: 0 };
+
 function showStaffChatNotification(messageObj) {
     // messageObj: { sender, message, optionA, optionB, responseA, responseB }
-    const container = getOrCreateNotificationContainer();
+    
+    // Deduplicate: if same sender and message within 500ms, skip
+    const now = Date.now();
+    if (lastChatNotification.sender === messageObj.sender && 
+        lastChatNotification.message === messageObj.message &&
+        (now - lastChatNotification.timestamp) < 500) {
+        return;
+    }
+    lastChatNotification = { 
+        sender: messageObj.sender, 
+        message: messageObj.message, 
+        timestamp: now 
+    };
+    
+    const container = window.getOrCreateNotificationContainer();
     const notification = document.createElement('div');
     notification.className = 'system-notification';
+    notification.dataset.persistent = 'true'; // Mark as persistent - no auto-dismiss
     // Get staff initials for profile circle
     const staffInitials = (messageObj.sender.match(/([A-Z])[A-Z]*\.?/g) || []).slice(0,2).join('').replace(/\W/g,'').substring(0,2);
     const staffColor = getStaffColor(messageObj.sender);
     notification.innerHTML = `
-        <div class="notification-header">
+        <div class="notification-header" style="cursor: pointer; transition: all 0.2s ease; padding: 8px 12px; border-radius: 4px 4px 0 0;" title="Click to open conversation in TAPPER">
             <div class="notification-title">💬 ${messageObj.sender}</div>
-            <div class="notification-close" style="user-select:none;" onclick="closeNotification(this.closest('.system-notification'))">✕</div>
+            <div class="notification-close" style="user-select:none;">✕</div>
         </div>
         <div class="notification-body">
             <div class="staff-chat-thread">
@@ -2426,20 +2505,51 @@ function showStaffChatNotification(messageObj) {
                     <div style="flex:1;">${messageObj.message}</div>
                 </div>
             </div>
-            <div class="staff-chat-options" style="display:flex; gap:10px; margin-bottom: 4px;">
-                <button class="btn-retro" style="flex:1; font-size:10px;" onclick="handleStaffChatResponse(this, 'A')">${messageObj.optionA}</button>
-                <button class="btn-retro" style="flex:1; font-size:10px;" onclick="handleStaffChatResponse(this, 'B')">${messageObj.optionB}</button>
-            </div>
+            <div style="color: var(--text-dim); font-size: 8px; margin-top: 8px; text-align: center;">Click or open TAPPER to respond</div>
         </div>
     `;
     // Store responses and sender on the element for access in handler
     notification.dataset.responseA = messageObj.responseA;
     notification.dataset.responseB = messageObj.responseB;
     notification.dataset.sender = messageObj.sender;
+    notification.dataset.optionA = messageObj.optionA;
+    notification.dataset.optionB = messageObj.optionB;
+    
+    // Make header clickable to open TAPPER
+    const header = notification.querySelector('.notification-header');
+    if (header) {
+        // Add breathing green effect on hover
+        header.addEventListener('mouseenter', () => {
+            header.style.animation = 'breathingGreen 2s ease-in-out infinite';
+        });
+        
+        header.addEventListener('mouseleave', () => {
+            header.style.animation = 'none';
+            header.style.boxShadow = '';
+            header.style.backgroundColor = '';
+        });
+        
+        // Open TAPPER and close notification on click
+        header.addEventListener('click', () => {
+            if (window.openTapper) window.openTapper();
+            if (window.setActiveChat) window.setActiveChat(messageObj.sender || 'SYSTEM');
+            // Close the notification after opening TAPPER
+            window.closeNotification(notification);
+        });
+    }
+    
+    // Attach click event listener to close button
+    const closeBtn = notification.querySelector('.notification-close');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            window.closeNotification(notification);
+        });
+    }
+    
     container.appendChild(notification);
     playStaffChatSound();
-    setTimeout(() => notification.classList.add('hiding'), 30000);
-    setTimeout(() => notification.remove(), 30500);
+    // NO auto-dismiss for chat notifications - they persist until closed
 }
 
 function handleStaffChatResponse(btn, which) {
@@ -2767,9 +2877,9 @@ function signInAsDParker() {
                 <div class="icon-image">📊</div>
                 <div class="icon-label">SYSMON</div>
             </div>
-            <div class="desktop-icon" onclick="openSlackComms()">
+            <div class="desktop-icon" onclick="openTapper()">
                 <div class="icon-image">💬</div>
-                <div class="icon-label">SLACK COMMS</div>
+                <div class="icon-label">TAPPER</div>
             </div>
             <div class="desktop-icon" onclick="openWindow('server-monitor-window'); renderServerMonitor();">
                 <div class="icon-image">🖥️</div>
@@ -3030,296 +3140,12 @@ function signInAsDParker() {
             </div>
         </div>
         
-        <!-- SETTINGS Window -->
-        <div id="settings-window" class="window" style="width: 500px; height: 450px; left: 30%; top: 20%;">
-            <div class="window-resize-handle"></div>
-            <div class="window-titlebar" onmousedown="startDrag(event, 'settings-window')" ontouchstart="startDrag(event, 'settings-window')">
-                <span class="window-title">SYSTEM_SETTINGS // CONFIGURATION</span>
-                <div class="window-controls">
-                    <div class="window-btn" onclick="minimizeWindow('settings-window')">_</div>
-                    <div class="window-btn" onclick="toggleWindowFullscreen('settings-window')" title="Fullscreen">□</div>
-                    <div class="window-btn" onclick="closeWindow('settings-window')">X</div>
-                </div>
-            </div>
-            <div class="window-content">
-                <div class="w-full h-full bg-[var(--bg-dark)] p-6 overflow-y-auto">
-                    <div class="space-y-6">
-                        <!-- Display Settings -->
-                        <div class="border-b border-[var(--panel-light)] pb-4">
-                            <div class="text-xs font-bold text-[var(--accent)] mb-3">DISPLAY</div>
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[10px]">FULLSCREEN MODE</span>
-                                    <button onclick="toggleFullscreenSetting()" id="fullscreen-toggle" class="btn-retro px-3 py-1 text-[9px]">[TOGGLE]</button>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                </div>
-                                <!-- Wallpaper Selection -->
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-[10px]">DESKTOP WALLPAPER</div>
-                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Change the desktop background</div>
-                                    </div>
-                                    <select id="wallpaper-select" class="btn-retro px-3 py-1 text-[9px]" onchange="changeWallpaper(this.value)"></select>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-[10px]">INTERFACE ZOOM</span>
-                                    <div class="flex gap-2">
-                                        <button onclick="adjustZoom(-10)" class="btn-retro px-3 py-1 text-[9px]">[-]</button>
-                                        <span id="zoom-display" class="text-[10px] px-2">100%</span>
-                                        <button onclick="adjustZoom(10)" class="btn-retro px-3 py-1 text-[9px]">[+]</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <script>
-                        // Wallpaper logic for settings
-                        function loadWallpaperOptions() {
-                            const wallpaperSelect = document.getElementById('wallpaper-select');
-                            if (wallpaperSelect) {
-                                const wallpapers = [
-                                    { name: 'Default (No Wallpaper)', value: '' },
-                                    { name: 'Purple', value: 'url(assets/images/desktop_wallpaper/purple.jpg)' },
-                                    { name: 'Leaves', value: 'url(assets/images/desktop_wallpaper/leaves.svg)' },
-                                    { name: 'Flowers', value: 'url(assets/images/desk`top_wallpaper/flowers.svg)' }
-                                ];
-                                wallpaperSelect.innerHTML = wallpapers.map(w => `<option value="${w.value}">${w.name}</option>`).join('');
-                                // Set current
-                                const saved = localStorage.getItem('dapaue-wallpaper') || '';
-                                wallpaperSelect.value = saved;
-                            }
-                        }
-
-                        function changeWallpaper(val) {
-                            if (val) {
-                                document.documentElement.style.setProperty('--wallpaper', val);
-                                localStorage.setItem('dapaue-wallpaper', val);
-                            } else {
-                                document.documentElement.style.setProperty('--wallpaper', 'none');
-                                localStorage.removeItem('dapaue-wallpaper');
-                            }
-                        }
-
-                        // On DOMContentLoaded, set wallpaper and load options
-                        document.addEventListener('DOMContentLoaded', function() {
-                            // Apply saved wallpaper
-                            const savedWallpaper = localStorage.getItem('dapaue-wallpaper');
-                            if (savedWallpaper) {
-                                document.documentElement.style.setProperty('--wallpaper', savedWallpaper);
-                            } else {
-                                document.documentElement.style.setProperty('--wallpaper', 'none');
-                            }
-                            loadWallpaperOptions();
-                        });
-                        </script>
-                        
-                        <!-- System Settings -->
-                        <div class="border-b border-[var(--panel-light)] pb-4">
-                            <div class="text-xs font-bold text-[var(--accent)] mb-3">SYSTEM</div>
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-[10px]">INSTABILITY EFFECTS</div>
-                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Disable visual glitch effects</div>
-                                    </div>
-                                    <label class="relative inline-block w-12 h-6">
-                                        <input type="checkbox" id="instability-toggle" onchange="toggleInstabilityEffects()" class="opacity-0 w-0 h-0">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Audio Settings -->
-                        <div class="border-b border-[var(--panel-light)] pb-4">
-                            <div class="text-xs font-bold text-[var(--accent)] mb-3">AUDIO</div>
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-[10px]">SOUND EFFECTS</div>
-                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">UI click and interaction sounds</div>
-                                    </div>
-                                    <label class="relative inline-block w-12 h-6">
-                                        <input type="checkbox" id="sound-toggle" onchange="toggleSound()" checked class="opacity-0 w-0 h-0">
-                                        <span class="toggle-slider"></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Developer Options -->
-                        <div class="border-b border-[var(--panel-light)] pb-4">
-                            <div class="text-xs font-bold text-[var(--accent)] mb-3">DEVELOPER</div>
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-[10px]">ADMIN MODE</div>
-                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Unlock all content and accounts</div>
-                                    </div>
-                                    <button onclick="unlockAllTestContent()" class="btn-retro px-3 py-1 text-[9px]">[ENABLE]</button>
-                                </div>
-                                <div class="flex items-center justify-between mt-3">
-                                    <div>
-                                        <div class="text-[10px]">HIDE DESKTOP APPS</div>
-                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Chat Test, Tag Wrangle, Staff Directory</div>
-                                    </div>
-                                    <label class="relative inline-block w-12 h-6">
-                                        <input type="checkbox" id="hide-admin-apps-toggle" onchange="toggleAdminAppsVisibility()" class="opacity-0 w-0 h-0" checked>
-                                        <span class="toggle-slider"></span>
-                                    <script>
-                                    window.addEventListener('DOMContentLoaded', function() {
-                                        const hideToggle = document.getElementById('hide-admin-apps-toggle');
-                                        if (hideToggle) {
-                                            hideToggle.checked = true;
-                                            toggleAdminAppsVisibility();
-                                        }
-                                    });
-                                    </script>
-                                    </label>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-[10px]">RESET SYSTEM</div>
-                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Lock all servers and reset content</div>
-                                    </div>
-                                    <button onclick="resetTestContent()" class="btn-retro px-3 py-1 text-[9px]" style="border-color: #ef4444; color: #ef4444;">[RESET]</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Info -->
-                        <div class="text-[8px] text-[var(--text-dim)] italic">
-                            Settings are saved to browser local storage
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- SERVER MONITOR Window -->
-        <div id="server-monitor-window" class="window" style="width: 800px; height: 520px; left: 20%; top: 12%;">
-            <div class="window-resize-handle"></div>
-            <div class="window-titlebar" onmousedown="startDrag(event, 'server-monitor-window')" ontouchstart="startDrag(event, 'server-monitor-window')">
-                <span class="window-title">SERVER_MONITOR // REMOTE_NODES</span>
-                <div class="window-controls">
-                    <div class="window-btn" onclick="minimizeWindow('server-monitor-window')">_</div>
-                    <div class="window-btn" onclick="toggleWindowFullscreen('server-monitor-window')" title="Fullscreen">□</div>
-                    <div class="window-btn" onclick="closeWindow('server-monitor-window')">X</div>
-                </div>
-            </div>
-            <div class="window-content">
-                <div class="w-full h-full bg-[var(--bg-dark)] flex">
-                    <!-- Server List -->
-                    <div class="w-64 border-r-2 border-[var(--panel-light)] p-3 overflow-y-auto">
-                        <div class="text-[var(--accent)] font-bold mb-2 text-xs">REMOTE NODES</div>
-                        <div id="server-list" class="space-y-2 text-[10px]"></div>
-                    </div>
 
-                    <!-- Server Detail / Auth -->
-                    <div class="flex-1 p-4 flex flex-col gap-3">
-                        <div class="border-2 border-[var(--panel-light)] p-3 bg-[var(--panel-dark)]">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <div class="text-[var(--accent)] font-bold text-xs">NODE DETAIL</div>
-                                    <div id="server-detail-name" class="text-sm font-bold mt-1">---</div>
-                                </div>
-                                <div class="text-right text-[9px]">
-                                    <div>Status: <span id="server-detail-status">N/A</span></div>
-                                    <div>Latency: <span id="server-detail-latency">--</span> ms</div>
-                                    <div>Load: <span id="server-detail-load">--</span>%</div>
-                                </div>
-                            </div>
-                            <div class="grid grid-cols-3 gap-3 mt-3 text-[9px]">
-                                <div class="border border-[var(--panel-light)] p-2">TEMP: <span id="server-detail-temp">--</span>°C</div>
-                                <div class="border border-[var(--panel-light)] p-2">PACKET_LOSS: <span id="server-detail-loss">--</span>%</div>
-                                <div class="border border-[var(--panel-light)] p-2">UPTIME: <span id="server-detail-uptime">--</span></div>
-                            </div>
-                            <div class="mt-3 flex items-center gap-3">
-                                <button class="btn-retro px-3 py-2 text-[10px]" onclick="setActiveServer()">[SELECT_NODE]</button>
-                                <span id="active-server-badge" class="text-[9px] text-[var(--text-dim)]"></span>
-                            </div>
-                        </div>
-
-                        <div class="border-2 border-[var(--panel-light)] p-3 bg-[var(--panel-dark)]">
-                            <div class="text-[var(--accent)] font-bold text-xs mb-2">AUTHENTICATION</div>
-                            <div class="grid grid-cols-3 gap-3 text-[10px]">
-                                <div>
-                                    <div class="text-[8px] text-[var(--text-dim)] mb-1 tracking-widest">USERNAME</div>
-                                    <input id="server-auth-username" type="text" class="w-full bg-[var(--panel-dark)] border border-[var(--panel-light)] p-2 text-xs text-white outline-none font-mono">
-                                </div>
-                                <div>
-                                    <div class="text-[8px] text-[var(--text-dim)] mb-1 tracking-widest">ACCESS_KEY</div>
-                                    <input id="server-auth-password" type="password" class="w-full bg-[var(--panel-dark)] border border-[var(--panel-light)] p-2 text-xs text-white outline-none font-mono">
-                                </div>
-                                <div class="flex items-end">
-                                    <button class="btn-retro w-full p-2 text-[10px]" onclick="authenticateServerForNode()">[AUTHENTICATE]</button>
-                                </div>
-                            </div>
-                            <div id="server-auth-status" class="mt-2 text-[9px] text-[var(--text-dim)]">Provide valid credentials to unlock data for the selected node.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
 
         <!-- User Access Terminal Window -->
-        <div id="user-access-window" class="window" style="width: 60%; height: 70%; left: 20%; top: 15%;">
-            <div class="window-resize-handle"></div>
-            <div class="window-titlebar" onmousedown="startDrag(event, 'user-access-window')" ontouchstart="startDrag(event, 'user-access-window')">
-                <span class="window-title">SECURITY_OVERRIDE // USER_ACCESS_SYSTEM</span>
-                <div class="window-controls">
-                    <div class="window-btn" onclick="minimizeWindow('user-access-window')">_</div>
-                    <div class="window-btn" onclick="toggleWindowFullscreen('user-access-window')" title="Fullscreen">□</div>
-                    <div class="window-btn" onclick="closeWindow('user-access-window')">X</div>
-                </div>
-            </div>
-            <div class="window-content">
-                <div id="hacking-terminal" class="w-full h-full bg-[var(--bg-dark)] border border-[var(--panel-light)] flex flex-col p-4 overflow-hidden font-mono text-[11px]">
-                    <div id="terminal-output" class="flex-1 overflow-y-auto scrollbar-hidden space-y-2 text-[var(--text-dim)] mb-4">
-                        <div class="text-[var(--accent)]">> DAPAUE_SECURITY_OVERRIDE_TERMINAL_v2.1</div>
-                        <div class="text-[var(--text-dim)]">> Type 'help' for available commands</div>
-                    </div>
-                    <div class="border-t border-[var(--panel-light)] pt-2">
-                        <div class="flex gap-2">
-                            <span id="terminal-prompt" class="text-[var(--accent)]"></span>
-                            <input id="terminal-input" type="text" class="flex-1 bg-transparent outline-none text-[var(--text-main)]" placeholder="Enter command..." onkeypress="if(event.key==='Enter') executeCommand()">
-                        </div>
-                    </div>
-                </div>
-
-                <script>
-                // Easter Egg Script Loader
-                window.terminalEasterEggs = [];
-                async function loadTerminalEasterEggs() {
-                    let eggs = [];
-                    try {
-                        // List of known scripts (manual, since fetch can't list directory)
-                        const scriptFiles = [
-                            'assets/data/terminal/fast-als.json',
-                            'assets/data/terminal/pride.json',
-                            'assets/data/terminal/kib.json',
-                            'assets/data/terminal/xfiles.json',
-                            'assets/data/terminal/dishwasher.json',
-                            'assets/data/terminal/gemma.json'
-                            // Add more script files here as needed
-                        ];
-                        for (const file of scriptFiles) {
-                            try {
-                                const res = await fetch(file);
-                                if (res.ok) {
-                                    const data = await res.json();
-                                    if (Array.isArray(data)) eggs = eggs.concat(data);
-                                }
-                            } catch (e) {}
-                        }
-                    } catch (e) {}
-                    window.terminalEasterEggs = eggs;
-                }
-                window.addEventListener('DOMContentLoaded', loadTerminalEasterEggs);
-                </script>
-            </div>
-        </div>
 
         <!-- Briefing Document Window -->
         <div id="briefing-window" class="window" style="width: 650px; height: 550px; left: 20%; top: 15%;">
@@ -3422,21 +3248,6 @@ function signInAsDParker() {
             </div>
         </div>
 
-        <!-- Notepad Window -->
-        <div id="notepad-window" class="window" style="width: 500px; height: 400px; left: 25%; top: 20%;">
-            <div class="window-resize-handle"></div>
-            <div class="window-titlebar" onmousedown="startDrag(event, 'notepad-window')" ontouchstart="startDrag(event, 'notepad-window')">
-                <span class="window-title">NOTEPAD.TXT // PERSONAL_NOTES</span>
-                <div class="window-controls">
-                    <div class="window-btn" onclick="minimizeWindow('notepad-window')">_</div>
-                    <div class="window-btn" onclick="toggleWindowFullscreen('notepad-window')" title="Fullscreen">□</div>
-                    <div class="window-btn" onclick="closeWindow('notepad-window')">X</div>
-                </div>
-            </div>
-            <div class="window-content">
-                <textarea id="notepad-textarea" class="w-full h-full bg-[var(--bg-dark)] text-[var(--text-main)] p-4 font-mono text-xs resize-none outline-none" placeholder="// TYPE YOUR NOTES HERE..." style="border: none;"></textarea>
-            </div>
-        </div>
 
         <!-- FORENSICS Investigation Board Window -->
         <div id="forensics-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 7.5%;">
@@ -3690,167 +3501,7 @@ function signInAsDParker() {
         <!-- End of Archive Window -->
 
         <!-- EMAIL-VAULT Window (Emails Only) -->
-        <div id="email-vault-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 5%; display: none;">
-            <div class="window-resize-handle"></div>
-            <div class="window-titlebar" onmousedown="startDrag(event, 'email-vault-window')" ontouchstart="startDrag(event, 'email-vault-window')">
-                <span class="window-title" id="email-vault-title">Email // DAPAUE</span>
-                <div class="window-controls">
-                    <div class="window-btn" onclick="minimizeWindow('email-vault-window')">_</div>
-                    <div class="window-btn" onclick="toggleWindowFullscreen('email-vault-window')" title="Fullscreen">□</div>
-                    <div class="window-btn" onclick="closeWindow('email-vault-window')">X</div>
-                </div>
-            </div>
-            <div class="window-content">
-                <div id="email-vault-terminal" class="w-full h-full terminal-border bg-[var(--bg-dark)] overflow-hidden flex flex-col relative">
-                    <div id="email-vault-login-flash" class="absolute inset-0 z-[600] pointer-events-none"></div>
-
-                    <!-- Header -->
-                    <div id="email-vault-header" class="h-12 border-b-2 border-[var(--panel-light)] flex items-center justify-between px-4 bg-[var(--panel-dark)] reveal-node">
-                        <div class="flex items-center gap-4">
-                            <span class="font-bold">Email // DAPAUE</span>
-                            <span id="email-vault-node-display" class="text-[9px] text-cyan-500 border border-cyan-900/40 px-2 py-0.5">NODE: ---</span>
-                            <span id="email-vault-user-display" class="text-[9px] text-green-500 border border-green-900/40 px-2 py-0.5">USER: ---</span>
-                        </div>
-                    </div>
-
-                    <div class="flex-1 flex overflow-hidden">
-                        <!-- Sidebar -->
-                        <div id="email-vault-sidebar" class="w-20 md:w-48 border-r-2 border-[var(--panel-light)] flex flex-col p-2 gap-2 bg-[var(--panel-dark)] reveal-node">
-                            <button onclick="toggleEmailVaultSidebar()" class="btn-retro p-2 text-xs text-center mb-2 opacity-70 hover:opacity-100" title="Toggle sidebar">[◄►]</button>
-                            <button id="email-vault-tab-inbox" class="btn-retro active p-2 text-xs text-left" onclick="switchEmailVaultTab('inbox')"><span class="sidebar-label">[01] INBOX</span></button>
-                            <button id="email-vault-tab-sent" class="btn-retro p-2 text-xs text-left" onclick="switchEmailVaultTab('sent')"><span class="sidebar-label">[02] SENT</span></button>
-                            <button id="email-vault-tab-trash" class="btn-retro p-2 text-xs text-left" onclick="switchEmailVaultTab('trash')"><span class="sidebar-label">[03] TRASH</span></button>
-                        </div>
-
-                        <!-- Email List -->
-                        <div class="flex flex-col border-r-2 border-[var(--panel-light)] bg-[var(--bg-dark)]">
-                            <div class="p-2 bg-[var(--panel-dark)] border-b-2 border-[var(--panel-light)]">
-                                <input id="email-vault-search" type="text" class="w-full bg-[var(--bg-dark)] border border-[var(--panel-light)] px-2 py-1 font-mono text-xs outline-none" placeholder="SEARCH_EMAILS">
-                            </div>
-                            <div id="email-vault-list" class="w-64 md:w-80 overflow-y-auto scrollbar-hidden opacity-90 reveal-node flex-1"></div>
-                        </div>
-
-                        <!-- Detail View -->
-                        <div id="email-vault-detail" class="flex-1 flex flex-col bg-[var(--bg-dark)] overflow-hidden relative reveal-node">
-                            <div id="email-vault-no-selection" class="flex-1 flex items-center justify-center flex-col opacity-20" style="display: flex;"><p class="text-sm">SELECT EMAIL</p></div>
-                            <div id="email-vault-content" class="flex-1 flex flex-col p-6 md:p-12 overflow-y-auto relative" style="display: none;">
-                                <div class="border-b-2 border-[var(--panel-light)] pb-6 mb-6">
-                                    <div class="flex justify-between items-start mb-2"><h2 id="email-vault-subject" class="text-xl font-bold">---</h2></div>
-                                </div>
-                                <div class="flex items-center gap-2 mb-4 text-[9px]">
-                                    <button class="btn-retro px-2 py-1 ml-auto" onclick="sendEmailVaultToBoard()" title="Add to Investigation Board">📌 [SEND TO BOARD]</button>
-                                </div>
-                                <div id="email-vault-body" class="whitespace-pre-wrap leading-relaxed text-sm opacity-90 select-text"></div>
-                                <div id="email-vault-cross-ref" class="hidden mt-6 p-4 border-2 border-[var(--panel-light)] bg-[var(--panel-dark)]">
-                                    <div class="text-[9px] font-bold mb-3 text-[var(--text-dim)]">CROSS-REFERENCES DETECTED:</div>
-                                    <div id="email-vault-cross-ref-list" class="space-y-2 text-xs"></div>
-                                </div>
-                                <div id="email-vault-attachments" class="mt-8 space-y-6"></div>
-                                <div class="mt-12 pt-6 border-t border-[var(--panel-light)] opacity-30 text-[9px]">*** END OF TRANSMISSION ***</div>
-                            </div>
-                        </div>
-
-                        <!-- Metadata Board -->
-                        <div id="email-vault-metadata" class="border-l-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col reveal-node">
-                            <div id="email-vault-metadata-header" class="p-3 border-b-2 border-[var(--panel-light)] bg-[var(--panel-light)] flex justify-between items-center text-[var(--bg-dark)]">
-                                <button onclick="toggleEmailVaultMetadata()" class="text-xs cursor-pointer hover:opacity-80 font-bold" title="Toggle metadata">[◄►]</button>
-                            </div>
-                            <div id="email-vault-metadata-content" class="flex-1 overflow-y-auto p-4 scrollbar-hidden">
-                                <div class="text-[10px] text-[var(--text-dim)] text-center mt-10 italic">WAITING_FOR_DATA...</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Footer -->
-                    <div id="email-vault-footer" class="h-8 border-t-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex items-center px-4 text-[10px] reveal-node">
-                        <span class="text-[var(--text-dim)] mr-2">CPU_LOAD:</span>
-                        <div class="w-16 h-2 bg-[var(--panel-light)] mr-4"><div class="bg-[var(--accent)] h-full" style="width: 42%"></div></div>
-                        <span class="ml-auto animate-pulse">EMAIL-VAULT_ACTIVE</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- FILES Window (File Explorer Only) -->
-        <div id="file-vault-window" class="window" style="width: 90%; height: 85%; left: 5%; top: 5%; display: none;">
-            <div class="window-resize-handle"></div>
-            <div class="window-titlebar" onmousedown="startDrag(event, 'file-vault-window')" ontouchstart="startDrag(event, 'file-vault-window')">
-                <span class="window-title" id="file-vault-title">FILES // DAPAUE</span>
-                <div class="window-controls">
-                    <div class="window-btn" onclick="minimizeWindow('file-vault-window')">_</div>
-                    <div class="window-btn" onclick="toggleWindowFullscreen('file-vault-window')" title="Fullscreen">□</div>
-                    <div class="window-btn" onclick="closeWindow('file-vault-window')">X</div>
-                </div>
-            </div>
-            <div class="window-content">
-                <div id="file-vault-terminal" class="w-full h-full terminal-border bg-[var(--bg-dark)] overflow-hidden flex flex-col relative">
-                    <div id="file-vault-login-flash" class="absolute inset-0 z-[600] pointer-events-none"></div>
-
-                    <!-- Header -->
-                    <div id="file-vault-header" class="h-12 border-b-2 border-[var(--panel-light)] flex items-center justify-between px-4 bg-[var(--panel-dark)] reveal-node">
-                        <div class="flex items-center gap-4">
-                            <span class="font-bold">FILES // EXPLORER // DAPAUE</span>
-                            <span id="file-vault-user-display" class="text-[9px] text-green-500 border border-green-900/40 px-2 py-0.5 cursor-pointer hover:border-green-500 hover:bg-green-900/20 transition-all" onclick="openFileVaultUserSelector()">USER: ---</span>
-                        </div>
-                    </div>
-
-                    <div class="flex-1 flex overflow-hidden">
-                        <!-- Sidebar -->
-                        <div id="file-vault-sidebar" class="w-20 md:w-48 border-r-2 border-[var(--panel-light)] flex flex-col p-2 gap-2 bg-[var(--panel-dark)] reveal-node">
-                            <button onclick="toggleFileVaultSidebar()" class="btn-retro p-2 text-xs text-center mb-2 opacity-70 hover:opacity-100" title="Toggle sidebar">[◄►]</button>
-                            <button id="file-vault-tab-explorer" class="btn-retro active p-2 text-xs text-left" onclick="switchFileVaultTab('explorer')"><span class="sidebar-label">[01] FILES</span></button>
-                        </div>
-
-                        <!-- User List -->
-                        <div id="file-vault-list" class="w-64 md:w-80 border-r-2 border-[var(--panel-light)] overflow-y-auto scrollbar-hidden bg-[var(--bg-dark)] opacity-90 reveal-node">
-                        </div>
-
-                        <!-- File Preview -->
-                        <div id="file-vault-detail" class="flex-1 flex flex-col bg-[var(--bg-dark)] overflow-hidden relative reveal-node">
-                            <div id="file-vault-placeholder" class="flex-1 flex items-center justify-center flex-col text-xs tracking-widest opacity-40" style="display: flex;">
-                                <p>SELECT FILE TO PREVIEW</p>
-                            </div>
-
-                            <div id="file-vault-pane" class="flex-1 flex flex-col overflow-hidden" style="display: none;">
-                                <div class="border-b-2 border-[var(--panel-light)] p-4 bg-[var(--panel-dark)]">
-                                    <div class="flex items-start justify-between gap-4">
-                                        <div>
-                                            <div id="file-vault-name" class="font-bold text-sm">---</div>
-                                            <div id="file-vault-meta" class="text-[9px] text-[var(--text-dim)] mt-1">---</div>
-                                        </div>
-                                        <div id="file-vault-user" class="text-[10px] text-[var(--accent)] font-mono"></div>
-                                    </div>
-                                </div>
-                                <div class="p-3 border-b-2 border-[var(--panel-light)] text-[9px] flex items-center gap-2 justify-end">
-                                    <button class="btn-retro px-2 py-1 ml-auto" onclick="sendFileVaultToBoard()" title="Add to Investigation Board">📌 [SEND TO BOARD]</button>
-                                </div>
-                                <div id="file-vault-content" class="flex-1 overflow-y-auto p-6 md:p-10 font-mono text-xs whitespace-pre-wrap break-words"></div>
-                            </div>
-                        </div>
-
-                        <!-- Metadata Board -->
-                        <div id="file-vault-metadata" class="border-l-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex flex-col reveal-node">
-                            <div id="file-vault-metadata-header" class="p-3 border-b-2 border-[var(--panel-light)] bg-[var(--panel-light)] flex justify-between items-center text-[var(--bg-dark)]">
-                                <span class="text-xs font-bold uppercase tracking-wider">FILE_METADATA</span>
-                                <button onclick="toggleFileVaultMetadata()" class="text-xs cursor-pointer hover:opacity-80 font-bold" title="Toggle metadata">[◄►]</button>
-                            </div>
-                            <div id="file-vault-metadata-content" class="flex-1 overflow-y-auto p-4 scrollbar-hidden">
-                                <div class="text-[10px] text-[var(--text-dim)] text-center mt-10 italic">WAITING_FOR_DATA...</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Footer -->
-                    <div id="file-vault-footer" class="h-8 border-t-2 border-[var(--panel-light)] bg-[var(--panel-dark)] flex items-center px-4 text-[10px] reveal-node">
-                        <span class="text-[var(--text-dim)] mr-2">CPU_LOAD:</span>
-                        <div class="w-16 h-2 bg-[var(--panel-light)] mr-4"><div class="bg-[var(--accent)] h-full" style="width: 42%"></div></div>
-                        <span class="ml-auto animate-pulse">FILES_ACTIVE</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- End of Vault Windows -->
-
         <!-- Taskbar -->
         <div id="taskbar" style="display: none;">
             <div id="taskbar-apps">
@@ -3858,7 +3509,7 @@ function signInAsDParker() {
                 <div class="taskbar-item active" id="taskbar-user-access" onclick="focusWindow('user-access-window')" style="display: none;">⌘ TERMINAL</div>
                 <div class="taskbar-item active" id="taskbar-notepad" onclick="focusWindow('notepad-window')" style="display: none;">📝 NOTEPAD</div>
                 <div class="taskbar-item active" id="taskbar-sysmon" onclick="focusWindow('sysmon-window')" style="display: none;">📊 SYSMON</div>
-                <div class="taskbar-item active" id="taskbar-slack" onclick="focusWindow('slack-window')" style="display: none;">💬 SLACK</div>
+                <div class="taskbar-item active" id="taskbar-tapper" onclick="focusWindow('slack-window')" style="display: none;">💬 TAPPER</div>
                 <div class="taskbar-item active" id="taskbar-server-monitor" onclick="focusWindow('server-monitor-window')" style="display: none;">🖥️ SERVERS</div>
                 <div class="taskbar-item active" id="taskbar-tag-wrangle" onclick="focusWindow('tag-wrangle-window')" style="display: none;">🕸 TAG WRANGLE</div>
                 <div class="taskbar-item active" id="taskbar-user-select" onclick="focusWindow('user-select-window')" style="display: none;">👤 USER_SELECT</div>
@@ -4072,11 +3723,6 @@ function signInAsDParker() {
             const flashElInit = document.getElementById('login-flash');
             if (flashElInit) flashElInit.style.display = 'none';
             
-            // Load saved notepad content
-            const savedNotes = localStorage.getItem('dapaue-notepad-content');
-            if (savedNotes) {
-                document.getElementById('notepad-textarea').value = savedNotes;
-            }
             
             // Load CRT glow setting (disabled by default)
             let crtGlowEnabled = localStorage.getItem('dapaue-crt-glow');
@@ -4093,11 +3739,6 @@ function signInAsDParker() {
                     document.body.classList.remove('crt-glow');
                 }
             }
-            
-            // Auto-save notepad content
-            document.getElementById('notepad-textarea').addEventListener('input', function() {
-                localStorage.setItem('dapaue-notepad-content', this.value);
-            });
             
             // Keyboard navigation
             document.addEventListener('keydown', handleKeyboardNav);
@@ -4774,132 +4415,6 @@ function signInAsDParker() {
             }
         };
 
-        let systemNotificationShown = false;
-        
-        // Notification tracking for deduplication
-        const notificationHistory = [];
-        
-        function getOrCreateNotificationContainer() {
-            let container = document.getElementById('notification-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'notification-container';
-                container.className = 'notification-container';
-                document.body.appendChild(container);
-            }
-            return container;
-        }
-        
-        function closeNotification(notificationElem, message) {
-            // Remove notification immediately, skip animation for instant close
-            notificationElem.remove();
-            if (message) {
-                const idx = notificationHistory.indexOf(message);
-                if (idx !== -1) notificationHistory.splice(idx, 1);
-            }
-        }
-
-        function showSystemNotification(message, progressColor = 'var(--accent)') {
-            // If no message provided, it's the welcome notification - only show once
-            if (!message && systemNotificationShown) {
-                return;
-            }
-            
-            if (!message) {
-                systemNotificationShown = true;
-            }
-            
-            // Play error sound for error notifications, regular notification sound for others
-            if (message && soundEnabled) {
-                if (progressColor === '#ff6b6b' || message.includes('✗') || message.includes('ERROR') || message.includes('FAILED')) {
-                    try {
-                        const errorAudio = new Audio('assets/audio/error.mp3');
-                        errorAudio.volume = 0.5;
-                        errorAudio.play().catch(e => console.log('Error audio playback failed:', e));
-                    } catch (e) {
-                        console.log('Error audio error:', e);
-                    }
-                } else {
-                    try {
-                        const notifAudio = new Audio('assets/audio/notification.mp3');
-                        notifAudio.volume = 0.5;
-                        notifAudio.play().catch(e => console.log('Notification audio playback failed:', e));
-                    } catch (e) {
-                        console.log('Notification audio error:', e);
-                    }
-                }
-            }
-            
-            // Check if this notification message already exists
-            if (message) {
-                const existingIndex = notificationHistory.findIndex(n => n === message);
-                if (existingIndex !== -1) {
-                    // Remove the oldest duplicate
-                    const container = document.getElementById('notification-container');
-                    if (container && container.children[existingIndex]) {
-                        const oldNotif = container.children[existingIndex];
-                        oldNotif.classList.add('hiding');
-                        setTimeout(() => oldNotif.remove(), 500);
-                        notificationHistory.splice(existingIndex, 1);
-                    }
-                }
-                notificationHistory.push(message);
-            }
-            
-            const notification = document.createElement('div');
-            notification.className = 'system-notification';
-            
-            if (message) {
-                // Custom message notification
-                notification.innerHTML = `
-                    <div class="notification-header">
-                        <div class="notification-title">⚡ SYSTEM NOTICE</div>
-                        <div class="notification-close" style="user-select:none;" onclick="closeNotification(this.closest('.system-notification'), \"${message.replace(/"/g, '&quot;').replace(/'/g, "&#39;")}\")">✕</div>
-                    </div>
-                    <div class="notification-body">
-                        <p style="margin-bottom: 6px; color: var(--accent);">${message}</p>
-                    </div>
-                    <div class="notification-progress">
-                        <div class="notification-progress-bar" style="background: ${progressColor};"></div>
-                    </div>
-                `;
-            } else {
-                // Welcome notification
-                notification.innerHTML = `
-                    <div class="notification-header">
-                        <div class="notification-title">⚡ SYSTEM NOTICE // NEURAL-LINK STATUS</div>
-                        <div class="notification-close" style="user-select:none;" onclick="closeNotification(this.closest('.system-notification'))">✕</div>
-                    </div>
-                    <div class="notification-body">
-                        <p style="margin-bottom: 8px; color: var(--accent);">WELCOME, OPERATOR.</p>
-                        <p style="margin-bottom: 6px;">YOUR NEURAL-LINK HAS BEEN ESTABLISHED. SESSION DATA IS NOW SYNCED TO LOCAL CORTEX MEMORY.</p>
-                        <p style="margin-bottom: 6px; font-size: 8px; color: var(--text-dim);">⚠ IMPORTANT: All progress, notes, and unlocked accounts are stored in your LOCAL BROWSER CACHE. Clearing your browser data will result in COMPLETE MEMORY WIPE.</p>
-                        <p style="font-size: 8px; color: var(--text-dim); font-style: italic;">TIP: Regular backups recommended via NOTEPAD export.</p>
-                    </div>
-                    <div class="notification-progress">
-                        <div class="notification-progress-bar"></div>
-                    </div>
-                `;
-            }
-            
-            const container = getOrCreateNotificationContainer();
-            container.appendChild(notification);
-            
-            // Start fade-out at 14.5 seconds for smooth transition
-            setTimeout(() => {
-                notification.classList.add('hiding');
-            }, 14500);
-            
-            // Remove after full 15 seconds
-            setTimeout(() => {
-                notification.remove();
-                if (message) {
-                    const index = notificationHistory.indexOf(message);
-                    if (index !== -1) notificationHistory.splice(index, 1);
-                }
-            }, 15000);
-        }
-
 
         // ===== Server Monitor Logic =====
         let serverNodes = [
@@ -5381,9 +4896,8 @@ function signInAsDParker() {
                 // Open notepad with the note content
                 openWindow('notepad-window');
                 setTimeout(() => {
-                    const notepadContent = document.getElementById('notepad-content');
-                    if (notepadContent) {
-                        notepadContent.value = `[${data.subject}]\n\n${data.body}`;
+                    if (window.setNotepadContent) {
+                        window.setNotepadContent(`[${data.subject}]\n\n${data.body}`);
                     }
                 }, 100);
             } else {
@@ -6330,16 +5844,16 @@ function signInAsDParker() {
                 }
             }
             
-            // Close all notifications
-            document.querySelectorAll('.system-notification').forEach(n => {
-                n.classList.add('hiding');
-                setTimeout(() => n.remove(), 500);
-            });
-            notificationHistory.splice(0, notificationHistory.length);
-            
             console.log('Calling toggleForensicsLift');
             // Toggle forensics with proper timing
             toggleForensicsLift();
+            
+            // Focus the forensics window
+            setTimeout(() => {
+                if (window.focusWindow) {
+                    window.focusWindow('forensics-window');
+                }
+            }, 100);
             
             // Wait for animation and board render
             setTimeout(() => {
@@ -6360,48 +5874,60 @@ function signInAsDParker() {
         }
 
         function showForensicsNotification(message, cardId) {
-            const container = document.getElementById('notification-container') || getOrCreateNotificationContainer();
-            if (!container) return;
-            
+            const container = window.getOrCreateNotificationContainer();
             const notif = document.createElement('div');
             notif.className = 'system-notification';
+            notif.dataset.persistent = 'true'; // Mark as persistent - no auto-dismiss
+            
             notif.innerHTML = `
-                <div class="notification-header">
-                    <div class="notification-title">⚡ SYSTEM NOTICE</div>
-                    <div class="notification-close" style="user-select:none;" onclick="closeNotification(this.closest('.system-notification'), '${message.replace(/'/g, "\\'")}')">✕</div>
+                <div class="notification-header" style="cursor: pointer; transition: all 0.2s ease; padding: 8px 12px; border-radius: 4px 4px 0 0;" title="Click to open in Forensics">
+                    <div class="notification-title">📌 Investigation Board</div>
+                    <div class="notification-close" style="user-select:none;">✕</div>
                 </div>
                 <div class="notification-body">
-                    <p style="margin-bottom: 6px; color: var(--accent);">${message}</p>
-                    <button class="open-board-btn" data-card-id="${cardId}" style="padding: 4px 8px; background: var(--accent); color: var(--bg-dark); border: none; cursor: pointer; font-size: 10px; white-space: nowrap; font-weight: bold;">[OPEN BOARD]</button>
-                </div>
-                <div class="notification-progress">
-                    <div class="notification-progress-bar" style="background: var(--accent);"></div>
+                    <p style="margin-bottom: 6px; color: var(--accent); font-size: 11px;">${message.replace(/^📌\s*/, '')}</p>
+                    <div style="color: var(--text-dim); font-size: 8px; text-align: center;">Click header to view in Forensics</div>
                 </div>
             `;
-            container.appendChild(notif);
-            notificationHistory.push(message);
             
-            // Add click handler to button
-            const btn = notif.querySelector('.open-board-btn');
-            if (btn) {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const cid = this.getAttribute('data-card-id');
-                    openForensicsWithCard(cid, message);
+            notif.dataset.cardId = cardId;
+            container.appendChild(notif);
+            
+            // Make header clickable to open Forensics
+            const header = notif.querySelector('.notification-header');
+            if (header) {
+                // Add breathing green effect on hover
+                header.addEventListener('mouseenter', () => {
+                    header.style.animation = 'breathingGreen 2s ease-in-out infinite';
+                });
+                
+                header.addEventListener('mouseleave', () => {
+                    header.style.animation = 'none';
+                });
+                
+                // Open Forensics on header click
+                header.addEventListener('click', () => {
+                    openForensicsWithCard(cardId, message);
+                    // Close this notification
+                    notif.classList.add('hiding');
+                    setTimeout(() => {
+                        notif.remove();
+                    }, 500);
                 });
             }
             
-            // Start fade-out at 14.5 seconds for smooth transition
-            setTimeout(() => {
-                notif.classList.add('hiding');
-            }, 14500);
-            
-            // Remove after full 15 seconds
-            setTimeout(() => {
-                notif.remove();
-                const idx = notificationHistory.indexOf(message);
-                if (idx !== -1) notificationHistory.splice(idx, 1);
-            }, 15000);
+            // Attach click event listener to close button
+            const closeBtn = notif.querySelector('.notification-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    // Manually remove the notification
+                    notif.classList.add('hiding');
+                    setTimeout(() => {
+                        notif.remove();
+                    }, 500);
+                });
+            }
         }
         
         function sendFileToInvestigationBoard() {
@@ -8449,6 +7975,11 @@ function signInAsDParker() {
                 // Show welcome notification
                 showSystemNotification();
                 
+                // Trigger desktop load event for chat scheduler
+                if (window.triggerChatEvents) {
+                    window.triggerChatEvents('onDesktopLoad');
+                }
+                
                 // Show BETA warning
                 setTimeout(() => showBetaWarning(), 500); // 2x faster
             // Minimal BETA warning to fix ReferenceError and unblock JS
@@ -10445,30 +9976,7 @@ function showEnlargedImage(src) {
             document.body.appendChild(modal);
         }
         
-        function showNotification(message, type = 'info') {
-            const notif = document.createElement('div');
-            notif.style.position = 'fixed';
-            notif.style.top = '20px';
-            notif.style.right = '20px';
-            notif.style.background = type === 'success' ? '#00ff00' : 'var(--accent)';
-            notif.style.color = 'var(--dark)';
-            notif.style.padding = '12px 20px';
-            notif.style.borderRadius = '4px';
-            notif.style.fontFamily = 'monospace';
-            notif.style.fontSize = '11px';
-            notif.style.fontWeight = 'bold';
-            notif.style.zIndex = '10000';
-            notif.style.boxShadow = '0 4px 12px rgba(0,0,0,0.5)';
-            notif.innerText = message;
-            
-            document.body.appendChild(notif);
-            
-            setTimeout(() => {
-                notif.style.transition = 'opacity 0.5s';
-                notif.style.opacity = '0';
-                setTimeout(() => document.body.removeChild(notif), 500);
-            }, 2000);
-        }
+
 
         function revealTerminal() {
             const ids = ['header-node', 'sidebar-node', 'list-node', 'detail-node', 'metadata-node', 'footer-node'];

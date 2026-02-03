@@ -1,14 +1,14 @@
 {
   "chats": [
     {
-      "id": "GENERAL",
-      "name": "GENERAL",
+      "id": "",
+      "name": "",
       "messages": [
         {
-          "sender": "SYSTEM",
-          "message": "Welcome to the comms hub.",
-          "timestamp": "07:01 PM",
-          "isSystem": true
+          "sender": "",
+          "message": "",
+          "timestamp": "",
+          "isSystem": false
         }
       ]
     }
