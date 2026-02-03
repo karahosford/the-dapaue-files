@@ -35,14 +35,6 @@
                                     <span class="text-[10px]">FULLSCREEN MODE</span>
                                     <button onclick="toggleFullscreenSetting()" id="fullscreen-toggle" class="btn-retro px-3 py-1 text-[9px]">[TOGGLE]</button>
                                 </div>
-                                <!-- Wallpaper Selection -->
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="text-[10px]">DESKTOP WALLPAPER</div>
-                                        <div class="text-[8px] text-[var(--text-dim)] mt-1">Change the desktop background</div>
-                                    </div>
-                                    <select id="wallpaper-select" class="btn-retro px-3 py-1 text-[9px]" onchange="changeWallpaper(this.value)"></select>
-                                </div>
                                 <div class="flex items-center justify-between">
                                     <span class="text-[10px]">INTERFACE ZOOM</span>
                                     <div class="flex gap-2">
@@ -130,33 +122,10 @@
         container.appendChild(settingsDiv);
     }
 
-    function loadWallpaperOptions() {
-        const wallpaperSelect = document.getElementById('wallpaper-select');
-        if (wallpaperSelect) {
-            const wallpapers = [
-                { name: 'Default (No Wallpaper)', value: '' },
-                { name: 'Purple', value: 'url(assets/images/desktop_wallpaper/purple.jpg)' },
-                { name: 'Leaves', value: 'url(assets/images/desktop_wallpaper/leaves.svg)' },
-                { name: 'Flowers', value: 'url(assets/images/desktop_wallpaper/flowers.svg)' }
-            ];
-            wallpaperSelect.innerHTML = wallpapers.map(w => `<option value="${w.value}">${w.name}</option>`).join('');
-            const saved = localStorage.getItem('dapaue-wallpaper') || '';
-            wallpaperSelect.value = saved;
-        }
-    }
+
 
     function initSettingsApp() {
         injectSettingsWindow();
-        
-        // Apply saved wallpaper
-        const savedWallpaper = localStorage.getItem('dapaue-wallpaper');
-        if (savedWallpaper) {
-            document.documentElement.style.setProperty('--wallpaper', savedWallpaper);
-        } else {
-            document.documentElement.style.setProperty('--wallpaper', 'none');
-        }
-        
-        loadWallpaperOptions();
         
         // Hide admin apps if setting is enabled
         const hideToggle = document.getElementById('hide-admin-apps-toggle');
