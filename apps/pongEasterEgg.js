@@ -296,7 +296,21 @@
                         notif.style.alignItems = 'center';
                         notif.style.justifyContent = 'center';
                         notif.style.zIndex = '100002';
+                        const isWin = message && message.toLowerCase().includes('win');
                         notif.innerHTML = `<div style=\"color:#fff;font-size:3rem;font-weight:bold;margin-bottom:2rem;text-shadow:0 2px 12px #000\">${message}</div>`;
+                        if (isWin) {
+                            let qr = document.createElement('img');
+                            qr.src = 'assets/images/secret.png';
+                            qr.alt = 'Secret QR Code';
+                            qr.style.width = '240px';
+                            qr.style.height = '240px';
+                            qr.style.imageRendering = 'pixelated';
+                            qr.style.border = '2px solid #fff';
+                            qr.style.borderRadius = '8px';
+                            qr.style.boxShadow = '0 6px 24px rgba(0,0,0,0.6)';
+                            qr.style.marginBottom = '2rem';
+                            notif.appendChild(qr);
+                        }
                         // Emoji rain if lost
                         let emojiRainInterval = null;
                         if (message && message.toLowerCase().includes('lose')) {
